@@ -1,0 +1,96 @@
+win = "Goal Event Region"
+
+menu = "Menu"
+one = "Chapter I - The Hero and the Princess"
+chap2 = "Chapter II"
+chap3 = "Chapter III"
+
+adversary = "Chapter II - The Adversary"
+adversary_dagger = "Chapter II - The Adversary [Dagger Only]"
+tower = "Chapter II - The Tower"
+spectre = "Chapter II - The Spectre"
+nightmare = "Chapter II - The Nightmare"
+razor = "Chapter II - The Razor"
+beast = "Chapter II - The Beast"
+witch = "Chapter II - The Witch"
+stranger = "Chapter II - The Stranger"
+stranger_dagger = "Chapter II - The Stranger [Dagger Only]"
+prisoner = "Chapter II - The Prisoner"
+damsel = "Chapter II - The Damsel"
+
+needle = "Chapter III - The Eye of the Needle"
+needle_hunted = "Chapter III - The Eye of the Needle (Hunted)"
+needle_skeptic = "Chapter III - The Eye of the Needle (Skeptic)"
+
+fury = "Chapter III - The Fury"
+fury_weathered_heart = "Chapter III - The Fury (Weathered Heart)"
+fury_pacifism = "Chapter III - The Fury (Pacifism)"
+fury_unarmed_broken = "Chapter III - The Fury (Unarmed Broken)"
+fury_unarmed_contrarian = "Chapter III - The Fury (Unarmed Contrarian)"
+fury_other = "Chapter III - The Fury (Other)"
+fury_tower = "Chapter III - The Fury (Tower)"
+
+apotheosis = "Chapter III - The Apotheosis"
+apotheosis_contrarian = "Chapter III - The Apotheosis (Contrarian)"
+apotheosis_paranoid = "Chapter III - The Apotheosis (Paranoid)"
+
+dragon = "Chapter III - The Princess and the Dragon"
+dragon_kind = "Chapter III - The Princess and the Dragon (Kind Princess)"
+dragon_harsh = "Chapter III - The Princess and the Dragon (Harsh Princess)"
+
+wraith = "Chapter III - The Wraith"
+wraith_cheated = "Chapter III - The Wraith (Cheated)"
+wraith_paranoid = "Chapter III - The Wraith (Paranoid)"
+wraith_cold = "Chapter III - The Wraith (Cold)"
+wraith_opportunist = "Chapter III - The Wraith (Opportunist)"
+
+clarity = "Chapter ??? - The Moment of Clarity"
+
+razor_chap3 = "Chapter III - Razor"
+razor_no_way = "Chapter III - No Way Out"
+razor_no_way_broken = "Chapter III - No Way Out (Broken)"
+razor_no_way_paranoid = "Chapter III - No Way Out (Paranoid)"
+razor_no_way_stubborn = "Chapter III - No Way Out (Stubborn)"
+
+razor_race = "Chapter III - The Arms Race"
+razor_race_broken = "Chapter III - The Arms Race (Broken)"
+razor_race_paranoid = "Chapter III - The Arms Race (Paranoid)"
+razor_race_stubborn = "Chapter III - The Arms Race (Stubborn)"
+
+den = "Chapter III - Den"
+den_skeptic = "Chapter III - Den (Skeptic)"
+den_stubborn = "Chapter III - Den (Stubborn)"
+
+wild = "Chapter III - The Wild"
+wild_dagger = "Chapter III - The Wild [Dagger Only]"
+wild_beast_broken = "Chapter III - The Wild (Broken)"
+wild_beast_contrarian = "Chapter III - The Wild (Contrarian)"
+wild_beast_opportunist = "Chapter III - The Wild (Opportunist)"
+wild_beast_stubborn = "Chapter III - The Wild (Beast - Stubborn)"
+wild_witch_stubborn = "Chapter III - The Wild (Witch - Stubborn)"
+wild_witch_cheated = "Chapter III - The Wild (Cheated)"
+wild_witch_paranoid = "Chapter III - The Wild (Paranoid)"
+
+thorn = "Chapter III - The Thorn"
+thorn_smitten = "Chapter III - The Thorn (Smitten)"
+thorn_cheated = "Chapter III - The Thorn (Cheated)"
+
+cage = "Chapter III - The Cage"
+cage_paranoid = "Chapter III - The Cage (Paranoid)"
+cage_cheated = "Chapter III - The Cage (Cheated)"
+cage_broken = "Chapter III - The Cage (Broken)"
+
+grey = "Chapter III - The Grey"
+grey_drowned = "Chapter III - The Grey (Drowned)"
+grey_burned = "Chapter III - The Grey (Burned)"
+
+happily = "Epilogue - Happily Ever After"
+happily_paranoid = "Epilogue - Happily Ever After (Paranoid)"
+happily_opportunist = "Epilogue - Happily Ever After (Opportunist)"
+
+razor_chap4 = "Chapter IV - Razor"
+razor_empty = "Chapter IV - The Empty Cup"
+razor_destruction = "Chapter IV - Mutually Assured Destruction"
+
+space_between = "The Space Between"
+goddess = "The End of Everything"
