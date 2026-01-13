@@ -97,7 +97,7 @@ init python:
     import threading
     import asyncio
     import websockets
-    import CommunClient
+    import RenpyClient
     import Utils
 
     # Pre-fill fields from previous session if available.
@@ -125,7 +125,7 @@ init python:
             async def connect_and_listen():
                 global archipelago_client
                 ap_notify("Démarrage connexion...")
-                archipelago_client = CommunClient.create_renpy_client(
+                archipelago_client = RenpyClient.create_renpy_client(
                     url, name, mdp,
                     on_text=ap_notify,
                 )

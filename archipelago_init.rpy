@@ -12,16 +12,13 @@ init -10 python:
     candidates = []
     if "__file__" in globals():
         base_dir = os.path.dirname(__file__)
-        candidates.append(os.path.join(base_dir, "client"))
-        candidates.append(os.path.join(base_dir, "client", "dependencies"))
-        candidates.append(base_dir)
-    try:
+    else:
         base_dir = os.path.join(renpy.config.basedir, "game", "SlayThePrincessArchipelago")
-        candidates.append(os.path.join(base_dir, "client"))
-        candidates.append(os.path.join(base_dir, "client", "dependencies"))
-        candidates.append(base_dir)
-    except Exception:
-        pass
+    
+    candidates.append(os.path.join(base_dir, "client"))
+    candidates.append(os.path.join(base_dir, "client", "dependencies"))
+    candidates.append(os.path.join(base_dir, "help"))
+    candidates.append(base_dir)
 
     # Add all candidate paths to sys.path
     for candidate_path in candidates:

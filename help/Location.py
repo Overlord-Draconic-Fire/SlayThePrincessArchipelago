@@ -55,7 +55,7 @@ damsel_heart_pliable = "A Pliable Heart"
 
 needle_heart = "A Burning Heart"
 fury_heart_weathered = "A Weathered Heart"
-fury_heart_unwound = "An Unwound and Weathered Heart"
+fury_heart_unwound = "A Weathered Heart, Held in Ribbons"
 apotheosis_heart = "A Terrifying and Divine Heart"
 dragon_heart_main = "An Empathetic Heart"
 dragon_heart_stencil = "An Empathetic Heart, Held in Stencil"
