@@ -1,5 +1,6 @@
 label start_2_archipelago:
     python:
+        send_location("Reach Chapter 2")
         send_princess_location(current_princess)
 
     stop music

@@ -75,27 +75,27 @@ class RenpyContext(CommonContext):
         location_id = normalized_reverse.get(norm_target)
 
         if location_id is None:
-            self._notify(f"[AP] Location inconnue: '{location_name}'")
+            self._notify(f"Location inconnue: '{location_name}'")
             return False
 
         # Check if already sent
         if location_id in self.checked_locations:
-            self._notify(f"[AP] Location déjà envoyée: '{location_name}' ({location_id})")
+            self._notify(f"Location déjà envoyée: '{location_name}' ({location_id})")
             return False
 
         # Send the location check on the background event loop
         if not self.loop or self.loop.is_closed():
-            self._notify("[AP] Impossible d'envoyer la location: event loop inactif")
+            self._notify("Impossible d'envoyer la location: event loop inactif")
             return False
 
         import asyncio
         try:
             asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), self.loop)
-            self._notify(f"[AP] Location envoyée: '{location_name}' ({location_id})")
+            self._notify(f"Location envoyée: '{location_name}' ({location_id})")
             return True
         except Exception:
             logger.exception("send_location failed")
-            self._notify(f"[AP] Erreur lors de l'envoi de la location '{location_name}'")
+            self._notify(f"Erreur lors de l'envoi de la location '{location_name}'")
             return False
 
     def _notify(self, message: str) -> None:

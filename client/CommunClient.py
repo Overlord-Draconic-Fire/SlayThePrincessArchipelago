@@ -790,6 +790,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
             stored = Utils.persistent_load().get("client", {}).get(f"last_notified_index::{slot_key}", 0)
             ctx.last_notified_index = int(stored)
             ctx._last_notified_loaded = True
+            logger.info(f"[ReceivedItems] Chargé last_notified_index={ctx.last_notified_index} pour slot_key={slot_key}")
 
         # Suppress user-facing notifications only for items already notified
         suppress_notify_threshold = ctx.last_notified_index
@@ -802,12 +803,15 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
                 sync_msg.append({"cmd": "LocationChecks",
                                 "locations": list(ctx.locations_checked)})
             await ctx.send_msgs(sync_msg)
+            return
         if start_index == len(ctx.items_received):
             for offset, item in enumerate(args['items']):
                 absolute_index = start_index + offset
                 net_item = NetworkItem(*item)
                 ctx.items_received.append(net_item)
-                if absolute_index >= suppress_notify_threshold and hasattr(ctx, "item_received"):
+                should_notify = absolute_index >= suppress_notify_threshold and hasattr(ctx, "item_received")
+                logger.info(f"[ReceivedItems] Item index={absolute_index}, threshold={suppress_notify_threshold}, notify={should_notify}")
+                if should_notify:
                     ctx.item_received(net_item)
         ctx.watcher_event.set()
 
@@ -816,6 +820,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
             ctx.last_notified_index = len(ctx.items_received)
             slot_key = ctx.auth or ctx.username or "default"
             Utils.persistent_store("client", f"last_notified_index::{slot_key}", ctx.last_notified_index)
+            logger.info(f"[ReceivedItems] Sauvegardé last_notified_index={ctx.last_notified_index} pour slot_key={slot_key}")
 
     elif cmd == 'LocationInfo':
         for item in [NetworkItem(*item) for item in args['locations']]:

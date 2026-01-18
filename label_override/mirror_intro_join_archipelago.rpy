@@ -46,18 +46,28 @@ label mirror_sort_archipelago:
     hide chain onlayer back
 
     if loops_finished == 0:
+        python:
+            send_location("The Body")
         jump mirror_1_join
 
     elif loops_finished == 1:
+        python:
+            send_location("The Bloat")
         jump mirror_2_join
 
     elif loops_finished == 2:
+        python:
+            send_location("The Decay")
         jump mirror_3_join
 
     elif loops_finished == 3:
+        python:
+            send_location("The Remains")
         jump mirror_4_join
 
     else:
+        python:
+            send_location("The Long Quiet")
         jump mirror_finale
 
 

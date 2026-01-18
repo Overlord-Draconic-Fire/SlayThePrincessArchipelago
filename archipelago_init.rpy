@@ -81,9 +81,24 @@ init -10 python:
             traceback.print_exc()
 
     def send_princess_location(current_princess):
-        from CURRENT_PRINCESS_TO_PRINCESS_LOCATION import CURRENT_PRINCESS_TO_PRINCESS_LOCATION
-        _send_location_from_mapping(current_princess, CURRENT_PRINCESS_TO_PRINCESS_LOCATION, "CURRENT_PRINCESS_TO_PRINCESS_LOCATION")
+        import CURRENT_PRINCESS_TO_PRINCESS_LOCATION as princess_mod
+        _send_location_from_mapping(current_princess, princess_mod.CURRENT_PRINCESS_TO_PRINCESS_LOCATION, "CURRENT_PRINCESS_TO_PRINCESS_LOCATION")
+        del princess_mod
 
     def send_heart_location(current_princess):
-        from CURRENT_PRINCESS_TO_HEART_LOCATION import CURRENT_PRINCESS_TO_HEART_LOCATION
-        _send_location_from_mapping(current_princess, CURRENT_PRINCESS_TO_HEART_LOCATION, "CURRENT_PRINCESS_TO_HEART_LOCATION")
+        import CURRENT_PRINCESS_TO_HEART_LOCATION as heart_mod
+        _send_location_from_mapping(current_princess, heart_mod.CURRENT_PRINCESS_TO_HEART_LOCATION, "CURRENT_PRINCESS_TO_HEART_LOCATION")
+        del heart_mod
+
+    def send_location(location_name):
+        """Envoie une location arbitraire."""
+        try:
+            client = get_archipelago_client()
+            if client:
+                client.send_location(location_name)
+            else:
+                ap_notify(f"archipelago_client non initialisé")
+        except Exception as e:
+            import traceback
+            ap_notify(f"Erreur lors de l'envoi de location: {e}")
+            traceback.print_exc()
