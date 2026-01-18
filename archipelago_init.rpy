@@ -74,10 +74,10 @@ init -10 python:
                 location_name = CURRENT_PRINCESS_TO_HEART_LOCATION[current_princess]
                 client.send_location(location_name)
             elif client:
-                ap_notify(f"[AP] current_princess '{current_princess}' non mappé dans CURRENT_PRINCESS_TO_HEART_LOCATION")
+                ap_notify(f"current_princess '{current_princess}' non mappé dans CURRENT_PRINCESS_TO_HEART_LOCATION")
             else:
-                ap_notify(f"[AP] archipelago_client non initialisé")
+                ap_notify(f"archipelago_client non initialisé")
         except Exception as e:
             import traceback
-            ap_notify(f"[AP] Erreur lors de l'envoi de location: {e}")
+            ap_notify(f"Erreur lors de l'envoi de location: {e}")
             traceback.print_exc()
