@@ -66,22 +66,61 @@ class RenpyContext(CommonContext):
 
     def send_location(self, location_name: str) -> bool:
         """Send a location check to Archipelago if it hasn't been checked yet."""
-        # Look up the location ID from the game's location names
-        location_id = self.location_names[self.game].get(location_name)
+        # Look up the location ID from the game's location names (id -> name mapping)
+        location_map = self.location_names[self.game]
+        norm_target = str(location_name).strip().lower()
+
+        # Build a normalized reverse map once per call (safe: map is small)
+        normalized_reverse = {str(name).strip().lower(): lid for lid, name in location_map.items()}
+        location_id = normalized_reverse.get(norm_target)
+
         if location_id is None:
-            logger.warning(f"Unknown location: {location_name}")
+            self._notify(f"[AP] Location inconnue: '{location_name}'")
             return False
-        
+
         # Check if already sent
         if location_id in self.checked_locations:
-            logger.info(f"Location {location_name} already checked")
+            self._notify(f"[AP] Location déjà envoyée: '{location_name}' ({location_id})")
             return False
-        
-        # Send the location check
+
+        # Send the location check on the background event loop
+        if not self.loop or self.loop.is_closed():
+            self._notify("[AP] Impossible d'envoyer la location: event loop inactif")
+            return False
+
         import asyncio
-        asyncio.create_task(self.check_locations([location_id]))
-        logger.info(f"Sent location check for: {location_name}")
-        return True
+        try:
+            asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), self.loop)
+            self._notify(f"[AP] Location envoyée: '{location_name}' ({location_id})")
+            return True
+        except Exception:
+            logger.exception("send_location failed")
+            self._notify(f"[AP] Erreur lors de l'envoi de la location '{location_name}'")
+            return False
+
+    def _notify(self, message: str) -> None:
+        """Thread-safe bridge to on_text_callback (ap_notify)."""
+        logger.info(message)
+        callback = getattr(self, "on_text_callback", None)
+        if not callback:
+            return
+
+        try:
+            import asyncio
+            # If we're already on the stored loop, call directly; otherwise, schedule thread-safely.
+            try:
+                running_loop = asyncio.get_running_loop()
+            except RuntimeError:
+                running_loop = None
+
+            if self.loop and running_loop and running_loop is self.loop:
+                callback(message)
+            elif self.loop and self.loop.is_running():
+                self.loop.call_soon_threadsafe(callback, message)
+            else:
+                callback(message)
+        except Exception:
+            logger.exception("_notify failed")
 
     def item_received(self, net_item: NetworkItem) -> None:
         """Notify Ren'Py when this client actually receives an item."""

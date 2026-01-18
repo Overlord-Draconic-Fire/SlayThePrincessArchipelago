@@ -5,7 +5,7 @@ Chaque valeur de current_princess est mappée à la location correspondante.
 
 import Location
 
-CURRENT_PRINCESS_TO_LOCATION = {
+CURRENT_PRINCESS_TO_HEART_LOCATION = {
     "adversary": Location.adversary_heart,
     "tower": Location.tower_heart,
     "spectre": Location.spectre_heart,

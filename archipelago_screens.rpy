@@ -94,12 +94,6 @@ screen main_menu():
             textbutton "Connexion" action Function(websocket_thread)
 
 init python:
-    import threading
-    import asyncio
-    import websockets
-    import RenpyClient
-    import Utils
-
     # Pre-fill fields from previous session if available.
     try:
         persistent_client_data = Utils.persistent_load().get("client", {})
@@ -114,25 +108,23 @@ init python:
     except Exception:
         pass
 
-    global archipelago_client
-
     def websocket_thread():
         new_connect_websocket(server_url, slot_name, password)
 
     def new_connect_websocket(url, name, mdp):
         def run_connection():
-            global archipelago_client
             async def connect_and_listen():
-                global archipelago_client
                 ap_notify("Démarrage connexion...")
                 archipelago_client = RenpyClient.create_renpy_client(
                     url, name, mdp,
                     on_text=ap_notify,
                 )
+                # Capture the running loop so other threads can schedule work safely
+                archipelago_client.loop = asyncio.get_running_loop()
+                set_archipelago_client(archipelago_client)
                 ap_notify("Client créé, connexion en cours...")
                 await archipelago_client.connect(url)
                 ap_notify("Connecté avec succès !")
-                # Keep connection alive by listening for messages
                 ap_notify("Démarrage message loop...")
                 await archipelago_client.message_loop()
                 await archipelago_client.shutdown()

@@ -4,17 +4,7 @@
 
 label mirror_start_2_archipelago:
     python:
-        try:
-            from CURRENT_PRINCESS_TO_LOCATION import CURRENT_PRINCESS_TO_LOCATION
-            
-            # Appeler send_location avec la location correspondante
-            if archipelago_client and current_princess in CURRENT_PRINCESS_TO_LOCATION:
-                location_name = CURRENT_PRINCESS_TO_LOCATION[current_princess]
-                archipelago_client.send_location(location_name)
-            elif archipelago_client:
-                renpy.log(f"[AP] current_princess '{current_princess}' non mappé dans CURRENT_PRINCESS_TO_LOCATION")
-        except Exception as e:
-            renpy.log(f"[AP] Erreur lors de l'envoi de location: {e}")
+        send_heart_location(current_princess)
 
     if current_run_mirror_comment or current_run_mirror_touched:
         voice "audio/voices/mirror/intro/hero/3.flac"
@@ -23,13 +13,13 @@ label mirror_start_2_archipelago:
         voice "audio/voices/mirror/intro/hero/4.flac"
         hero "And is that a... mirror? Why is it here? Why now?!\n"
 
-    default mirror_comfort_count = 0
+    $ mirror_comfort_count = 0
     if loops_finished == 0:
-        default mirror_1_where_princess = False
-        default mirror_1_narrator_gone = False
-        default mirror_1_mirror_suggest = False
+        $ mirror_1_where_princess = False
+        $ mirror_1_narrator_gone = False
+        $ mirror_1_mirror_suggest = False
         $ mirror_hero_scared_flag = True
-        label mirror_1_menu:
+        label mirror_1_menu_archipelago:
             menu:
                 extend ""
 
@@ -71,7 +61,7 @@ label mirror_start_2_archipelago:
                         else:
                             voice "audio/voices/mirror/intro/contrarian/3a.flac"
                             contrarian "Again, what the hell are we supposed to do?\n"
-                    jump mirror_1_menu
+                    jump mirror_1_menu_archipelago
 
                 "{i}• (Explore) The Narrator is gone...{/i}" if mirror_1_narrator_gone == False and current_princess != "happy":
                     $ mirror_1_narrator_gone = True
@@ -111,7 +101,7 @@ label mirror_start_2_archipelago:
                     if trait_cheated:
                         voice "audio/voices/mirror/intro/cheated/3.flac"
                         cheated "Good riddance.\n"
-                    jump mirror_1_menu
+                    jump mirror_1_menu_archipelago
 
                 "{i}• (Explore) I think I'm supposed to look at the mirror.{/i}" if mirror_1_mirror_suggest == False:
                     $ mirror_1_mirror_suggest = True
@@ -156,7 +146,7 @@ label mirror_start_2_archipelago:
                         else:
                             voice "audio/voices/mirror/intro/cold/5.flac"
                             cold "Ignore the cowards. You have to look.\n"
-                    jump mirror_1_menu
+                    jump mirror_1_menu_archipelago
 
                 "{i}• [[Approach the mirror.]{/i}":
                     voice "audio/voices/mirror/intro/hero/8.flac"
@@ -214,26 +204,26 @@ label mirror_start_2_archipelago:
                             jump mirror_approach_join
 
     else:
-        label mirror_n_menu:
-            default mirror_n_cruel_count = 0
-            default mirror_n_explore = False
-            default mirror_n_silence_flag = False
-            default nightmare_2_finished = False
-            default mirror_hero_scared_flag = False
+        label mirror_n_menu_archipelago:
+            $ mirror_n_cruel_count = 0
+            $ mirror_n_explore = False
+            $ mirror_n_silence_flag = False
+            $ nightmare_2_finished = False
+            $ mirror_hero_scared_flag = False
             menu:
                 extend ""
 
                 "{i}• (Explore) Of course you're scared. This is the end, for you. But it's not the end for me.{/i}" if mirror_n_explore == False:
                     $ mirror_n_explore = True
-                    jump mirror_n_cruel
+                    jump mirror_n_cruel_archipelago
 
                 "{i}• (Explore) It's going to be okay. Just trust me.{/i}" if mirror_n_explore == False and mirror_hero_scared_flag == False:
                     $ mirror_hero_scared_flag = True
-                    jump mirror_n_explore_join
+                    jump mirror_n_explore_join_archipelago
 
 
                 "{i}• (Explore) It's going to be okay. Just trust me. We've been here before, and you always get scared.{/i}" if mirror_n_explore == False and mirror_hero_scared_flag:
-                    label mirror_n_explore_join:
+                    label mirror_n_explore_join_archipelago:
                         $ mirror_n_explore = True
                         voice "audio/voices/mirror/intro/hero/10.flac"
                         hero "But it feels so bad! Like looking into it right now is going to be the end of everything.\n"
@@ -275,12 +265,12 @@ label mirror_start_2_archipelago:
                             else:
                                 voice "audio/voices/mirror/intro/cold/7.flac"
                                 cold "You don't need to comfort them.\n"
-                        label mirror_n_menu_comfort:
+                        label mirror_n_menu_comfort_archipelago:
                             menu:
                                 extend ""
 
                                 "{i}• It's not the end. Whatever's on the other side is going to be nice.{/i}":
-                                    label mirror_n_comfort_join:
+                                    label mirror_n_comfort_join_archipelago:
                                         $ mirror_comfort_count += 1
                                         voice "audio/voices/mirror/intro/hero/11.flac"
                                         hero "Okay. If you say so, we'll trust you.\n"
@@ -314,10 +304,10 @@ label mirror_start_2_archipelago:
                                         if trait_cold:
                                             voice "audio/voices/mirror/intro/cold/8.flac"
                                             cold "Whatever makes you happy.\n"
-                                        jump mirror_n_menu
+                                        jump mirror_n_menu_archipelago
 
                                 "{i}• It's the end for you, but not for me.{/i}":
-                                    label mirror_n_cruel:
+                                    label mirror_n_cruel_archipelago:
                                         $ mirror_comfort_count -= 1
                                         $ mirror_n_cruel_count += 1
                                         if trait_cold:
@@ -352,16 +342,16 @@ label mirror_start_2_archipelago:
                                         if trait_smitten:
                                             voice "audio/voices/mirror/intro/smitten/6.flac"
                                             smitten "Do it, then. End us all before I die of a broken heart.\n"
-                                        jump mirror_n_menu
+                                        jump mirror_n_menu_archipelago
 
                                 "{i}• I'll see you on the other side. It's going to be okay.{/i}":
-                                    jump mirror_n_comfort_join
+                                    jump mirror_n_comfort_join_archipelago
 
                                 "{i}• [[Approach the mirror.]{/i}":
                                     $ mirror_n_silence_flag = True
                                     jump mirror_approach_join
 
-                            jump mirror_n_menu
+                            jump mirror_n_menu_archipelago
 
                 "{i}• [[Approach the mirror.]{/i}":
                     if mirror_hero_scared_flag == False:

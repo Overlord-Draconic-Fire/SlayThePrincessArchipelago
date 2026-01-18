@@ -222,6 +222,9 @@ class CommonContext:
         self.on_text_callback: typing.Optional[typing.Callable[[str], None]] = None
         self.on_json_callback: typing.Optional[typing.Callable[[typing.Any], None]] = None
 
+        # Async loop reference (set when running inside asyncio.run in background thread)
+        self.loop: typing.Optional[asyncio.AbstractEventLoop] = None
+
         self.item_names = self.NameLookupDict(self, "item")
         self.location_names = self.NameLookupDict(self, "location")
         self.checksums = {}
