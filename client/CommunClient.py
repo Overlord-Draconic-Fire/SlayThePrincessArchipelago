@@ -206,6 +206,10 @@ class CommonContext:
         self.server_locations = set()  # all locations the server knows of, missing_location | checked_locations
         self.locations_info = {}
 
+        # Persisted index of the last item that was already notified to the player
+        self.last_notified_index: int = 0
+        self._last_notified_loaded: bool = False
+
         self.stored_data = {}
         self.stored_data_notification_keys = set()
 
@@ -731,6 +735,11 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
         ctx.username = ctx.auth
         ctx.team = args["team"]
         ctx.slot = args["slot"]
+
+        # Reset per-slot notification tracking so the next ReceivedItems load pulls the right persisted index
+        ctx._last_notified_loaded = False
+        ctx.last_notified_index = 0
+
         # int keys get lost in JSON transfer
         ctx.slot_info = {0: NetworkSlot("Archipelago", "Archipelago", SlotType.player)}
         ctx.slot_info.update({int(pid): data for pid, data in args["slot_info"].items()})
@@ -775,6 +784,16 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
     elif cmd == 'ReceivedItems':
         start_index = args["index"]
 
+        # Load last notified index once per session (per slot)
+        if start_index == 0 and not ctx._last_notified_loaded:
+            slot_key = ctx.auth or ctx.username or "default"
+            stored = Utils.persistent_load().get("client", {}).get(f"last_notified_index::{slot_key}", 0)
+            ctx.last_notified_index = int(stored)
+            ctx._last_notified_loaded = True
+
+        # Suppress user-facing notifications only for items already notified
+        suppress_notify_threshold = ctx.last_notified_index
+
         if start_index == 0:
             ctx.items_received = []
         elif start_index != len(ctx.items_received):
@@ -784,12 +803,19 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
                                 "locations": list(ctx.locations_checked)})
             await ctx.send_msgs(sync_msg)
         if start_index == len(ctx.items_received):
-            for item in args['items']:
+            for offset, item in enumerate(args['items']):
+                absolute_index = start_index + offset
                 net_item = NetworkItem(*item)
                 ctx.items_received.append(net_item)
-                if hasattr(ctx, "item_received"):
+                if absolute_index >= suppress_notify_threshold and hasattr(ctx, "item_received"):
                     ctx.item_received(net_item)
         ctx.watcher_event.set()
+
+        # Persist the new high-water mark for notifications
+        if ctx._last_notified_loaded:
+            ctx.last_notified_index = len(ctx.items_received)
+            slot_key = ctx.auth or ctx.username or "default"
+            Utils.persistent_store("client", f"last_notified_index::{slot_key}", ctx.last_notified_index)
 
     elif cmd == 'LocationInfo':
         for item in [NetworkItem(*item) for item in args['locations']]:

@@ -1,4 +1,6 @@
 define config.label_overrides = {
+    "start_2": "start_2_archipelago",
+
     "mirror_nightmare_2": "mirror_nightmare_2_archipelago",
     "mirror_start_2": "mirror_start_2_archipelago",
     "mirror_sort": "mirror_sort_archipelago",
