@@ -8,3 +8,13 @@ __pycache__/
 
 # Ren'Py persistent data
 *.yaml
+
+# Archive untouched files
+cache/*
+audio/*
+gui/*
+images/*
+saves/*
+staging/*
+tl/*
+*.txt
