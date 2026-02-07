@@ -29,6 +29,8 @@ label nightmare_2_start:
     play secondary "audio/looping/uncomfortable ambiance.ogg" loop fadein 1.0
     scene chapter clarity1
     with fade
+    $ send_location(Location.chap3)
+    $ send_location(Location.clarity)
     show text _("{color=#FFFFFF00}The Moment of Clarity.{/color}") at Position(ypos=850)
     $ renpy.pause(1.0)
     show chapter clarity2

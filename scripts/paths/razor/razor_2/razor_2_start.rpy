@@ -10,6 +10,7 @@ label razor_2_start:
     $ quick_menu = False
     $ config.menu_include_disabled = False
     play sound "audio/looping/uncomfortable ambiance.ogg" loop fadein 1.0
+    $ send_location(Location.chap3)
     if razor_1_cabin_blade_taken:
         scene chapter arms with fade
         show text _("{color=#FFFFFF00}Chapter 3. The Arms Race.{/color}") at Position(ypos=850)

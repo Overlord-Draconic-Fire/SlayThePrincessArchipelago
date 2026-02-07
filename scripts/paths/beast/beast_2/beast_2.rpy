@@ -18,6 +18,8 @@ label beast_2_start:
 
     play sound "audio/looping/uncomfortable ambiance heightened.ogg" loop fadein 1.0
     scene chapter den with fade
+    $ send_location(Location.chap3)
+    $ send_location(Location.den)
     show text _("{color=#FFFFFF00}Chapter Three. The Den.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
     scene bg black

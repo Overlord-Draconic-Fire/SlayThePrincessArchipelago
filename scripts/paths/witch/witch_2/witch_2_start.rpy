@@ -25,6 +25,8 @@ label witch_2_start:
     $ quick_menu = False
     play sound "audio/looping/uncomfortable ambiance.ogg" loop fadein 1.0
     scene chapter thorn with fade
+    $ send_location(Location.chap3)
+    $ send_location(Location.thorn)
     show text _("{color=#FFFFFF00}Chapter 3. The Thorn.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
     scene bg black with fade

@@ -11,6 +11,8 @@ label wild_start:
     $ quick_menu = False
     $ config.menu_include_disabled = False
 
+    $ send_location(Location.chap3)
+    $ send_location(Location.wild)
     default wild_source = ""
     default wild_bonus_voice = ""
     if current_princess == "witch":

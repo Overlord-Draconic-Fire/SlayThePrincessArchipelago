@@ -1,5 +1,4 @@
 label spectre_pristine_start:
-
     $ trait_opportunist = True
     $ trait_cold = True
 
@@ -323,6 +322,8 @@ label spectre_pristine_start:
     $ gallery_dragon.unlock_item(2)
     $ gallery_dragon.unlock_gallery()
     $ renpy.save_persistent()
+    $ send_location(Location.chap3)
+    $ send_location(Location.dragon)
     $ current_princess = "dragon"
     hide bg onlayer back
     hide dragon onlayer back
