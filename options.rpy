@@ -21,7 +21,7 @@
 
 
 
-define config.name = _("Slay the Princess")
+define config.name = _("Slay the Princess - Archipelago")
 
 ### framerate
 define config.default_text_cps = 0
@@ -48,7 +48,7 @@ define gui.about = _p("""
 ## distribution. This must be ASCII-only, and must not contain spaces, colons,
 ## or semicolons.
 
-define build.name = "SlaythePrincess"
+define build.name = "SlaythePrincess-Archipelago"
 
 
 ## Sounds and music ############################################################
@@ -159,7 +159,7 @@ default preferences.afm_time = 15
 ## This generally should not be changed, and if it is, should always be a
 ## literal string, not an expression.
 
-define config.save_directory = "SlaythePrincess-1651597024"
+define config.save_directory = "SlaythePrincess-Archipelago"
 
 
 ## Icon ########################################################################

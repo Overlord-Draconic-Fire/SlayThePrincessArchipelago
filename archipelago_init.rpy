@@ -9,7 +9,7 @@ init -10 python:
     import sys
     
     # Force le bon chemin absolu
-    base_dir = os.path.join(renpy.config.basedir, "game", "SlayThePrincessArchipelago")
+    base_dir = os.path.join(renpy.config.basedir, "game")
     
     # Chemins à ajouter dans l'ordre de priorité
     paths_to_add = [
@@ -30,6 +30,14 @@ init -10 python:
     import threading
     import asyncio
     import websockets
+
+    import Location
+    import Item
+    import Region
+
+    store.Location = Location
+    store.Item = Item
+    store.Region = Region
     
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:
@@ -63,32 +71,6 @@ init -10 python:
     def set_archipelago_client(client):
         """Modification thread-safe de archipelago_client"""
         archipelago.set_client(client)
-
-    def _send_location_from_mapping(current_princess, mapping_dict, mapping_name):
-        """Fonction générique pour envoyer une location depuis un dictionnaire de mapping."""
-        try:
-            client = get_archipelago_client()
-            if client and current_princess in mapping_dict:
-                location_name = mapping_dict[current_princess]
-                client.send_location(location_name)
-            elif client:
-                ap_notify(f"current_princess '{current_princess}' non mappé dans {mapping_name}")
-            else:
-                ap_notify(f"archipelago_client non initialisé")
-        except Exception as e:
-            import traceback
-            ap_notify(f"Erreur lors de l'envoi de location: {e}")
-            traceback.print_exc()
-
-    def send_princess_location(current_princess):
-        import CURRENT_PRINCESS_TO_PRINCESS_LOCATION as princess_mod
-        _send_location_from_mapping(current_princess, princess_mod.CURRENT_PRINCESS_TO_PRINCESS_LOCATION, "CURRENT_PRINCESS_TO_PRINCESS_LOCATION")
-        del princess_mod
-
-    def send_heart_location(current_princess):
-        import CURRENT_PRINCESS_TO_HEART_LOCATION as heart_mod
-        _send_location_from_mapping(current_princess, heart_mod.CURRENT_PRINCESS_TO_HEART_LOCATION, "CURRENT_PRINCESS_TO_HEART_LOCATION")
-        del heart_mod
 
     def send_location(location_name):
         """Envoie une location arbitraire."""

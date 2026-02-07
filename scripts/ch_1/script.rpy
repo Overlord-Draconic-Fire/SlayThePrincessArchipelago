@@ -1364,7 +1364,11 @@ label main_menu:
     return
 
 label start:
-    jump start_archipelago
+    hide screen keymap_screen
+    show screen keymap_screen
+    #jump credits
+    if renpy.variant("console_sony_ps5"):
+        $ renpy.activity_resume("story", "end", "")
     $ quick_menu = False
     $ _window_during_transitions = True
     window show
