@@ -1465,6 +1465,7 @@ label witch_stairs_princess_first:
                             truth "But you don't get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                         else:
                             truth "But you don't get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
+                        $ send_location(Location.witch_heart)
                         $ witch_end = "witch_betray_lock"
                         $ princess_deny += 1
                         $ princess_kept += 1
@@ -1843,6 +1844,7 @@ label witch_betrayal_menu:
         truth "But you don't get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
     else:
         truth "But you don't get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
+    $ send_location(Location.witch_heart)
     if witch_stairs_implore:
         $ witch_end = "player_betray"
     else:

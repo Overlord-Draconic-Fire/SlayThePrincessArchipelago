@@ -953,6 +953,7 @@ label fury_cold_conclusion:
                                     else:
                                         truth "You do not get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
                                     $ achievement.grant("ACH_FURY_FREE")
+                                    $ send_location(Location.fury_heart_weathered)
                                     $ fury_end = "free"
                                     $ princess_free += 1
                                     $ princess_satisfy += 1
@@ -1070,6 +1071,7 @@ label fury_cold_conclusion:
                                 truth "But as look over your shoulder, you do not find her, nor will you ever. It's time to leave. Memory returns.\n"
                             else:
                                 truth "But as look over your shoulder, you do not find her. Something has taken her away, and it's left something else in her place.\n"
+                            $ send_location(Location.fury_heart_weathered)
                             $ fury_end = "leave"
                             $ princess_kept += 1
                             $ princess_deny += 1
@@ -1175,6 +1177,7 @@ label fury_cold_conclusion:
                     truth "Though her heart is pierced, you do not get the chance to watch her die. Nor will you ever. It's time for you to leave. Memory returns.\n"
                 else:
                     truth "Though her heart is pierced, you do not get the chance to watch her die. Something has taken her away, and it's left something else in her place.\n"
+                $ send_location(Location.fury_heart_weathered)
                 $ achievement.grant("ACH_FURY_SAD_SLAY")
                 $ fury_end = "slay"
                 $ princess_deny += 2
@@ -1388,6 +1391,7 @@ label fury_other_conclusion:
         truth "The tethers that started to form between you have snapped. Your union has been halted. It's time for you to leave. Memory returns.\n"
     else:
         truth "The tethers that attempted to form between you have snapped. Your union has been halted. Something has taken her away, and it's left something else in her place.\n"
+    $ send_location(Location.fury_heart_unwound)
     menu:
 
         "{i}• [[Approach the mirror.]{/i}":
@@ -1833,6 +1837,7 @@ label fury_pristine_unarmed:
                                                     truth "You do not get the chance to watch her die. Nor will you ever. It's time for you to leave. Memory returns.\n"
                                                 else:
                                                     truth "You do not get the chance to watch her die. Something has taken her away, and it's left something else in her place.\n"
+                                                $ send_location(Location.fury_heart_weathered)
                                                 jump mirror_start
                                                 # END
 
@@ -2521,6 +2526,7 @@ label fury_tower_battle_sequence:
                 truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
             else:
                 truth "You do not get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
+            $ send_location(Location.fury_heart_weathered)
             $ trait_broken = False
             $ trait_cold = True
             jump mirror_start

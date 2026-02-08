@@ -1589,6 +1589,7 @@ label stranger_ending:
         truth "But you don't know if she had the chance to hear your reply. She's gone, replaced with something else.\n"
 
 label stranger_end_say_nothing_join:
+    $ send_location(Location.stranger_heart)
     $ current_princess = "stranger"
     jump mirror_start
 return

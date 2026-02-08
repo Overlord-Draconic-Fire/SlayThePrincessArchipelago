@@ -1611,6 +1611,7 @@ label damsel_leave:
             truth "But you don't get the chance to make that jacket. Nor will you ever. It's time for you to leave. Memory returns.\n"
         else:
             truth "But you don't get the chance to make that jacket. Something has taken her away, and it's left something else in her place.\n"
+        $ send_location(Location.damsel_heart_gentle)
         $ damsel_end = "free"
         $ princess_free += 1
         $ princess_satisfy += 1
@@ -1675,6 +1676,7 @@ label damsel_personalization_end:
         truth "You don't get the chance to ask another question. Something has taken her away, and it's left something else in her place.\n"
     voice "audio/voices/ch2/damsel/_basement/smitten/56.flac"
     smitten "No! She was our perfect match!\n"
+    $ send_location(Location.damsel_heart_pliable)
     $ current_princess = "dereal"
     $ damsel_end = "dereal"
     $ princess_kept += 1

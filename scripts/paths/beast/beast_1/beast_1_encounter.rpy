@@ -519,6 +519,7 @@ label beast_1_encounter_start:
                                         truth "But before you can say anything to her, she's gone. Memory returns.\n"
                                     else:
                                         truth "But before you can say anything, something takes her away, and it leaves something else in her place.\n"
+                                    $ send_location(Location.beast_heart)
                                     $ default_mouse = "default"
                                     $ princess_free += 1
                                     $ princess_satisfy += 1

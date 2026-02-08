@@ -197,6 +197,7 @@ label den_pristine_fight:
             else:
                 truth "But you don't get the opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
             $ achievement.grant("ACH_DEN_STRIKE")
+            $ send_location(Location.den_heart)
             $ beast_2_end = "slay"
             $ princess_deny += 1
             $ princess_satisfy += 1
@@ -411,6 +412,7 @@ label den_pristine_fight:
             else:
                 truth "You don't get the opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
             $ achievement.grant("ACH_DEN_EAT")
+            $ send_location(Location.den_heart)
             $ current_princess = "den"
             $ beast_2_end = "consume"
             $ princess_kept += 1
@@ -597,6 +599,7 @@ label den_pristine_free_choice:
                         else:
                             truth "But this is no true end, and you do not get the chance to see her die. Something has taken her away, and it's left something else in her place.\n"
                         $ achievement.grant("ACH_DEN_COUP")
+                        $ send_location(Location.den_heart)
                         $ beast_2_end = "slay"
                         $ princess_kept += 1
                         $ princess_satisfy += 1
@@ -956,6 +959,7 @@ label den_pristine_free_choice:
                                     else:
                                         truth "But you don't get the opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
                                     $ achievement.grant("ACH_DEN_LION")
+                                    $ send_location(Location.den_heart)
                                     $ beast_2_end = "free_succeed"
                                     $ princess_free += 1
                                     $ princess_satisfy += 1
@@ -1067,6 +1071,7 @@ label den_pristine_free_choice:
                                 truth "But the circle doesn't close, nor will it ever. It's time to leave. Memory returns.\n"
                             else:
                                 truth "But the circle doesn't close, nor will it ever. Something has taken her away, and it's left something else in her place.\n"
+                            $ send_location(Location.den_heart)
                             $ beast_2_end = "free_fail"
                             $ princess_kept += 1
                             $ princess_satisfy += 1
@@ -1375,6 +1380,7 @@ label den_pristine_free_choice:
                                     truth "But you don't get the opportunity to respond, nor will you ever. It's time to leave. Memory returns.\n"
                                 else:
                                     truth "But you don't get the opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+                                $ send_location(Location.den_heart)
                                 $ achievement.grant("ACH_DEN_STARVE")
                                 $ beast_2_end = "starve"
                                 $ princess_kept += 1

@@ -980,6 +980,7 @@ label witch_2_slain:
         truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
     else:
         truth "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+    $ send_location(Location.thorn_heart)
     $ thorn_end = "slay_attempt"
     $ princess_deny += 1
     $ princess_kept += 1
@@ -1325,6 +1326,7 @@ label witch_2_free:
                 truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
             else:
                 truth "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+            $ send_location(Location.thorn_heart)
             if witch_2_kiss:
                 $ thorn_end = "free_kiss"
                 $ princess_satisfy += 1
@@ -1434,6 +1436,7 @@ label witch_2_leave:
             truth "But in your commitment to leaving things unresolved, you have no chance at resolution, nor will you ever. It's time to leave. Memory returns.\n"
         else:
             truth "But in your commitment to leaving things unresolved, you have no chance at resolution. Something has taken her away, and it's left something else in her place.\n"
+        $ send_location(Location.thorn_heart)
         $ thorn_end = "abandoned"
         $ princess_kept += 1
         $ princess_deny += 1
@@ -1579,6 +1582,7 @@ label witch_2_leave:
                     truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                 else:
                     truth "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+                $ send_location(Location.thorn_heart)
                 $ thorn_end = "stuck_together"
                 $ princess_kept += 1
                 $ princess_deny += 1
@@ -1667,6 +1671,7 @@ label witch_2_leave:
                     truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                 else:
                     truth "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+                $ send_location(Location.thorn_heart)
                 $ thorn_end = "stuck"
                 $ princess_kept += 1
                 $ princess_deny += 1

@@ -396,6 +396,7 @@ label contrarian_pristine_apoth_menu:
                     $ apotheosis_end = "defy"
                     $ princess_deny += 1
                     $ princess_kept += 1
+                    $ send_location(Location.apotheosis_heart)
                     menu:
 
                         "{i}• [[Approach the mirror.]{/i}":
@@ -747,6 +748,7 @@ label contrarian_pristine_apoth_menu:
                                                 else:
                                                     truth "But you don't get the opportunity to try again. Something has taken her away, and it's left something else in her place.\n"
                                                 $ achievement.grant("ACH_APOTH_BOUND")
+                                                $ send_location(Location.apotheosis_heart)
                                                 $ apotheosis_end = "prison"
                                                 $ princess_kept += 1
                                                 $ princess_deny += 1
@@ -1000,6 +1002,7 @@ label contrarian_pristine_apoth_menu:
                                                 else:
                                                     truth "As you turn to look back at her, you see that she is gone. Something has taken her away, and it's left something else in her place.\n"
                                                 $ achievement.grant("ACH_APOTH_GRACE")
+                                                $ send_location(Location.apotheosis_heart)
                                                 $ apotheosis_end = "fly"
                                                 $ princess_free += 1
                                                 $ princess_satisfy += 1
@@ -1687,6 +1690,7 @@ label paranoid_pristine_apoth_menu:
                                                     truth "But you do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                                                 else:
                                                     truth "But you do not get the chance to respond, nor will you ever. Something has taken her away, and it's left something else in her place.\n"
+                                                $ send_location(Location.apotheosis_heart)
                                                 $ achievement.grant("ACH_APOTH_THREADS")
                                                 $ trait_broken = False
                                                 $ trait_paranoid = False

@@ -1456,6 +1456,7 @@ label spectre_self_slay_join:
         truth "But you do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
     else:
         truth "But you do not get the chance to respond. Something has taken her away, and it's left something else in her stead.\n"
+    $ send_location(Location.spectre_heart)
     $ spectre_end = "slay"
     $ princess_kept += 1
     $ princess_deny += 1
@@ -1676,6 +1677,7 @@ label spectre_free_start:
                             truth "You don't get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                         else:
                             truth "But you don't get the chance to respond. Something has taken her away, and it's left something else in her stead.\n"
+                        $ send_location(Location.spectre_heart)
                         $ spectre_end = "free"
                         $ princess_free += 1
                         $ princess_satisfy += 1

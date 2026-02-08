@@ -37,6 +37,7 @@ label felina_start:
     $ gallery_zfinale.unlock_gallery()
     $ gallery_zfinale.unlock_item(1)
     $ renpy.save_persistent()
+    $ send_location(Location.goddess)
     mound "I can finally see you, and you can finally see me.\n"
     voice "audio/voices/felina/start/2.flac"
     show shifting closed smile talk onlayer front at Position(ypos=1125)

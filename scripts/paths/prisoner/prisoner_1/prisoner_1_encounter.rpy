@@ -911,6 +911,7 @@ label prisoner_self_prison:
                                 truth "But you do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                             else:
                                 truth "But you don't get the chance to respond. Something has taken her away, and it's left something else in her stead.\n"
+                            $ send_location(Location.prisoner_heart_patient)
                             $ prisoner_end = "stuck"
                             $ princess_free += 1
                             $ current_princess = "prisonerchain"
@@ -1277,6 +1278,7 @@ label prisoner_free_join:
                 truth "But you do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
             else:
                 truth "But you don't get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
+            $ send_location(Location.prisoner_heart_clever)
             $ princess_free += 1
             $ princess_satisfy += 1
             $ current_princess = "prisonerhead"

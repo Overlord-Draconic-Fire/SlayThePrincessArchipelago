@@ -1277,6 +1277,7 @@ label tower_pledge_late_join:
                     truth "But you do not take her hand, nor will you ever. It's time to leave. Memory returns.\n"
                 else:
                     truth "But you do not take her hand. Something has taken her away, and it's left something else in her place.\n"
+                $ send_location(Location.tower_heart)
                 $ current_princess = "tower"
                 $ tower_end = "submit"
                 $ princess_free += 1

@@ -655,6 +655,7 @@ label beast_2_fight:
             truth "But you do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
         else:
             truth "But you do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+        $ send_location(Location.den_heart)
         $ beast_2_end = "fight_fail"
         $ blade_held = False
         $ default_mouse = "default"
@@ -718,6 +719,7 @@ label beast_2_free:
             truth "But death doesn't come. It's time to leave. Memory returns.\n"
         else:
             truth "But death doesn't come. You turn to see that something has taken her away, and it's left something else in her place.\n"
+        $ send_location(Location.den_heart)
         $ blade_held = False
         $ default_mouse = "default"
         $ beast_2_end = "free_fail"

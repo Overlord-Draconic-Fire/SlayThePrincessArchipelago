@@ -1073,6 +1073,7 @@ label nightmare_leave_together_start:
             truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
         else:
             truth "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her stead.\n"
+        $ send_location(Location.nightmare_heart)
         $ princess_free += 1
         $ princess_satisfy += 1
         $ current_princess = "nightmare"

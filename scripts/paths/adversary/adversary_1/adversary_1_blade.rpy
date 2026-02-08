@@ -1113,6 +1113,7 @@ label adversary_whisk_join:
         truth "You do not respond. Something has taken her away, and it's left something else in her stead.\n"
     else:
         truth "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her stead.\n"
+    $ send_location(Location.adversary_heart)
     $ princess_kept += 1
     $ princess_satisfy += 1
     jump mirror_start

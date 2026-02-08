@@ -18,3 +18,5 @@ saves/*
 staging/*
 tl/*
 *.txt
+/.idea
+/.vscode

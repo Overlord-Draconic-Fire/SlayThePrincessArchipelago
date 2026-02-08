@@ -725,6 +725,7 @@ label nightmare_2_cabin_arrive:
                     truthside "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                 else:
                     truthside "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+                $ send_location(Location.clarity_heart)
                 voice "audio/voices/ch3/clarity/broken/12.flac"
                 broken "She's gone.\n"
                 voice "audio/voices/ch3/clarity/skeptic/10.flac"

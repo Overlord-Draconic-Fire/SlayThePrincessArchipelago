@@ -1723,6 +1723,7 @@ label cage_decapitated:
         truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
     else:
         truth "You do not get the chance to respond. Something has ripped her from you, and it's left something else in her place.\n"
+    $ send_location(Location.cage_heart_open)
     $ achievement.grant("ACH_CAGE_TRAP")
     $ cage_end = "stuck"
     $ current_princess = "cage"
@@ -2270,6 +2271,7 @@ label cage_free_final_menu:
                                     truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                                 else:
                                     truth "You do not get the chance to respond. Something has ripped her from you, and it's left something else in her place.\n"
+                                $ send_location(Location.cage_heart_open)
                                 $ princess_satisfy += 1
                                 $ princess_free += 1
                                 $ cage_end = "free"
@@ -2359,6 +2361,7 @@ label cage_free_final_menu:
                                     truth "As she plummets, the Princess is taken from you. It's time to leave. Memory returns.\n"
                                 else:
                                     truth "As she plummets, the Princess is taken. And something else is left in her place.\n"
+                                $ send_location(Location.cage_heart_open)
                                 $ princess_deny += 1
                                 $ princess_kept += 1
                                 $ cage_end = "drop"
@@ -2548,6 +2551,7 @@ label cage_slay_join:
                 truth "You do not get the chance to respond. Nor will you ever. It's time to leave. Memory returns.\n"
             else:
                 truth "You do not get the chance to respond. Something has taken her away, and it's left something else in her place.\n" id cage_slay_join_121b5cb2
+            $ send_location(Location.cage_heart_open)
             $ achievement.grant("ACH_CAGE_RIDDLE")
             $ princess_kept += 1
             $ cage_end = "slay"

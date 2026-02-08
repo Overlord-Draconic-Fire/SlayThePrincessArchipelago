@@ -1623,6 +1623,7 @@ label happy_torches:
                             truth "You do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
                         else:
                             truth "You do not get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
+                        $ send_location(Location.happily_heart)
                         $ achievement.grant("ACH_HAPPY_FLAMES")
                         #$ trait_smitten = True
                         $ current_princess = "happydry"
@@ -1932,6 +1933,7 @@ label happy_climax:
                         truth "Though you've pierced her heart, you do not see her die. Nor will you ever. It's time for you to leave. Memory returns.\n"
                     else:
                         truth "Though you've pierced her heart, you do not see her die. Something has taken her away, and it's left something else in her place.\n"
+                    $ send_location(Location.happily_heart)
                     $ achievement.grant("ACH_HAPPY_SLAY")
                     $ happy_end = "slay"
                     $ princess_kept += 1
@@ -2316,6 +2318,7 @@ label happy_leave_finale:
         truth "But you do not get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
     else:
         truth "But you do not get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
+    $ send_location(Location.happily_heart)
 
     if happy_danced:
         $ happy_end = "dance"

@@ -1207,6 +1207,7 @@ label grey_damsel:
                 truth "But despite your best efforts, you do not die. It's time for you to leave. Memory returns.\n"
             else:
                 truth "But despite your best efforts, you do not die, and she is gone. Something has taken her away, and it's left something else in her place.\n"
+            $ send_location(Location.grey_heart_bright)
             $ grey_end = "burn"
             $ princess_kept += 1
             $ princess_satisfy += 1
@@ -1526,6 +1527,7 @@ label grey_prisoner:
             truth "But your lungs don't fill. Nor will they ever. It's time for you to leave. Memory returns.\n"
         else:
             truth "But your lungs don't fill, and both she and her bones are gone. Something has taken them away, and it's left something else in their place.\n"
+        $ send_location(Location.grey_heart_deep)
         $ grey_end = "drown"
         $ princess_kept += 1
         $ princess_deny += 1

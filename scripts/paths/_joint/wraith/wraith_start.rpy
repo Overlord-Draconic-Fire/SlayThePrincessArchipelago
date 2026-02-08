@@ -1294,6 +1294,7 @@ label wraith_end_free:
         truth "But you don't answer her before she's gone. Memory returns.\n"
     else:
         truth "But you don't have the chance to answer her before something takes her and leaves something else in her place.\n"
+    $ send_location(Location.wraith_heart)
     $ wraith_end = "free"
     $ princess_free += 1
     $ princess_deny += 1
@@ -1478,6 +1479,7 @@ label wraith_end_fall:
         truth "But you don't answer her before she's gone and you feel a resistance underneath your feet once more. Memory returns.\n"
     else:
         truth "But you don't answer her before something takes her and leaves something in her place. You feel a force underneath your feet once more.\n"
+    $ send_location(Location.wraith_heart)
     #end
     $ wraith_end = "slay"
     $ princess_kept += 1

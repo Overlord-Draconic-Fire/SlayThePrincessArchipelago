@@ -862,6 +862,7 @@ label adversary_2_basement_arrive:
                         truth "But the other side doesn't come. Nor will it ever. It's time for you to leave. Memory returns.\n"
                     else:
                         truth "But the other side doesn't come. Something has taken her away, and it's left something else in her place.\n"
+                    $ send_location(Location.needle_heart)
                     $ adversary_2_end = "fight_fail"
                     $ princess_kept += 1
                     $ current_princess = "needle"
@@ -1119,6 +1120,7 @@ label adversary_2_basement_loose:
                             truth "But the impact doesn't come. Nor will it ever. It's time for you to leave. Memory returns.\n"
                         else:
                             truth "But the impact doesn't come. Something has taken her away, and it's left something else in her place.\n"
+                        $ send_location(Location.needle_heart)
                         $ adversary_2_end = "flee_fail"
                         $ princess_kept += 1
                         $ princess_deny += 1
@@ -1245,6 +1247,7 @@ label adversary_2_basement_loose:
                         truth "But next time doesn't come. Nor will it ever. It's time for you to leave. Memory returns.\n"
                     else:
                         truth "But next time doesn't come. Something has taken her away, and it's left something else in her place.\n"
+                    $ send_location(Location.needle_heart)
                     $ adversary_2_end = "flee_fail"
                     $ princess_kept += 1
                     $ princess_deny += 1
@@ -1522,6 +1525,7 @@ label adversary_2_combat_ending:
                         truth "You do not respond. Something has taken her away, and it's left something else in her place.\n"
                     else:
                         truth "You do not have an opportunity to respond. Something has taken her away, and it's left something else in her place.\n"
+                    $ send_location(Location.needle_heart)
                     $ adversary_2_end = "free"
                     $ princess_free += 1
                     $ princess_deny += 1
@@ -1768,6 +1772,7 @@ label adversary_2_combat_ending:
                         truth "But you do not have the chance to respond. Nor will you ever. It's time for you to leave. Memory returns.\n"
                     else:
                         truth "But you do not have the chance to respond. Something has taken her away, and it's left something else in her place.\n"
+                    $ send_location(Location.needle_heart)
                     $ adversary_2_end = "fight_succeed"
                     $ princess_free += 1
                     $ princess_satisfy += 1
