@@ -15,7 +15,7 @@ audio/*
 gui/*
 images/*
 saves/*
-staging/*
+staging/image_setup/*
 tl/*
 *.txt
 /.idea

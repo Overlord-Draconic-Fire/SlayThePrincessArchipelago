@@ -2223,7 +2223,7 @@ screen main_menu():
             
             textbutton "Connexion" action Function(websocket_thread)
 
-default server_url = "wss://archipelago.gg:51489"
+default server_url = "wss://archipelago.gg:40651"
 default slot_name = "Onilaf"
 default password = ""
 
@@ -3601,7 +3601,6 @@ screen notify(message):
 
     zorder 100
     style_prefix "notify"
-
     frame at notify_appear:
         text "[message!tq]"
 
