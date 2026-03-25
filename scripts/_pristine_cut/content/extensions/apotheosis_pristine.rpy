@@ -71,7 +71,7 @@ label contrarian_pristine_apoth_menu:
             broken "You're all ruining the moment of her ascension. Have you no respect for the divine?\n"
             jump contrarian_pristine_apoth_menu
 
-        "{i}• [[Take the blade.]{/i}":
+        "{i}• [[Take the blade.]{/i}" if hasThisDagger(Item.dagger_apotheosis):
             voice "audio/_pristine/voice/apotheosis/narrator/5.flac"
             $ blade_held = True
             $ default_mouse = "thumb"
@@ -1102,7 +1102,7 @@ label paranoid_pristine_apoth_menu:
 
         extend ""
 
-        "{i}• [[Take the blade.]{/i}":
+        "{i}• [[Take the blade.]{/i}" if hasThisDagger(Item.dagger_apotheosis):
             voice "audio/voices/ch3/apotheosis/hero/11.flac"
             #voice "audio/_pristine/voice/apotheosis/hero/29.flac"
             hero "Yeah. Screw all of this. I'm with you. A real god wouldn't need us as part of her plan.\n"

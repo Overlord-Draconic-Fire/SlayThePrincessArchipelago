@@ -181,7 +181,7 @@ label cabin_interior_2_stranger_menu:
             $ stranger_1_cabin_mirror_approached = True
             jump stranger_cabin_1_mirror_join
 
-        "{i}• (Explore) [[Take the blade.]{/i}" if stranger_1_cabin_blade_taken == False:
+        "{i}• (Explore) [[Take the blade.]{/i}" if stranger_1_cabin_blade_taken == False and hasThisDagger(Item.dagger_stranger):
             $ stranger_1_cabin_blade_taken = True
             $ blade_held = True
             $ default_mouse = "blade"

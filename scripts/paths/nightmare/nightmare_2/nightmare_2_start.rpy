@@ -469,7 +469,7 @@ label nightmare_2_cabin_arrive:
                         menu:
                             extend ""
 
-                            "{i}• [[Take the blade.]{/i}":
+                            "{i}• [[Take the blade.]{/i}" if hasThisDagger(Item.dagger_nightmare):
                                 label nightmare_2_blade_join:
                                     hide stars onlayer farback
                                     hide midground onlayer back
@@ -494,7 +494,7 @@ label nightmare_2_cabin_arrive:
                             "{i}• [[Don't you remember?]{/i}" if false_choice:
                                 jump nightmare_2_blade_join
 
-                            "{i}• [[You have to take the blade.]{/i}":
+                            "{i}• [[You have to take the blade.]{/i}" if hasThisDagger(Item.dagger_nightmare):
                                 jump nightmare_2_blade_join
 
     play audio "audio/final/Assorted_Static_4.flac"

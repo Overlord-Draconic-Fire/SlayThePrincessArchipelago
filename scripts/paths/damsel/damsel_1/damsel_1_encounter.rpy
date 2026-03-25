@@ -1278,7 +1278,7 @@ label damsel_leave:
         menu:
             extend ""
 
-            "{i}• [[Take the blade and slay the Princess.]{/i}" if damsel_can_slay_attempt:
+            "{i}• [[Take the blade and slay the Princess.]{/i}" if damsel_can_slay_attempt and hasThisDagger(Item.dagger_damsel):
                 if grey_encountered:
                     $ damsel_can_slay_attempt = False
                     voice "audio/voices/mound/bonus/path.flac"

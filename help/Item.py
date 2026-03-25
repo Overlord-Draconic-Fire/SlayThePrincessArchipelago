@@ -10,7 +10,6 @@ dagger = "Pristine Dagger"
 dagger1 = "Pristine Dagger - Chapter 1"
 dagger2 = "Pristine Dagger - Chapter 2"
 dagger3 = "Pristine Dagger - Chapter 3"
-dagger4 = "Pristine Dagger - Chapter 4"
 
 dagger_princess = "Pristine Dagger - The Princess"
 dagger_adversary = "Pristine Dagger - The Adversary"

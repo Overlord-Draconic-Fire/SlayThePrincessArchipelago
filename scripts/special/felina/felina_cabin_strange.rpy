@@ -146,7 +146,7 @@ label felina_cabin_strange_start:
                     jump felina_cabin_strange_complicated_feelings
                 jump felina_cabin_strange_menu_start
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and stranger_felina_blade_thrown == False and final_offer == False:
+            "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and stranger_felina_blade_thrown == False and final_offer == False and hasThisDagger(Item.dagger_goddess):
                 play audio "audio/one_shot/knife_pickup.flac"
                 $ blade_held = True
                 if stranger_other_way:

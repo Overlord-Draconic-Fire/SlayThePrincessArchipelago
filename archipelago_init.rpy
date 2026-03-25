@@ -34,10 +34,12 @@ init -10 python:
     import Location
     import Item
     import Region
+    import DAGGER_CHAPTER_MAP
 
     store.Location = Location
     store.Item = Item
     store.Region = Region
+    store.DAGGER_CHAPTER_MAP = DAGGER_CHAPTER_MAP
     
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:
@@ -84,3 +86,38 @@ init -10 python:
             import traceback
             ap_notify(f"Erreur lors de l'envoi de location: {e}")
             traceback.print_exc()
+    
+    def hasThisDagger(dagger_value):
+        """
+        Vérifie si le joueur possède un dagger.
+        Accepte une valeur d'item comme Item.dagger_wild et retourne True si :
+        - Le joueur a la dagger spécifique, OU
+        - Le joueur a la dagger du chapitre (dagger3 pour chapter 3), OU
+        - Le joueur a la dagger global (dagger)
+        """
+        try:
+            client = get_archipelago_client()
+            if not client:
+                return False
+            
+            # Vérifier la dagger spécifique
+            if client.has_item(dagger_value):
+                return True
+            
+            # Vérifier la dagger du chapitre correspondant
+            if dagger_value in DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP:
+                chapter = DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP[dagger_value]
+                if chapter != "special":
+                    chapter_dagger = f"dagger{chapter}"
+                    chapter_item = getattr(Item, chapter_dagger)
+                    if client.has_item(chapter_item):
+                        return True
+            
+            # Vérifier la dagger global
+            if client.has_item(Item.dagger):
+                return True
+            
+            return False
+        except Exception as e:
+            ap_notify(f"Error in hasThisDagger({dagger_value}): {e}")
+            return False

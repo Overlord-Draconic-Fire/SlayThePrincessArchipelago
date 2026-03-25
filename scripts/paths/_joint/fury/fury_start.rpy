@@ -508,7 +508,7 @@ label fury_cabin_interior:
                         stubborn "It's in our way. Let's just smash it.\n"
                     jump fury_cabin_interior_menu
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if fury_blade_taken == False:
+            "{i}• (Explore) [[Take the blade.]{/i}" if fury_blade_taken == False and hasThisDagger(Item.dagger_fury):
                 $ fury_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

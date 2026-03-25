@@ -437,7 +437,7 @@ label razor_1_cabin_arrival:
                 $ razor_1_cabin_mirror_approached = True
                 jump razor_cabin_1_mirror_join
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if razor_1_cabin_blade_taken == False:
+            "{i}• (Explore) [[Take the blade.]{/i}" if razor_1_cabin_blade_taken == False and hasThisDagger(Item.dagger_razor):
                 $ razor_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

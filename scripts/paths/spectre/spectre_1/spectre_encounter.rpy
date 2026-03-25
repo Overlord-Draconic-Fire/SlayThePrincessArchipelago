@@ -1531,7 +1531,7 @@ label spectre_free_start:
         menu:
             extend ""
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False:
+            "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and hasThisDagger(Item.dagger_spectre):
                 voice "audio/voices/ch2/spectre/_encounter/narrator/87.flac"
                 $ blade_held = True
                 $ default_mouse = "blade"

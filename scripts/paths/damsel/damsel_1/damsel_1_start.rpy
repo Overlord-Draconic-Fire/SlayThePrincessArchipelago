@@ -439,7 +439,7 @@ label damsel_1_cabin_arrival:
                 $ damsel_1_cabin_mirror_approached = True
                 jump damsel_cabin_1_mirror_join
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if damsel_1_cabin_blade_taken == False:
+            "{i}• (Explore) [[Take the blade.]{/i}" if damsel_1_cabin_blade_taken == False and hasThisDagger(Item.dagger_damsel):
                 $ damsel_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"
