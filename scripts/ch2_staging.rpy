@@ -11,56 +11,78 @@ label start_2:
 
     if current_princess == "adversary":
         $ send_location(Location.adversary)
+        if not hasRegionRequirements(Region.adversary):
+            jump chapter_requirements_failed
         $ adversary_encountered = True
         jump adversary_1_start
 
     elif current_princess == "beast":
         $ send_location(Location.beast)
+        if not hasRegionRequirements(Region.beast):
+            jump chapter_requirements_failed
         $ beast_encountered = True
         jump beast_1_start
 
     elif current_princess == "damsel":
         $ send_location(Location.damsel)
+        if not hasRegionRequirements(Region.damsel):
+            jump chapter_requirements_failed
         $ damsel_encountered = True
         jump damsel_1_start
 
     elif current_princess == "nightmare":
         $ send_location(Location.nightmare)
+        if not hasRegionRequirements(Region.nightmare):
+            jump chapter_requirements_failed
         $ nightmare_encountered = True
         jump nightmare_1_start
 
     elif current_princess == "prisoner":
         $ send_location(Location.prisoner)
+        if not hasRegionRequirements(Region.prisoner):
+            jump chapter_requirements_failed
         $ prisoner_encountered = True
         jump prisoner_1_start
 
     elif current_princess == "razor":
         $ send_location(Location.razor)
+        if not hasRegionRequirements(Region.razor):
+            jump chapter_requirements_failed
         $ razor_encountered = True
         jump razor_1_start
 
     elif current_princess == "spectre":
         $ send_location(Location.spectre)
+        if not hasRegionRequirements(Region.spectre):
+            jump chapter_requirements_failed
         $ spectre_encountered = True
         jump spectre_1_start
 
     elif current_princess == "stranger":
         $ send_location(Location.stranger)
+        if not hasRegionRequirements(Region.stranger):
+            jump chapter_requirements_failed
         $ stranger_encountered = True
         jump stranger_1_start
 
     elif current_princess == "tower":
         $ send_location(Location.tower)
+        if not hasRegionRequirements(Region.tower):
+            jump chapter_requirements_failed
         $ tower_encountered = True
         jump tower_1_start
 
     elif current_princess == "witch":
         $ send_location(Location.witch)
+        if not hasRegionRequirements(Region.witch):
+            jump chapter_requirements_failed
         $ witch_encountered = True
         jump witch_1_start
 
     else:
         $ send_location(Location.stranger)
+        if not hasRegionRequirements(Region.stranger):
+            jump chapter_requirements_failed
         $ stranger_encountered = True
         jump stranger_1_start
 

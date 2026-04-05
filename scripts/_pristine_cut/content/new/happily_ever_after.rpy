@@ -21,6 +21,14 @@ label happy_start:
     scene chapter happy with fade
     $ send_location(Location.chap3)
     $ send_location(Location.happily)
+
+    if trait_opportunist:
+        if not hasRegionRequirements(Region.happily_opportunist):
+            jump chapter_requirements_failed
+    else:
+        if not hasRegionRequirements(Region.happily_skeptic):
+            jump chapter_requirements_failed
+    
     show text _("{color=#FFFFFF00}Epilogue. Happily Ever After.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
 

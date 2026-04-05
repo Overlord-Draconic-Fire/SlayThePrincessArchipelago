@@ -46,6 +46,22 @@ label wraith_start:
     scene chapter wraith with fade
     $ send_location(Location.chap3)
     $ send_location(Location.wraith)
+
+    if wraith_source == "spectre":
+        if wraith_bonus_voice == "cheated":
+            if not hasRegionRequirements(Region.wraith_cheated):
+                jump chapter_requirements_failed
+        else:
+            if not hasRegionRequirements(Region.wraith_paranoid):
+                jump chapter_requirements_failed
+    else:
+        if wraith_bonus_voice == "cold":
+            if not hasRegionRequirements(Region.wraith_cold):
+                jump chapter_requirements_failed
+        else:
+            if not hasRegionRequirements(Region.wraith_opportunist):
+                jump chapter_requirements_failed
+                
     show text _("{color=#FFFFFF00}Chapter Three. The Wraith.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
     scene bg black with fade

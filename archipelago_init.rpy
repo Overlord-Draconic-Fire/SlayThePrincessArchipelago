@@ -35,6 +35,7 @@ init -10 python:
     import Item
     import Region
     import DAGGER_CHAPTER_MAP
+    import REGION_REQUIREMENTS
 
     store.Location = Location
     store.Item = Item
@@ -121,3 +122,37 @@ init -10 python:
         except Exception as e:
             ap_notify(f"Error in hasThisDagger({dagger_value}): {e}")
             return False
+
+    def hasRegionRequirements(region_value):
+        """
+        Vérifie si le joueur possède tous les items requis pour une région.
+        Le paramètre doit être une valeur de région (ex: Region.needle_hunted).
+        """
+        try:
+            client = get_archipelago_client()
+            if not client:
+                return False
+
+            requirements = REGION_REQUIREMENTS.REGION_REQUIREMENTS.get(region_value)
+            if not requirements:
+                ap_notify(f"No requirements found for region: {region_value}")
+                return False
+
+            for required_item in requirements:
+                if not client.has_item(required_item):
+                    return False
+
+            return True
+        except Exception as e:
+            ap_notify(f"Error in hasRegionRequirements({region_value}): {e}")
+            return False
+
+
+
+label chapter_requirements_failed:
+    $ ap_notify(f"{current_princess}: missing region requirements")
+    ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
+    menu:
+        "Return to the main menu.":
+            $ renpy.full_restart()
+    return

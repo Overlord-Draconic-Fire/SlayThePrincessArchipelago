@@ -83,7 +83,7 @@ REGION_REQUIREMENTS = {
     Region.grey_burned: [Item.grey, Item.smitten],
     
     # Epilogue - Happily Ever After (from Damsel → Smitten)
-    Region.happily_paranoid: [Item.happily, Item.paranoid],
+    Region.happily_skeptic: [Item.happily, Item.skeptic],
     Region.happily_opportunist: [Item.happily, Item.opportunist],
     
     # Chapter IV - Razor (all voices)

@@ -19,6 +19,31 @@ label wild_start:
         $ wild_source = "witch"
     else:
         $ wild_source = "beast"
+
+    if wild_source == "witch":
+        if wild_bonus_voice == "stubborn":
+            if not hasRegionRequirements(Region.wild_witch_stubborn):
+                jump chapter_requirements_failed
+        elif wild_bonus_voice == "cheated":
+            if not hasRegionRequirements(Region.wild_witch_cheated):
+                jump chapter_requirements_failed
+        else:
+            if not hasRegionRequirements(Region.wild_witch_paranoid):
+                jump chapter_requirements_failed
+    else:
+        if wild_bonus_voice == "broken":
+            if not hasRegionRequirements(Region.wild_beast_broken):
+                jump chapter_requirements_failed
+        elif wild_bonus_voice == "contrarian":
+            if not hasRegionRequirements(Region.wild_beast_contrarian):
+                jump chapter_requirements_failed
+        elif wild_bonus_voice == "opportunist":
+            if not hasRegionRequirements(Region.wild_beast_opportunist):
+                jump chapter_requirements_failed
+        else:
+            if not hasRegionRequirements(Region.wild_beast_stubborn):
+                jump chapter_requirements_failed
+                
     $ current_princess = "wild"
     $ wild_encountered = True
 

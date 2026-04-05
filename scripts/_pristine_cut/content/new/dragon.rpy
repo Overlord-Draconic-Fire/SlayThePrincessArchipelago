@@ -324,6 +324,14 @@ label spectre_pristine_start:
     $ renpy.save_persistent()
     $ send_location(Location.chap3)
     $ send_location(Location.dragon)
+
+    if spectre_hostile:
+        if not hasRegionRequirements(Region.dragon_harsh):
+            jump chapter_requirements_failed
+    else:
+        if not hasRegionRequirements(Region.dragon_kind):
+            jump chapter_requirements_failed
+            
     $ current_princess = "dragon"
     hide bg onlayer back
     hide dragon onlayer back

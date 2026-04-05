@@ -27,6 +27,14 @@ label witch_2_start:
     scene chapter thorn with fade
     $ send_location(Location.chap3)
     $ send_location(Location.thorn)
+    
+    if witch_2_voice == "cheated":
+        if not hasRegionRequirements(Region.thorn_cheated):
+            jump chapter_requirements_failed
+    else:
+        if not hasRegionRequirements(Region.thorn_smitten):
+            jump chapter_requirements_failed
+    
     show text _("{color=#FFFFFF00}Chapter 3. The Thorn.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
     scene bg black with fade

@@ -20,6 +20,14 @@ label beast_2_start:
     scene chapter den with fade
     $ send_location(Location.chap3)
     $ send_location(Location.den)
+
+    if trait_stubborn:
+        if not hasRegionRequirements(Region.den_stubborn):
+            jump chapter_requirements_failed
+    else:
+        if not hasRegionRequirements(Region.den_skeptic):
+            jump chapter_requirements_failed
+    
     show text _("{color=#FFFFFF00}Chapter Three. The Den.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
     scene bg black

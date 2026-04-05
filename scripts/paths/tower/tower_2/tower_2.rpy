@@ -16,6 +16,14 @@ label tower_2_start:
     scene chapter apotheosis with fade
     $ send_location(Location.chap3)
     $ send_location(Location.apotheosis)
+
+    if tower_1_cabin_blade_taken:
+        if not hasRegionRequirements(Region.apotheosis_contrarian):
+            jump chapter_requirements_failed
+    else:
+        if not hasRegionRequirements(Region.apotheosis_paranoid):
+            jump chapter_requirements_failed
+            
     show text _("{color=#FFFFFF00}Chapter 3. The Apotheosis.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
 

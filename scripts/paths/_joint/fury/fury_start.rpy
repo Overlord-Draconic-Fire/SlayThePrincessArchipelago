@@ -15,6 +15,24 @@ label fury_start:
     scene chapter fury with fade
     $ send_location(Location.chap3)
     $ send_location(Location.fury)
+
+    if fury_source == "tower":
+        if not hasRegionRequirements(Region.fury_tower):
+            jump chapter_requirements_failed
+    elif fury_source == "pacifism":
+        if not hasRegionRequirements(Region.fury_pacifism):
+            jump chapter_requirements_failed
+    elif fury_source == "unarmed":
+        if fury_unarmed_sub == "broken":
+            if not hasRegionRequirements(Region.fury_unarmed_broken):
+                jump chapter_requirements_failed
+        else:
+            if not hasRegionRequirements(Region.fury_unarmed_contrarian):
+                jump chapter_requirements_failed
+    else:
+        if not hasRegionRequirements(Region.fury_other):
+            jump chapter_requirements_failed
+            
     show text _("{color=#FFFFFF00}Chapter Three. The Fury.{/color}") at Position(ypos=850)
     $ renpy.pause(4.0)
 

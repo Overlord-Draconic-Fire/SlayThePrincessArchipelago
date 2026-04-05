@@ -85,7 +85,7 @@ grey_drowned = "Chapter III - The Grey (Drowned)"
 grey_burned = "Chapter III - The Grey (Burned)"
 
 happily = "Epilogue - Happily Ever After"
-happily_paranoid = "Epilogue - Happily Ever After (Paranoid)"
+happily_skeptic = "Epilogue - Happily Ever After (Skeptic)"
 happily_opportunist = "Epilogue - Happily Ever After (Opportunist)"
 
 razor_chap4 = "Chapter IV - Razor"

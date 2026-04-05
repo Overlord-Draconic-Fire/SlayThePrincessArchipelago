@@ -31,6 +31,10 @@ label nightmare_2_start:
     with fade
     $ send_location(Location.chap3)
     $ send_location(Location.clarity)
+
+    if not hasRegionRequirements(Region.clarity):
+        jump chapter_requirements_failed
+        
     show text _("{color=#FFFFFF00}The Moment of Clarity.{/color}") at Position(ypos=850)
     $ renpy.pause(1.0)
     show chapter clarity2

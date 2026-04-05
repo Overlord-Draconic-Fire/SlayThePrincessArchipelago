@@ -11,6 +11,28 @@ label razor_2_start:
     $ config.menu_include_disabled = False
     play sound "audio/looping/uncomfortable ambiance.ogg" loop fadein 1.0
     $ send_location(Location.chap3)
+
+    if razor_1_cabin_blade_taken:
+        if trait_broken:
+            if not hasRegionRequirements(Region.razor_race_broken):
+                jump chapter_requirements_failed
+        elif trait_paranoid:
+            if not hasRegionRequirements(Region.razor_race_paranoid):
+                jump chapter_requirements_failed
+        else:
+            if not hasRegionRequirements(Region.razor_race_stubborn):
+                jump chapter_requirements_failed
+    else:
+        if trait_broken:
+            if not hasRegionRequirements(Region.razor_no_way_broken):
+                jump chapter_requirements_failed
+        elif trait_paranoid:
+            if not hasRegionRequirements(Region.razor_no_way_paranoid):
+                jump chapter_requirements_failed
+        else:
+            if not hasRegionRequirements(Region.razor_no_way_stubborn):
+                jump chapter_requirements_failed
+                
     if razor_1_cabin_blade_taken:
         scene chapter arms with fade
         show text _("{color=#FFFFFF00}Chapter 3. The Arms Race.{/color}") at Position(ypos=850)
