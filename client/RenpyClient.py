@@ -1,22 +1,23 @@
 from __future__ import annotations
 
+from asyncio import AbstractEventLoop
 import logging
 import typing
 
 from CommunClient import CommonContext, NetworkItem
 
-logger = logging.getLogger("Client")
+logger: logging.Logger = logging.getLogger("Client")
 
 
 class RenpyContext(CommonContext):
     """Context for embedding AP in Ren'Py without a GUI or text UI."""
 
     # Receive all items: 1 (basic) + 2 (remote) + 4 (remote start)
-    tags = CommonContext.tags | {"AP"}
+    tags: typing.Set[str] = CommonContext.tags | {"AP"}
     items_handling = 0b111
     want_slot_data = True
 
-    async def server_auth(self, password_requested: bool = False):
+    async def server_auth(self, password_requested: bool = False) -> None:
         """Send Connect packet when server is ready, matching the protocol."""
         logger.info(f"[RenpyContext.server_auth] Called with password_requested={password_requested}")
         if password_requested and not self.password:
@@ -37,14 +38,16 @@ class RenpyContext(CommonContext):
 
     def has_item(self, item_name: str) -> bool:
         """Return True if the player owns at least one instance of the given item name."""
-        item_id = self.item_names[self.game].get(item_name)
+        item_lookup: typing.Mapping[int, str] = self.item_names[self.game]
+        item_id: int | None = next((item_id for item_id, resolved_name in item_lookup.items() if resolved_name == item_name), None)
         if item_id is None:
             return False
         return any(net_item.item == item_id for net_item in self.items_received)
 
     def count_item(self, item_name: str) -> int:
         """Count how many instances of an item name the player owns."""
-        item_id = self.item_names[self.game].get(item_name)
+        item_lookup: typing.Mapping[int, str] = self.item_names[self.game]
+        item_id: int | None = next((item_id for item_id, resolved_name in item_lookup.items() if resolved_name == item_name), None)
         if item_id is None:
             return 0
         return sum(1 for net_item in self.items_received if net_item.item == item_id)
@@ -54,7 +57,7 @@ class RenpyContext(CommonContext):
         
         from REGION_REQUIREMENTS import REGION_REQUIREMENTS
 
-        required_items = REGION_REQUIREMENTS.get(region_name)
+        required_items: list[str] | None = REGION_REQUIREMENTS.get(region_name)
         if required_items is None:
             logger.warning(f"Unknown region: {region_name}")
             return False
@@ -67,25 +70,25 @@ class RenpyContext(CommonContext):
     def send_location(self, location_name: str) -> bool:
         """Send a location check to Archipelago if it hasn't been checked yet."""
         # Look up the location ID from the game's location names (id -> name mapping)
-        location_map = self.location_names[self.game]
-        norm_target = str(location_name).strip().lower()
+        location_map: typing.Mapping[int, str] = self.location_names[self.game]
+        norm_target: str = str(location_name).strip().lower()
 
         # Build a normalized reverse map once per call (safe: map is small)
-        normalized_reverse = {str(name).strip().lower(): lid for lid, name in location_map.items()}
-        location_id = normalized_reverse.get(norm_target)
+        normalized_reverse: dict[str, int] = {str(name).strip().lower(): lid for lid, name in location_map.items()}
+        location_id: int | None = normalized_reverse.get(norm_target)
 
         if location_id is None:
             self._notify(f"Location inconnue: '{location_name}'")
             return False
 
-        # Check if already sent
+        # Check if already sent to server (from any previous session or this one)
         if location_id in self.checked_locations:
             self._notify(f"Location déjà envoyée: '{location_name}' ({location_id})")
             return False
 
         # Send the location check on the background event loop
         if not self.loop or self.loop.is_closed():
-            self._notify("Impossible d'envoyer la location: event loop inactif")
+            self._notify(f"Impossible d'envoyer la location: event loop inactif ({location_name})")
             return False
 
         import asyncio
@@ -101,7 +104,8 @@ class RenpyContext(CommonContext):
     def _notify(self, message: str) -> None:
         """Thread-safe bridge to on_text_callback (ap_notify)."""
         logger.info(message)
-        callback = getattr(self, "on_text_callback", None)
+        
+        callback: typing.Any | None = getattr(self, "on_text_callback", None)
         if not callback:
             return
 
@@ -109,7 +113,7 @@ class RenpyContext(CommonContext):
             import asyncio
             # If we're already on the stored loop, call directly; otherwise, schedule thread-safely.
             try:
-                running_loop = asyncio.get_running_loop()
+                running_loop: AbstractEventLoop = asyncio.get_running_loop()
             except RuntimeError:
                 running_loop = None
 
@@ -122,13 +126,14 @@ class RenpyContext(CommonContext):
         except Exception:
             logger.exception("_notify failed")
 
+
     def item_received(self, net_item: NetworkItem) -> None:
         """Notify Ren'Py when this client actually receives an item."""
         if self.on_text_callback:
             try:
-                item_name = self.item_names.lookup_in_slot(net_item.item, self.slot)
-                sender = self.player_names.get(net_item.player, str(net_item.player))
-                self.on_text_callback(f"Reçu: {item_name} (de {sender})")
+                item_name: str = self.item_names.lookup_in_slot(net_item.item, self.slot)
+                sender: str = self.player_names.get(net_item.player, str(net_item.player))
+                self.on_text_callback(f"Reçu: {item_name} ({sender})")
             except Exception:
                 logger.exception("item_received callback failed")
 
@@ -141,7 +146,7 @@ def create_renpy_client(
     tags: typing.Optional[typing.Iterable[str]] = None,
     on_text: typing.Optional[typing.Callable[[str], None]] = None,
     on_json: typing.Optional[typing.Callable[[typing.Any], None]] = None,
-) -> CommonContext:
+) -> RenpyContext:
     """Factory for embedding the client in non-text hosts (e.g., Ren'Py).
 
     Connection is not started automatically; call ctx.connect() then await ctx.message_loop().

@@ -2249,6 +2249,7 @@ init python:
         def run_connection():
             async def connect_and_listen():
                 ap_notify("Démarrage connexion...")
+                import RenpyClient
                 archipelago_client = RenpyClient.create_renpy_client(
                     url, name, mdp,
                     on_text=ap_notify,

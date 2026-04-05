@@ -180,7 +180,7 @@ class CommonContext:
     def __init__(self, server_address: typing.Optional[str] = None, password: typing.Optional[str] = None) -> None:
         # server state
         self.server_address = server_address
-        self.username = None
+        self.username : str | None = None
         self.password = password
         self.hint_cost = None
         self.slot_info = {}

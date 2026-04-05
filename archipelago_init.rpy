@@ -25,7 +25,6 @@ init -10 python:
             sys.path.insert(0, path)
     
     # Import modules
-    import RenpyClient
     import Utils
     import threading
     import asyncio
@@ -60,25 +59,25 @@ init -10 python:
     
     # Global instance
     archipelago = ArchipelagoManager()
-    
-    def ap_notify(message):
+
+    def ap_notify(message) -> None:
         """Notification qui affiche ET écrit dans la console (Shift+O)"""
         msg_str = str(message)
         renpy.notify(msg_str)
         print(f"[AP] {msg_str}")
 
-    def get_archipelago_client():
+    def get_archipelago_client() -> RenpyContext:
         """Accès thread-safe à archipelago_client depuis n'importe quel thread"""
         return archipelago.get_client()
     
-    def set_archipelago_client(client):
+    def set_archipelago_client(client: RenpyContext) -> None:
         """Modification thread-safe de archipelago_client"""
         archipelago.set_client(client)
 
-    def send_location(location_name):
+    def send_location(location_name : str) -> None:
         """Envoie une location arbitraire."""
         try:
-            client = get_archipelago_client()
+            client : RenpyContext = get_archipelago_client()
             if client:
                 client.send_location(location_name)
             else:
@@ -88,7 +87,7 @@ init -10 python:
             ap_notify(f"Erreur lors de l'envoi de location: {e}")
             traceback.print_exc()
     
-    def hasThisDagger(dagger_value):
+    def hasThisDagger(dagger_value : str) -> bool:
         """
         Vérifie si le joueur possède un dagger.
         Accepte une valeur d'item comme Item.dagger_wild et retourne True si :
@@ -97,12 +96,14 @@ init -10 python:
         - Le joueur a la dagger global (dagger)
         """
         try:
-            client = get_archipelago_client()
+            client : RenpyContext = get_archipelago_client()
             if not client:
+                ap_notify(f"archipelago_client non initialisé")
                 return False
-            
+
             # Vérifier la dagger spécifique
             if client.has_item(dagger_value):
+                ap_notify(f"Player has specific dagger: {dagger_value}")
                 return True
             
             # Vérifier la dagger du chapitre correspondant
@@ -112,10 +113,12 @@ init -10 python:
                     chapter_dagger = f"dagger{chapter}"
                     chapter_item = getattr(Item, chapter_dagger)
                     if client.has_item(chapter_item):
+                        ap_notify(f"Player has chapter dagger: {chapter_item}")
                         return True
             
             # Vérifier la dagger global
             if client.has_item(Item.dagger):
+                ap_notify(f"Player has global dagger: {Item.dagger}")
                 return True
             
             return False
@@ -123,7 +126,7 @@ init -10 python:
             ap_notify(f"Error in hasThisDagger({dagger_value}): {e}")
             return False
 
-    def hasRegionRequirements(region_value):
+    def hasRegionRequirements(region_value : str) -> bool:
         """
         Vérifie si le joueur possède tous les items requis pour une région.
         Le paramètre doit être une valeur de région (ex: Region.needle_hunted).
