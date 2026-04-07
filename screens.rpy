@@ -2224,6 +2224,9 @@ screen main_menu():
         vbox:
             spacing 15
 
+            # Keep this panel reactive while async connection state changes.
+            timer 0.5 action Function(renpy.restart_interaction) repeat True
+
             # Titre
             label _("Archipelago connexion")
 
@@ -2290,13 +2293,61 @@ screen main_menu():
             textbutton ("Hide password" if ap_show_password else "Show password"):
                 action SetScreenVariable("ap_show_password", not ap_show_password)
 
-            textbutton "Connexion" action Function(websocket_thread)
+            textbutton ("Deconnexion" if ap_is_connected() else "Connexion"):
+                action If(ap_is_connected(), Function(ap_disconnect), Function(ap_connect))
 
 default server_url = "archipelago.gg:"
 default slot_name = ""
 default password = ""
 
 init python:
+    def ap_is_connected() -> bool:
+        """Return True when the AP websocket is currently open."""
+        try:
+            client = get_archipelago_client()
+            if not client:
+                return False
+
+            # After successful auth, slot is assigned and connection is usable.
+            if getattr(client, "slot", None) is not None:
+                return True
+
+            server = getattr(client, "server", None)
+            sock = getattr(server, "socket", None)
+            if not sock:
+                return False
+
+            return not bool(getattr(sock, "closed", True))
+        except Exception:
+            return False
+
+    def ap_disconnect() -> None:
+        """Disconnect AP client from the UI thread."""
+        client = get_archipelago_client()
+        if not client:
+            ap_notify("Aucun client AP actif.")
+            return
+
+        loop = getattr(client, "loop", None)
+        if not loop or loop.is_closed():
+            set_archipelago_client(None)
+            ap_notify("Client AP nettoye.")
+            return
+
+        async def _disconnect_and_stop(ctx):
+            await ctx.disconnect(allow_autoreconnect=False)
+            ctx.exit_event.set()
+
+        try:
+            import asyncio
+
+            asyncio.run_coroutine_threadsafe(_disconnect_and_stop(client), loop)
+            # Clear reference so UI immediately switches back to "Connexion".
+            set_archipelago_client(None)
+            ap_notify("Deconnexion en cours...")
+        except Exception as e:
+            ap_notify(f"Erreur de deconnexion: {e}")
+
     def load_persistent_client_fields():
         """Load AP fields from the client persistent YAML file."""
         try:
@@ -2314,7 +2365,7 @@ init python:
         except Exception as e:
             renpy.log(f"[AP] Failed to load persistent client data: {e!r}")
 
-    def websocket_thread():
+    def ap_connect():
         new_connect_websocket(server_url, slot_name, password)
 
     def new_connect_websocket(url, name, mdp):
