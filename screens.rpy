@@ -2030,6 +2030,9 @@ screen main_menu():
     ## This ensures that any other menu screen is replaced.
     tag menu
 
+    # Reload persisted AP fields when opening the main menu.
+    on "show" action Function(load_persistent_client_fields)
+
     if persistent.performance_mode == False and persistent.flickering:
         add Movie(size=(1920, 1080), channel="mm_movie")
         on "show" action Play("mm_movie", "images/menu/main_menu.webm", loop=True)
@@ -2206,6 +2209,9 @@ screen main_menu():
             text "[config.version]":
                 style "main_menu_version"
 
+    default ap_edit_field = None
+    default ap_show_password = False
+
     frame:
         xalign 1.0
         yalign 0.0
@@ -2219,33 +2225,101 @@ screen main_menu():
             spacing 15
 
             # Titre
-            label _("Connexion à Archipelago")
-            
+            label _("Archipelago connexion")
+
+            hbox:
+                xfill True
+
+                if ap_edit_field == "server_url":
+                    input:
+                        value VariableInputValue("server_url")
+                        length 128
+                else:
+                    text "Url : [server_url]"
+
+                textbutton "Edit":
+                    xalign 1.0
+                    action If(
+                        ap_edit_field == "server_url",
+                        SetScreenVariable("ap_edit_field", None),
+                        SetScreenVariable("ap_edit_field", "server_url")
+                    )
+
+            hbox:
+                xfill True
+
+                if ap_edit_field == "slot_name":
+                    input:
+                        value VariableInputValue("slot_name")
+                        length 64
+                else:
+                    text "Slot : [slot_name]"
+
+                textbutton "Edit":
+                    xalign 1.0
+                    action If(
+                        ap_edit_field == "slot_name",
+                        SetScreenVariable("ap_edit_field", None),
+                        SetScreenVariable("ap_edit_field", "slot_name")
+                    )
+
+            hbox:
+                xfill True
+
+                if ap_edit_field == "password":
+                    input:
+                        value VariableInputValue("password")
+                        length 64
+                        mask (None if ap_show_password or not password else "*")
+                else:
+                    text (
+                        "Mot de passe : " + (
+                            password if ap_show_password
+                            else (("*" * len(password)) if password else "")
+                        )
+                    )
+
+                textbutton "Edit":
+                    xalign 1.0
+                    action If(
+                        ap_edit_field == "password",
+                        SetScreenVariable("ap_edit_field", None),
+                        SetScreenVariable("ap_edit_field", "password")
+                    )
+
+            textbutton ("Hide password" if ap_show_password else "Show password"):
+                action SetScreenVariable("ap_show_password", not ap_show_password)
+
             textbutton "Connexion" action Function(websocket_thread)
 
-default server_url = "wss://archipelago.gg:58920"
-default slot_name = "OnilafSTP"
+default server_url = "archipelago.gg:"
+default slot_name = ""
 default password = ""
 
 init python:
-    # Pre-fill fields from previous session if available.
-    try:
-        persistent_client_data = Utils.persistent_load().get("client", {})
-        if persistent_client_data.get("last_server_address"):
-            last_addr = persistent_client_data["last_server_address"]
-            if last_addr.startswith("ws://") or last_addr.startswith("wss://"):
-                server_url = last_addr
-            else:
-                server_url = f"wss://{last_addr}"
-        if persistent_client_data.get("last_slot_name"):
-            slot_name = persistent_client_data["last_slot_name"]
-    except Exception:
-        pass
+    def load_persistent_client_fields():
+        """Load AP fields from the client persistent YAML file."""
+        try:
+            import Utils
+
+            persistent_client_data = Utils.persistent_load().get("client", {}) or {}
+
+            last_addr = str(persistent_client_data.get("last_server_address", "")).strip()
+            if last_addr:
+                store.server_url = last_addr
+
+            last_slot = str(persistent_client_data.get("last_slot_name", "")).strip()
+            if last_slot:
+                store.slot_name = last_slot
+        except Exception as e:
+            renpy.log(f"[AP] Failed to load persistent client data: {e!r}")
 
     def websocket_thread():
         new_connect_websocket(server_url, slot_name, password)
 
     def new_connect_websocket(url, name, mdp):
+        if url and not (url.startswith("ws://") or url.startswith("wss://")):
+            url = f"wss://{url}"
         def run_connection():
             async def connect_and_listen():
                 ap_notify("Démarrage connexion...")
