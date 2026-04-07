@@ -2223,8 +2223,8 @@ screen main_menu():
             
             textbutton "Connexion" action Function(websocket_thread)
 
-default server_url = "wss://archipelago.gg:56457"
-default slot_name = "Onilaf"
+default server_url = "wss://archipelago.gg:58920"
+default slot_name = "OnilafSTP"
 default password = ""
 
 init python:
