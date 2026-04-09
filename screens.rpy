@@ -2224,16 +2224,13 @@ screen main_menu():
         vbox:
             spacing 15
 
-            # Keep this panel reactive while async connection state changes.
-            timer 0.5 action Function(renpy.restart_interaction) repeat True
-
             # Titre
             label _("Archipelago connexion")
 
             hbox:
                 xfill True
 
-                if ap_edit_field == "server_url":
+                if ap_edit_field == "server_url" and not ap_is_connection_locked():
                     input:
                         value VariableInputValue("server_url")
                         length 128
@@ -2242,6 +2239,7 @@ screen main_menu():
 
                 textbutton "Edit":
                     xalign 1.0
+                    sensitive not ap_is_connection_locked()
                     action If(
                         ap_edit_field == "server_url",
                         SetScreenVariable("ap_edit_field", None),
@@ -2251,7 +2249,7 @@ screen main_menu():
             hbox:
                 xfill True
 
-                if ap_edit_field == "slot_name":
+                if ap_edit_field == "slot_name" and not ap_is_connection_locked():
                     input:
                         value VariableInputValue("slot_name")
                         length 64
@@ -2260,6 +2258,7 @@ screen main_menu():
 
                 textbutton "Edit":
                     xalign 1.0
+                    sensitive not ap_is_connection_locked()
                     action If(
                         ap_edit_field == "slot_name",
                         SetScreenVariable("ap_edit_field", None),
@@ -2269,7 +2268,7 @@ screen main_menu():
             hbox:
                 xfill True
 
-                if ap_edit_field == "password":
+                if ap_edit_field == "password" and not ap_is_connection_locked():
                     input:
                         value VariableInputValue("password")
                         length 64
@@ -2284,6 +2283,7 @@ screen main_menu():
 
                 textbutton "Edit":
                     xalign 1.0
+                    sensitive not ap_is_connection_locked()
                     action If(
                         ap_edit_field == "password",
                         SetScreenVariable("ap_edit_field", None),
@@ -2291,6 +2291,7 @@ screen main_menu():
                     )
 
             textbutton ("Hide password" if ap_show_password else "Show password"):
+                sensitive not ap_is_connection_locked()
                 action SetScreenVariable("ap_show_password", not ap_show_password)
 
             textbutton ("Deconnexion" if ap_is_connected() else "Connexion"):
@@ -2321,6 +2322,10 @@ init python:
         except Exception:
             return False
 
+    def ap_is_connection_locked() -> bool:
+        """Return True while the AP client is connecting or already connected."""
+        return get_archipelago_client() is not None
+
     def ap_disconnect() -> None:
         """Disconnect AP client from the UI thread."""
         client = get_archipelago_client()
@@ -2344,7 +2349,7 @@ init python:
             asyncio.run_coroutine_threadsafe(_disconnect_and_stop(client), loop)
             # Clear reference so UI immediately switches back to "Connexion".
             set_archipelago_client(None)
-            ap_notify("Deconnexion en cours...")
+            ap_notify("Deconnexion")
         except Exception as e:
             ap_notify(f"Erreur de deconnexion: {e}")
 
@@ -2373,22 +2378,33 @@ init python:
             url = f"wss://{url}"
         def run_connection():
             async def connect_and_listen():
-                ap_notify("Démarrage connexion...")
-                import RenpyClient
-                archipelago_client = RenpyClient.create_renpy_client(
-                    url, name, mdp,
-                    on_text=ap_notify,
-                )
-                # Capture the running loop so other threads can schedule work safely
-                archipelago_client.loop = asyncio.get_running_loop()
-                set_archipelago_client(archipelago_client)
-                ap_notify("Client créé, connexion en cours...")
-                await archipelago_client.connect(url)
-                ap_notify("Connecté avec succès !")
-                ap_notify("Démarrage message loop...")
-                await archipelago_client.message_loop()
-                await archipelago_client.shutdown()
-            
+                archipelago_client = None
+                try:
+                    ap_notify("Démarrage connexion...")
+                    import RenpyClient
+                    archipelago_client = RenpyClient.create_renpy_client(
+                        url, name, mdp,
+                        on_text=ap_notify,
+                    )
+                    # Capture the running loop so other threads can schedule work safely
+                    archipelago_client.loop = asyncio.get_running_loop()
+                    set_archipelago_client(archipelago_client)
+                    await archipelago_client.connect(url)
+
+                    # wait until AP sends the real Connected packet (slot assigned)
+                    # so notify + button state change happen together
+                    for _ in range(200):
+                        if getattr(archipelago_client, "slot", None) is not None:
+                            ap_notify("Connexion")
+                            renpy.restart_interaction()
+                            break
+                        await asyncio.sleep(0.05)
+
+                    await archipelago_client.message_loop()
+                    await archipelago_client.shutdown()
+                finally:
+                    if archipelago_client and get_archipelago_client() is archipelago_client:
+                        set_archipelago_client(None)
             try:
                 asyncio.run(connect_and_listen())
             except Exception as e:
@@ -2397,11 +2413,9 @@ init python:
                 ap_notify(error_msg)
                 traceback.print_exc()
         
-        ap_notify("Lancement du thread...")
         t = threading.Thread(target=run_connection)
         t.daemon = True
         t.start()
-        ap_notify("Thread lancé !")
 
 style main_menu_frame is empty
 style main_menu_vbox is vbox

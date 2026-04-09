@@ -4,6 +4,7 @@ if True:
     define config.console = True
     define config.rollback_enabled = True
 
+
 init -10 python:
     import os
     import sys
@@ -36,6 +37,7 @@ init -10 python:
     import DAGGER_CHAPTER_MAP
     import REGION_REQUIREMENTS
 
+    store.last_region_checked = None  # Variable globale pour suivre la dernière princesse rencontrée
     store.Location = Location
     store.Item = Item
     store.Region = Region
@@ -73,6 +75,10 @@ init -10 python:
     def set_archipelago_client(client: RenpyContext) -> None:
         """Modification thread-safe de archipelago_client"""
         archipelago.set_client(client)
+        try:
+            renpy.restart_interaction()
+        except Exception:
+            pass
 
     def send_location(location_name : str) -> None:
         """Envoie une location arbitraire."""
@@ -132,6 +138,8 @@ init -10 python:
         Le paramètre doit être une valeur de région (ex: Region.needle_hunted).
         """
         try:
+            store.last_region_checked = region_value  # Met à jour la région vérifiée pour les notifications d'échec
+
             client = get_archipelago_client()
             if not client:
                 return False
@@ -153,7 +161,7 @@ init -10 python:
 
 
 label chapter_requirements_failed:
-    $ ap_notify(f"{current_princess}: missing region requirements")
+    $ ap_notify(f"{store.last_region_checked}: missing region requirements")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
         "Return to the main menu.":
