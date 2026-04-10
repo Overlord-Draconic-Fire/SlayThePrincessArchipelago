@@ -6,6 +6,8 @@ label mirror_1_join:
     show content m you onlayer front
     with Dissolve(2.5)
     truth "It's you.\n"
+    if not hasXItem(Item.gift, 1):
+        jump chapter_requirements_failed
     jump begin_quiet
 
 label mirror_2_join:
@@ -15,6 +17,8 @@ label mirror_2_join:
     show content m bloat onlayer front
     with Dissolve(2.5)
     truth "You've grown.\n"
+    if not hasXItem(Item.gift, 2):
+        jump chapter_requirements_failed
     jump begin_quiet
 
 label mirror_3_join:
@@ -24,6 +28,8 @@ label mirror_3_join:
     show content m wither onlayer front
     with Dissolve(2.5)
     truth "You've withered.\n"
+    if not hasXItem(Item.gift, 3):
+        jump chapter_requirements_failed
     jump begin_quiet
 
 label mirror_4_join:
@@ -33,6 +39,8 @@ label mirror_4_join:
     show content m bone onlayer front
     with Dissolve(2.5)
     truth "You've unraveled.\n"
+    if not hasXItem(Item.gift, 4):
+        jump chapter_requirements_failed
     jump begin_quiet
 
 label mirror_finale:
@@ -1182,6 +1190,10 @@ label mirror_shard:
     hide narrator onlayer front
     hide farback onlayer farback
     scene bg black
+
+    if not hasXItem(Item.gift, 5):
+        jump chapter_requirements_failed
+
     with fade
     scene farback quiet onlayer farback at Position(ypos=1125)
     show bg quiet path onlayer back at Position(ypos=1125)

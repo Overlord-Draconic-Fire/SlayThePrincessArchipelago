@@ -38,6 +38,7 @@ init -10 python:
     import REGION_REQUIREMENTS
 
     store.last_region_checked = None  # Global variable tracking the last region checked
+    store.last_region_failed_requirement = None  # Global variable tracking the failed requirements in the last region checked
     store.Location = Location
     store.Item = Item
     store.Region = Region
@@ -132,15 +133,45 @@ init -10 python:
             ap_notify(f"Error in hasThisDagger({dagger_value}): {e}")
             return False
 
+    def hasXItem(item_value : str, x : int) -> bool:
+        """
+        Check whether the player has at least x of the specified item.
+        Accepts an item value like Item.heart and returns True if the player has at least x of that item.
+        """
+        try:
+            store.last_region_checked = None
+            if item_value == Item.gift:
+                store.last_region_checked = Region.space_between
+            store.last_region_failed_requirement = None
+
+            client : RenpyContext = get_archipelago_client()
+            if not client:
+                ap_notify("archipelago_client not initialized")
+                return False
+
+            store.last_region_checked = region_value
+            client : RenpyContext = get_archipelago_client()
+            if not client:
+                ap_notify("archipelago_client not initialized")
+                return False
+
+            count = client.count_item(item_value)
+            ap_notify(f"Player has {count} of {item_value} (needs {x})")
+            return count >= x
+        except Exception as e:
+            ap_notify(f"Error in hasXItem({item_value}, {x}): {e}")
+            return False
+
     def hasRegionRequirements(region_value : str) -> bool:
         """
         Check whether the player has all required items for a region.
         The parameter must be a region value (e.g., Region.needle_hunted).
         """
         try:
-            store.last_region_checked = region_value  # Keep track of region for failure notifications
+            store.last_region_checked = region_value
+            store.last_region_failed_requirement = None
 
-            client = get_archipelago_client()
+            client : RenpyContext = get_archipelago_client()
             if not client:
                 return False
 
@@ -151,6 +182,7 @@ init -10 python:
 
             for required_item in requirements:
                 if not client.has_item(required_item):
+                    store.last_region_failed_requirement = required_item
                     return False
 
             return True
@@ -161,7 +193,7 @@ init -10 python:
 
 
 label chapter_requirements_failed:
-    $ ap_notify(f"{store.last_region_checked}: missing region requirements")
+    $ ap_notify(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
         "Return to the main menu.":

@@ -1,5 +1,6 @@
 label begin_quiet:
-
+    if not hasRegionRequirements(Region.goddess):
+        jump chapter_requirements_failed
     $ gallery_ztlq.unlock_item(1)
     $ renpy.save_persistent()
     stop music2
