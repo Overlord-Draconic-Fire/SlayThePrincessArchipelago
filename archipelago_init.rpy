@@ -157,6 +157,8 @@ init -10 python:
 
             count = client.count_item(item_value)
             ap_notify(f"Player has {count} of {item_value} (needs {x})")
+            if count < x:
+                store.last_region_failed_requirement = (x - count) + " " + item_value
             return count >= x
         except Exception as e:
             ap_notify(f"Error in hasXItem({item_value}, {x}): {e}")
