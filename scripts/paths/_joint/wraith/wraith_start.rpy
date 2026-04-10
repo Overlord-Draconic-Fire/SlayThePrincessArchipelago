@@ -48,11 +48,11 @@ label wraith_start:
     $ send_location(Location.wraith)
 
     if wraith_source == "spectre":
-        if wraith_bonus_voice == "cheated":
-            if not hasRegionRequirements(Region.wraith_cheated):
+        if wraith_bonus_voice == "paranoid":
+            if not hasRegionRequirements(Region.wraith_paranoid):
                 jump chapter_requirements_failed
         else:
-            if not hasRegionRequirements(Region.wraith_paranoid):
+            if not hasRegionRequirements(Region.wraith_cheated):
                 jump chapter_requirements_failed
     else:
         if wraith_bonus_voice == "cold":
