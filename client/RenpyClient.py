@@ -78,27 +78,27 @@ class RenpyContext(CommonContext):
         location_id: int | None = normalized_reverse.get(norm_target)
 
         if location_id is None:
-            self._notify(f"Location inconnue: '{location_name}'")
+            self._notify(f"Unknown location: '{location_name}'")
             return False
 
         # Check if already sent to server (from any previous session or this one)
         if location_id in self.checked_locations:
-            self._notify(f"Location déjà envoyée: '{location_name}' ({location_id})")
+            self._notify(f"Location already sent: '{location_name}' ({location_id})")
             return False
 
         # Send the location check on the background event loop
         if not self.loop or self.loop.is_closed():
-            self._notify(f"Impossible d'envoyer la location: event loop inactif ({location_name})")
+            self._notify(f"Cannot send location: inactive event loop ({location_name})")
             return False
 
         import asyncio
         try:
             asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), self.loop)
-            self._notify(f"Location envoyée: '{location_name}' ({location_id})")
+            self._notify(f"Location sent: '{location_name}' ({location_id})")
             return True
         except Exception:
             logger.exception("send_location failed")
-            self._notify(f"Erreur lors de l'envoi de la location '{location_name}'")
+            self._notify(f"Error while sending location '{location_name}'")
             return False
 
     def _notify(self, message: str) -> None:
@@ -133,7 +133,7 @@ class RenpyContext(CommonContext):
             try:
                 item_name: str = self.item_names.lookup_in_slot(net_item.item, self.slot)
                 sender: str = self.player_names.get(net_item.player, str(net_item.player))
-                self.on_text_callback(f"Reçu: {item_name} ({sender})")
+                self.on_text_callback(f"Received: {item_name} ({sender})")
             except Exception:
                 logger.exception("item_received callback failed")
 

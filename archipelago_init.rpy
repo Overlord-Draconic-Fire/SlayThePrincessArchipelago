@@ -9,10 +9,10 @@ init -10 python:
     import os
     import sys
     
-    # Force le bon chemin absolu
+    # Force the correct absolute path
     base_dir = os.path.join(renpy.config.basedir, "game")
     
-    # Chemins à ajouter dans l'ordre de priorité
+    # Paths to add in priority order
     paths_to_add = [
         os.path.join(base_dir, "client", "dependencies"),
         os.path.join(base_dir, "client"),
@@ -20,7 +20,7 @@ init -10 python:
         base_dir
     ]
     
-    # Ajoute TOUS les chemins
+    # Add ALL paths
     for path in paths_to_add:
         if path not in sys.path:
             sys.path.insert(0, path)
@@ -37,7 +37,7 @@ init -10 python:
     import DAGGER_CHAPTER_MAP
     import REGION_REQUIREMENTS
 
-    store.last_region_checked = None  # Variable globale pour suivre la dernière princesse rencontrée
+    store.last_region_checked = None  # Global variable tracking the last region checked
     store.Location = Location
     store.Item = Item
     store.Region = Region
@@ -50,12 +50,12 @@ init -10 python:
             self.lock = threading.Lock()
         
         def get_client(self):
-            """Accès thread-safe à archipelago_client depuis n'importe quel thread"""
+            """Thread-safe access to archipelago_client from any thread."""
             with self.lock:
                 return self.client
         
         def set_client(self, client):
-            """Modification thread-safe de archipelago_client"""
+            """Thread-safe update of archipelago_client."""
             with self.lock:
                 self.client = client
     
@@ -63,17 +63,17 @@ init -10 python:
     archipelago = ArchipelagoManager()
 
     def ap_notify(message) -> None:
-        """Notification qui affiche ET écrit dans la console (Shift+O)"""
+        """Notification shown in-game and printed to the console (Shift+O)."""
         msg_str = str(message)
         renpy.notify(msg_str)
         print(f"[AP] {msg_str}")
 
     def get_archipelago_client() -> RenpyContext:
-        """Accès thread-safe à archipelago_client depuis n'importe quel thread"""
+        """Thread-safe access to archipelago_client from any thread."""
         return archipelago.get_client()
     
     def set_archipelago_client(client: RenpyContext) -> None:
-        """Modification thread-safe de archipelago_client"""
+        """Thread-safe update of archipelago_client."""
         archipelago.set_client(client)
         try:
             renpy.restart_interaction()
@@ -81,38 +81,38 @@ init -10 python:
             pass
 
     def send_location(location_name : str) -> None:
-        """Envoie une location arbitraire."""
+        """Send an arbitrary location check."""
         try:
             client : RenpyContext = get_archipelago_client()
             if client:
                 client.send_location(location_name)
             else:
-                ap_notify(f"archipelago_client non initialisé")
+                ap_notify("archipelago_client not initialized")
         except Exception as e:
             import traceback
-            ap_notify(f"Erreur lors de l'envoi de location: {e}")
+            ap_notify(f"Error while sending location: {e}")
             traceback.print_exc()
     
     def hasThisDagger(dagger_value : str) -> bool:
         """
-        Vérifie si le joueur possède un dagger.
-        Accepte une valeur d'item comme Item.dagger_wild et retourne True si :
-        - Le joueur a la dagger spécifique, OU
-        - Le joueur a la dagger du chapitre (dagger3 pour chapter 3), OU
-        - Le joueur a la dagger global (dagger)
+        Check whether the player has a dagger.
+        Accepts an item value like Item.dagger_wild and returns True if:
+        - The player has the specific dagger, OR
+        - The player has the chapter dagger (dagger3 for chapter 3), OR
+        - The player has the global dagger (dagger)
         """
         try:
             client : RenpyContext = get_archipelago_client()
             if not client:
-                ap_notify(f"archipelago_client non initialisé")
+                ap_notify("archipelago_client not initialized")
                 return False
 
-            # Vérifier la dagger spécifique
+            # Check specific dagger
             if client.has_item(dagger_value):
                 ap_notify(f"Player has specific dagger: {dagger_value}")
                 return True
             
-            # Vérifier la dagger du chapitre correspondant
+            # Check chapter-specific dagger
             if dagger_value in DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP:
                 chapter = DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP[dagger_value]
                 if chapter != "special":
@@ -122,7 +122,7 @@ init -10 python:
                         ap_notify(f"Player has chapter dagger: {chapter_item}")
                         return True
             
-            # Vérifier la dagger global
+            # Check global dagger
             if client.has_item(Item.dagger):
                 ap_notify(f"Player has global dagger: {Item.dagger}")
                 return True
@@ -134,11 +134,11 @@ init -10 python:
 
     def hasRegionRequirements(region_value : str) -> bool:
         """
-        Vérifie si le joueur possède tous les items requis pour une région.
-        Le paramètre doit être une valeur de région (ex: Region.needle_hunted).
+        Check whether the player has all required items for a region.
+        The parameter must be a region value (e.g., Region.needle_hunted).
         """
         try:
-            store.last_region_checked = region_value  # Met à jour la région vérifiée pour les notifications d'échec
+            store.last_region_checked = region_value  # Keep track of region for failure notifications
 
             client = get_archipelago_client()
             if not client:

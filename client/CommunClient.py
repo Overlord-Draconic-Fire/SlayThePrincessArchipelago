@@ -790,7 +790,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
             stored = Utils.persistent_load().get("client", {}).get(f"last_notified_index::{slot_key}", 0)
             ctx.last_notified_index = int(stored)
             ctx._last_notified_loaded = True
-            logger.info(f"[ReceivedItems] Chargé last_notified_index={ctx.last_notified_index} pour slot_key={slot_key}")
+            logger.info(f"[ReceivedItems] Loaded last_notified_index={ctx.last_notified_index} for slot_key={slot_key}")
 
         # Suppress user-facing notifications only for items already notified
         suppress_notify_threshold = ctx.last_notified_index
@@ -820,7 +820,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
             ctx.last_notified_index = len(ctx.items_received)
             slot_key = ctx.auth or ctx.username or "default"
             Utils.persistent_store("client", f"last_notified_index::{slot_key}", ctx.last_notified_index)
-            logger.info(f"[ReceivedItems] Sauvegardé last_notified_index={ctx.last_notified_index} pour slot_key={slot_key}")
+            logger.info(f"[ReceivedItems] Saved last_notified_index={ctx.last_notified_index} for slot_key={slot_key}")
 
     elif cmd == 'LocationInfo':
         for item in [NetworkItem(*item) for item in args['locations']]:

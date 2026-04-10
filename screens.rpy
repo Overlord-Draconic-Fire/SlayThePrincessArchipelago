@@ -2224,8 +2224,8 @@ screen main_menu():
         vbox:
             spacing 15
 
-            # Titre
-            label _("Archipelago connexion")
+            # Title
+            label _("Archipelago connection")
 
             hbox:
                 xfill True
@@ -2235,7 +2235,7 @@ screen main_menu():
                         value VariableInputValue("server_url")
                         length 128
                 else:
-                    text "Url : [server_url]"
+                    text "URL: [server_url]"
 
                 textbutton "Edit":
                     xalign 1.0
@@ -2254,7 +2254,7 @@ screen main_menu():
                         value VariableInputValue("slot_name")
                         length 64
                 else:
-                    text "Slot : [slot_name]"
+                    text "Slot: [slot_name]"
 
                 textbutton "Edit":
                     xalign 1.0
@@ -2275,7 +2275,7 @@ screen main_menu():
                         mask (None if ap_show_password or not password else "*")
                 else:
                     text (
-                        "Mot de passe : " + (
+                        "Password: " + (
                             password if ap_show_password
                             else (("*" * len(password)) if password else "")
                         )
@@ -2294,7 +2294,7 @@ screen main_menu():
                 sensitive not ap_is_connection_locked()
                 action SetScreenVariable("ap_show_password", not ap_show_password)
 
-            textbutton ("Deconnexion" if ap_is_connected() else "Connexion"):
+            textbutton ("Disconnect" if ap_is_connected() else "Connect"):
                 action If(ap_is_connected(), Function(ap_disconnect), Function(ap_connect))
 
 default server_url = "archipelago.gg:"
@@ -2330,13 +2330,13 @@ init python:
         """Disconnect AP client from the UI thread."""
         client = get_archipelago_client()
         if not client:
-            ap_notify("Aucun client AP actif.")
+            ap_notify("No active AP client.")
             return
 
         loop = getattr(client, "loop", None)
         if not loop or loop.is_closed():
             set_archipelago_client(None)
-            ap_notify("Client AP nettoye.")
+            ap_notify("AP client cleaned up.")
             return
 
         async def _disconnect_and_stop(ctx):
@@ -2347,11 +2347,11 @@ init python:
             import asyncio
 
             asyncio.run_coroutine_threadsafe(_disconnect_and_stop(client), loop)
-            # Clear reference so UI immediately switches back to "Connexion".
+            # Clear reference so UI immediately switches back to "Connect".
             set_archipelago_client(None)
-            ap_notify("Deconnexion")
+            ap_notify("Disconnected")
         except Exception as e:
-            ap_notify(f"Erreur de deconnexion: {e}")
+            ap_notify(f"Disconnection error: {e}")
 
     def load_persistent_client_fields():
         """Load AP fields from the client persistent YAML file."""
@@ -2380,7 +2380,7 @@ init python:
             async def connect_and_listen():
                 archipelago_client = None
                 try:
-                    ap_notify("Démarrage connexion...")
+                    ap_notify("Starting connection...")
                     import RenpyClient
                     archipelago_client = RenpyClient.create_renpy_client(
                         url, name, mdp,
@@ -2395,7 +2395,7 @@ init python:
                     # so notify + button state change happen together
                     for _ in range(200):
                         if getattr(archipelago_client, "slot", None) is not None:
-                            ap_notify("Connexion")
+                            ap_notify("Connected")
                             renpy.restart_interaction()
                             break
                         await asyncio.sleep(0.05)
@@ -2409,7 +2409,7 @@ init python:
                 asyncio.run(connect_and_listen())
             except Exception as e:
                 import traceback
-                error_msg = f"Erreur de connexion: {str(e)}"
+                error_msg = f"Connection error: {str(e)}"
                 ap_notify(error_msg)
                 traceback.print_exc()
         
