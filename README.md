@@ -25,8 +25,6 @@ Exceptions: the *Good Ending* and *Oblivion*, which are intentionally excluded a
   * either `skeptic` or `stubborn` (depending on your choices)
   * and technically `beast`
 
-  Note: **The Shifting Mound (Princess)** allows access to her incomplete form from loop 1.
-
 * **Gifts (x5)**
   Represent the number of loops you are allowed to complete.
 
@@ -39,9 +37,6 @@ Locations are triggered by specific in-game events:
 * Reaching any Chapter 2 or Chapter 3 for the first time
 
 * Encountering a princess for the first time (*Find The XXX*)
-
-  Note: **Find The Shifting Mound** refers to her final form during the fifth loop.
-  The mismatch between the item and the location is known... But I already do the release so... Yeah...
 
 * Seeing your reflection in the end-of-loop mirror (*The Body, The Bloat, etc.*)
 
