@@ -1,4 +1,5 @@
 label begin_quiet:
+    $ send_location(Location.goddess)
     if not hasRegionRequirements(Region.goddess):
         jump chapter_requirements_failed
     $ gallery_ztlq.unlock_item(1)

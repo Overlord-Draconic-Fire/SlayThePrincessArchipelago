@@ -5,6 +5,7 @@ import logging
 import typing
 
 from CommunClient import CommonContext, NetworkItem
+from NetUtils import ClientStatus
 
 logger: logging.Logger = logging.getLogger("Client")
 
@@ -99,6 +100,25 @@ class RenpyContext(CommonContext):
         except Exception:
             logger.exception("send_location failed")
             self._notify(f"Error while sending location '{location_name}'")
+            return False
+
+    def send_goal(self) -> bool:
+        """Mark this slot as goal-complete on the Archipelago server."""
+        if not self.loop or self.loop.is_closed():
+            self._notify("Cannot send goal: inactive event loop")
+            return False
+
+        import asyncio
+        try:
+            self.finished_game = True
+            asyncio.run_coroutine_threadsafe(
+                self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]),
+                self.loop,
+            ).result(timeout=2.0)
+            self._notify("Goal status sent")
+            return True
+        except Exception:
+            self._notify("Error while sending goal status")
             return False
 
     def _notify(self, message: str) -> None:

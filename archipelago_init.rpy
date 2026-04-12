@@ -119,6 +119,19 @@ init -10 python:
             import traceback
             ap_debug(f"Error while sending location: {e}")
             traceback.print_exc()
+
+    def send_goal() -> None:
+        """Mark current AP slot as having completed its goal."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                client.send_goal()
+            else:
+                ap_info("archipelago not initialized")
+        except Exception as e:
+            import traceback
+            ap_debug(f"Error while sending goal status: {e}")
+            traceback.print_exc()
     
     def hasThisDagger(dagger_value : str) -> bool:
         """

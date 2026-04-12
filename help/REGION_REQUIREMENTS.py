@@ -88,4 +88,7 @@ REGION_REQUIREMENTS = {
     
     # Chapter IV - Razor (all voices)
     Region.razor_chap4: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
+
+    # The Long Quiet - The Shifting Mound
+    Region.goddess: [Item.goddess],
 }
