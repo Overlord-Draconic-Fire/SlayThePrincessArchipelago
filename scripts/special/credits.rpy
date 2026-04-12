@@ -83,6 +83,9 @@ label credits:
         $ renpy.show_screen("song", _layer="master")
         with fade
 
+    if final_ending != "good" and final_ending != "oblivion":
+        $ send_location(Location.win)
+    
     if renpy.variant("pc"):
         truthsmall "Thank you so much for playing. As an expression of our gratitude, here's the track order for a special playlist just for you. If you'd like to take a screenshot, you can hide the UI by hitting 'h.'\n"
     else:
