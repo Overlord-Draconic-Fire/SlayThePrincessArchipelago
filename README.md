@@ -1,5 +1,74 @@
 # Archipelago Mod – Installation Guide
 
+## Randomization Overview
+
+At the current stage, the YAML configuration is mostly decorative. The only functional option is changing your player name.
+
+If you want to "disable" certain options (such as the dagger or gifts), you will need to send them to yourself at the start with admin command.
+
+The objective is to reach the credits.
+Exceptions: the *Good Ending* and *Oblivion*, which are intentionally excluded as they are too easy to achieve.
+
+---
+
+## Items
+
+* **Dagger**
+  You cannot pick up or use the dagger unless it has been unlocked.
+
+* **Princesses & Voices**
+  Access to a chapter requires the corresponding princess and all required voices.
+  Example: to play *Chap 3: The Den*, you need:
+
+  * `den`
+  * `hunted`
+  * either `skeptic` or `stubborn` (depending on your choices)
+  * and technically `beast`
+
+  Note: **The Shifting Mound (Princess)** allows access to her incomplete form from loop 1.
+
+* **Gifts (x5)**
+  Represent the number of loops you are allowed to complete.
+
+---
+
+## Locations
+
+Locations are triggered by specific in-game events:
+
+* Reaching any Chapter 2 or Chapter 3 for the first time
+
+* Encountering a princess for the first time (*Find The XXX*)
+
+  Note: **Find The Shifting Mound** refers to her final form during the fifth loop.
+  The mismatch between the item and the location is known... But I already do the release so... Yeah...
+
+* Seeing your reflection in the end-of-loop mirror (*The Body, The Bloat, etc.*)
+
+* Bringing back a heart (or vessel) (*A XXX Heart*)
+
+---
+
+## When Checks Occur
+
+* **Entering a new chapter**
+
+  * The game sends the chapter location (Chapter 2 or 3)
+  * Then the specific princess location
+  * It checks whether you have all required items
+  * If not, you are returned to the main menu
+
+* **Ending a loop**
+
+  * The game sends the “heart” location
+  * Then the mirror-related location
+  * It checks if you have enough gifts to meet the goddess
+  * It also verifies if you possess the goddess item
+
+This system is still in an early state and may evolve in future updates.
+
+---
+
 ## Installation
 
 1. **Extract the mod archive**
