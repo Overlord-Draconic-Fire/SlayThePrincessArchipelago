@@ -2330,13 +2330,13 @@ init python:
         """Disconnect AP client from the UI thread."""
         client = get_archipelago_client()
         if not client:
-            ap_notify("No active AP client.")
+            ap_info("archipelago not initialized")
             return
 
         loop = getattr(client, "loop", None)
         if not loop or loop.is_closed():
             set_archipelago_client(None)
-            ap_notify("AP client cleaned up.")
+            ap_info("AP client cleaned up.")
             return
 
         async def _disconnect_and_stop(ctx):
@@ -2349,9 +2349,9 @@ init python:
             asyncio.run_coroutine_threadsafe(_disconnect_and_stop(client), loop)
             # Clear reference so UI immediately switches back to "Connect".
             set_archipelago_client(None)
-            ap_notify("Disconnected")
+            ap_info("Disconnected")
         except Exception as e:
-            ap_notify(f"Disconnection error: {e}")
+            ap_debug(f"Disconnection error: {e}")
 
     def load_persistent_client_fields():
         """Load AP fields from the client persistent YAML file."""
@@ -2380,7 +2380,7 @@ init python:
             async def connect_and_listen():
                 archipelago_client = None
                 try:
-                    ap_notify("Starting connection...")
+                    ap_info("Starting connection...")
                     import RenpyClient
                     archipelago_client = RenpyClient.create_renpy_client(
                         url, name, mdp,
@@ -2395,7 +2395,7 @@ init python:
                     # so notify + button state change happen together
                     for _ in range(200):
                         if getattr(archipelago_client, "slot", None) is not None:
-                            ap_notify("Connected")
+                            ap_info("Connected")
                             renpy.restart_interaction()
                             break
                         await asyncio.sleep(0.05)
@@ -2410,7 +2410,7 @@ init python:
             except Exception as e:
                 import traceback
                 error_msg = f"Connection error: {str(e)}"
-                ap_notify(error_msg)
+                ap_debug(error_msg)
                 traceback.print_exc()
         
         t = threading.Thread(target=run_connection)

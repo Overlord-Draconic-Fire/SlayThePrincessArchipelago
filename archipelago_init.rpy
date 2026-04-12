@@ -63,11 +63,37 @@ init -10 python:
     # Global instance
     archipelago = ArchipelagoManager()
 
-    def ap_notify(message) -> None:
-        """Notification shown in-game and printed to the console (Shift+O)."""
+    def ap_notify(message, level: str = "debug") -> None:
+        """
+        Unified AP notification helper.
+        - level="debug": console/dev only, prefixed with [DEBUG]
+        - level="ap": player-facing only, prefixed with [AP]
+        - level="info": both console and player, prefixed with [INFO]
+        """
         msg_str = str(message)
+        level_key = str(level).lower().strip()
+
+        if level_key not in ("debug", "ap", "info"):
+            level_key = "debug"
+
+        prefix_map = {
+            "debug": "[DEBUG]",
+            "ap": "[AP]",
+            "info": "[INFO]",
+        }
+        full_message = f"{prefix_map[level_key]} {msg_str}"
+
         renpy.notify(msg_str)
-        print(f"[AP] {msg_str}")
+        print(full_message)
+
+    def ap_debug(message) -> None:
+        ap_notify(message, "debug")
+
+    def ap_player(message) -> None:
+        ap_notify(message, "ap")
+
+    def ap_info(message) -> None:
+        ap_notify(message, "info")
 
     def get_archipelago_client() -> RenpyContext:
         """Thread-safe access to archipelago_client from any thread."""
@@ -88,10 +114,10 @@ init -10 python:
             if client:
                 client.send_location(location_name)
             else:
-                ap_notify("archipelago_client not initialized")
+                ap_info("archipelago not initialized")
         except Exception as e:
             import traceback
-            ap_notify(f"Error while sending location: {e}")
+            ap_debug(f"Error while sending location: {e}")
             traceback.print_exc()
     
     def hasThisDagger(dagger_value : str) -> bool:
@@ -105,12 +131,12 @@ init -10 python:
         try:
             client : RenpyContext = get_archipelago_client()
             if not client:
-                ap_notify("archipelago_client not initialized")
+                ap_info("archipelago not initialized")
                 return False
 
             # Check specific dagger
             if client.has_item(dagger_value):
-                ap_notify(f"Player has specific dagger: {dagger_value}")
+                ap_debug(f"Player has specific dagger: {dagger_value}")
                 return True
             
             # Check chapter-specific dagger
@@ -120,17 +146,17 @@ init -10 python:
                     chapter_dagger = f"dagger{chapter}"
                     chapter_item = getattr(Item, chapter_dagger)
                     if client.has_item(chapter_item):
-                        ap_notify(f"Player has chapter dagger: {chapter_item}")
+                        ap_debug(f"Player has chapter dagger: {chapter_item}")
                         return True
             
             # Check global dagger
             if client.has_item(Item.dagger):
-                ap_notify(f"Player has global dagger: {Item.dagger}")
+                ap_debug(f"Player has global dagger: {Item.dagger}")
                 return True
             
             return False
         except Exception as e:
-            ap_notify(f"Error in hasThisDagger({dagger_value}): {e}")
+            ap_debug(f"Error in hasThisDagger({dagger_value}): {e}")
             return False
 
     def hasXItem(item_value : str, x : int) -> bool:
@@ -142,26 +168,21 @@ init -10 python:
             store.last_region_checked = None
             if item_value == Item.gift:
                 store.last_region_checked = Region.space_between
+
             store.last_region_failed_requirement = None
 
             client : RenpyContext = get_archipelago_client()
             if not client:
-                ap_notify("archipelago_client not initialized")
-                return False
-
-            store.last_region_checked = region_value
-            client : RenpyContext = get_archipelago_client()
-            if not client:
-                ap_notify("archipelago_client not initialized")
+                ap_info("archipelago not initialized")
                 return False
 
             count = client.count_item(item_value)
-            ap_notify(f"Player has {count} of {item_value} (needs {x})")
+            ap_debug(f"Player has {count} of {item_value} (needs {x})")
             if count < x:
                 store.last_region_failed_requirement = (x - count) + " " + item_value
             return count >= x
         except Exception as e:
-            ap_notify(f"Error in hasXItem({item_value}, {x}): {e}")
+            ap_debug(f"Error in hasXItem({item_value}, {x}): {e}")
             return False
 
     def hasRegionRequirements(region_value : str) -> bool:
@@ -179,7 +200,7 @@ init -10 python:
 
             requirements = REGION_REQUIREMENTS.REGION_REQUIREMENTS.get(region_value)
             if not requirements:
-                ap_notify(f"No requirements found for region: {region_value}")
+                ap_debug(f"No requirements found for region: {region_value}")
                 return False
 
             for required_item in requirements:
@@ -189,13 +210,13 @@ init -10 python:
 
             return True
         except Exception as e:
-            ap_notify(f"Error in hasRegionRequirements({region_value}): {e}")
+            ap_debug(f"Error in hasRegionRequirements({region_value}): {e}")
             return False
 
 
 
 label chapter_requirements_failed:
-    $ ap_notify(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
+    $ ap_info(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
         "Return to the main menu.":
