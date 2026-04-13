@@ -6,7 +6,7 @@ label mirror_1_join:
     show content m you onlayer front
     with Dissolve(2.5)
     truth "It's you.\n"
-    if not hasXItem(Item.gift, 1):
+    if get_gift_rando() and not hasXItem(Item.gift, 1):
         jump chapter_requirements_failed
     jump begin_quiet
 
@@ -17,7 +17,7 @@ label mirror_2_join:
     show content m bloat onlayer front
     with Dissolve(2.5)
     truth "You've grown.\n"
-    if not hasXItem(Item.gift, 2):
+    if get_gift_rando() and not hasXItem(Item.gift, 2):
         jump chapter_requirements_failed
     jump begin_quiet
 
@@ -28,7 +28,7 @@ label mirror_3_join:
     show content m wither onlayer front
     with Dissolve(2.5)
     truth "You've withered.\n"
-    if not hasXItem(Item.gift, 3):
+    if get_gift_rando() and not hasXItem(Item.gift, 3):
         jump chapter_requirements_failed
     jump begin_quiet
 
@@ -39,7 +39,7 @@ label mirror_4_join:
     show content m bone onlayer front
     with Dissolve(2.5)
     truth "You've unraveled.\n"
-    if not hasXItem(Item.gift, 4):
+    if get_gift_rando() and not hasXItem(Item.gift, 4):
         jump chapter_requirements_failed
     jump begin_quiet
 
@@ -1191,7 +1191,7 @@ label mirror_shard:
     hide farback onlayer farback
     scene bg black
 
-    if not hasXItem(Item.gift, 5):
+    if get_gift_rando() and not hasXItem(Item.gift, 5):
         jump chapter_requirements_failed
 
     with fade

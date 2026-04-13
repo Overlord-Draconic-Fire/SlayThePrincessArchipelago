@@ -112,6 +112,13 @@ init -10 python:
         try:
             client : RenpyContext = get_archipelago_client()
             if client:
+                if "Find" in location_name and not get_chapter_rando():
+                    return
+                if "Reach" in location_name and not get_global_chapter_rando():
+                    return
+                if "Heart" in location_name and not get_heart_rando():
+                    return
+
                 client.send_location(location_name)
             else:
                 ap_info("archipelago not initialized")
@@ -132,7 +139,107 @@ init -10 python:
             import traceback
             ap_debug(f"Error while sending goal status: {e}")
             traceback.print_exc()
-    
+
+    def get_slot_data() -> dict:
+        """Return AP slot_data for this player (empty dict if unavailable)."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_slot_data()
+        except Exception as e:
+            ap_debug(f"Error in get_slot_data(): {e}")
+        return {}
+
+    def get_slot_option_bool(key: str, default: bool = False) -> bool:
+        """Read a boolean option from AP slot_data."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_slot_option_bool(key, default)
+        except Exception as e:
+            ap_debug(f"Error in get_slot_option_bool({key}): {e}")
+        return default
+
+    def get_slot_option_int(key: str, default: int = 0) -> int:
+        """Read an integer option from AP slot_data."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_slot_option_int(key, default)
+        except Exception as e:
+            ap_debug(f"Error in get_slot_option_int({key}): {e}")
+        return default
+
+    def get_chapter_access() -> int:
+        """Read slot_data['chapter_access']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_chapter_access()
+        except Exception as e:
+            ap_debug(f"Error in get_chapter_access(): {e}")
+        return ChapterAccessRando.default
+
+    def get_pristine_dagger_rando() -> int:
+        """Read slot_data['pristine_dagger_rando']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_pristine_dagger_rando()
+        except Exception as e:
+            ap_debug(f"Error in get_pristine_dagger_rando(): {e}")
+        return PristineDaggerRando.default
+
+    def get_gift_rando() -> bool:
+        """Read slot_data['gift_rando']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_gift_rando()
+        except Exception as e:
+            ap_debug(f"Error in get_gift_rando(): {e}")
+        return False
+
+    def get_chapter_rando() -> bool:
+        """Read slot_data['chapter_rando']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_chapter_rando()
+        except Exception as e:
+            ap_debug(f"Error in get_chapter_rando(): {e}")
+        return False
+
+    def get_global_chapter_rando() -> bool:
+        """Read slot_data['global_chapter_rando']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_global_chapter_rando()
+        except Exception as e:
+            ap_debug(f"Error in get_global_chapter_rando(): {e}")
+        return False
+
+    def get_heart_rando() -> bool:
+        """Read slot_data['heart_rando']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_heart_rando()
+        except Exception as e:
+            ap_debug(f"Error in get_heart_rando(): {e}")
+        return False
+
+    def get_mirror_rando() -> bool:
+        """Read slot_data['mirror_rando']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_mirror_rando()
+        except Exception as e:
+            ap_debug(f"Error in get_mirror_rando(): {e}")
+        return False
+
     def hasThisDagger(dagger_value : str) -> bool:
         """
         Check whether the player has a dagger.
@@ -166,7 +273,7 @@ init -10 python:
                 ap_debug(f"Player has global dagger: {Item.dagger}")
                 return True
             
-            return False
+            return get_pristine_dagger_rando() == 0
         except Exception as e:
             ap_debug(f"Error in hasThisDagger({dagger_value}): {e}")
             return False
@@ -216,6 +323,11 @@ init -10 python:
                 return False
 
             for required_item in requirements:
+                if not get_chapter_access() in [2, 4] and "(Princess)" in required_item:
+                    continue
+                if not get_chapter_access() in [3, 4] and "(Voice)" in required_item:
+                    continue
+
                 if not client.has_item(required_item):
                     store.last_region_failed_requirement = required_item
                     return False

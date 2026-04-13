@@ -175,6 +175,9 @@ class CommonContext:
     stored_data_notification_keys: set[str]
     """Current container of watched Data Storage keys, managed by ctx.set_notify"""
 
+    slot_data: dict[str, typing.Any]
+    """Slot data received from server in Connected packet (if requested in Connect)."""
+
     # internals
 
     def __init__(self, server_address: typing.Optional[str] = None, password: typing.Optional[str] = None) -> None:
@@ -212,6 +215,7 @@ class CommonContext:
 
         self.stored_data = {}
         self.stored_data_notification_keys = set()
+        self.slot_data = {}
 
         self.input_queue = asyncio.Queue()
         self.input_requests = 0
@@ -735,6 +739,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
         ctx.username = ctx.auth
         ctx.team = args["team"]
         ctx.slot = args["slot"]
+        ctx.slot_data = dict(args.get("slot_data", {}))
 
         # Reset per-slot notification tracking so the next ReceivedItems load pulls the right persisted index
         ctx._last_notified_loaded = False

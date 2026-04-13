@@ -121,6 +121,62 @@ class RenpyContext(CommonContext):
             self._notify("Error while sending goal status")
             return False
 
+    def get_slot_data(self) -> dict[str, typing.Any]:
+        """Return the current slot_data dict received from the server."""
+        return dict(getattr(self, "slot_data", {}))
+
+    def get_slot_option(self, key: str, default: typing.Any = None) -> typing.Any:
+        """Read one slot_data option by key."""
+        data = getattr(self, "slot_data", {}) or {}
+        return data.get(key, default)
+
+    def get_slot_option_bool(self, key: str, default: bool = False) -> bool:
+        """Read a slot_data option and coerce it to bool."""
+        value = self.get_slot_option(key, default)
+        if isinstance(value, str):
+            lowered = value.strip().lower()
+            if lowered in {"1", "true", "yes", "on"}:
+                return True
+            if lowered in {"0", "false", "no", "off", ""}:
+                return False
+        return bool(value)
+
+    def get_slot_option_int(self, key: str, default: int = 0) -> int:
+        """Read a slot_data option and coerce it to int."""
+        value = self.get_slot_option(key, default)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return default
+
+    def get_chapter_access(self) -> int:
+        """Read slot_data['chapter_access'] as an int enum."""
+        return self.get_slot_option_int("chapter_access", 4)
+
+    def get_pristine_dagger_rando(self) -> int:
+        """Read slot_data['pristine_dagger_rando'] as an int enum."""
+        return self.get_slot_option_int("pristine_dagger_rando", 2)
+
+    def get_gift_rando(self) -> bool:
+        """Read slot_data['gift_rando'] as bool."""
+        return self.get_slot_option_bool("gift_rando", True)
+
+    def get_chapter_rando(self) -> bool:
+        """Read slot_data['chapter_rando'] as bool."""
+        return self.get_slot_option_bool("chapter_rando", True)
+
+    def get_global_chapter_rando(self) -> bool:
+        """Read slot_data['global_chapter_rando'] as bool."""
+        return self.get_slot_option_bool("global_chapter_rando", True)
+
+    def get_heart_rando(self) -> bool:
+        """Read slot_data['heart_rando'] as bool."""
+        return self.get_slot_option_bool("heart_rando", True)
+
+    def get_mirror_rando(self) -> bool:
+        """Read slot_data['mirror_rando'] as bool."""
+        return self.get_slot_option_bool("mirror_rando", True)
+
     def _notify(self, message: str) -> None:
         """Thread-safe bridge to on_text_callback (ap_notify)."""
         logger.info(message)
