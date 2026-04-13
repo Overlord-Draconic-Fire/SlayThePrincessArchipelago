@@ -155,12 +155,11 @@ init -10 python:
             # Check chapter-specific dagger
             if dagger_value in DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP:
                 chapter = DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP[dagger_value]
-                if chapter != "special":
-                    chapter_dagger = f"dagger{chapter}"
-                    chapter_item = getattr(Item, chapter_dagger)
-                    if client.has_item(chapter_item):
-                        ap_debug(f"Player has chapter dagger: {chapter_item}")
-                        return True
+                chapter_dagger = f"dagger{chapter}"
+                chapter_item = getattr(Item, chapter_dagger)
+                if client.has_item(chapter_item):
+                    ap_debug(f"Player has chapter dagger: {chapter_item}")
+                    return True
             
             # Check global dagger
             if client.has_item(Item.dagger):

@@ -35,6 +35,6 @@ DAGGER_CHAPTER_MAP = {
     Item.dagger_grey: 3,
     Item.dagger_happily: 3,
     
-    # Special
-    Item.dagger_goddess: "special",
+    # End
+    Item.dagger_goddess: 4,
 }
