@@ -28,6 +28,7 @@ DAGGER_CHAPTER_MAP = {
     Item.dagger_fury: 3,
     Item.dagger_apotheosis: 3,
     Item.dagger_dragon: 3,
+    Item.dagger_clarity: 3,
     Item.dagger_den: 3,
     Item.dagger_wild: 3,
     Item.dagger_thorn: 3,
