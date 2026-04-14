@@ -2,10 +2,6 @@
 
 ## Randomization Overview
 
-At the current stage, the YAML configuration is mostly decorative. The only functional option is changing your player name.
-
-If you want to "disable" certain options (such as the dagger or gifts), you will need to send them to yourself at the start with admin command.
-
 The objective is to reach the credits.
 Exceptions: the *Good Ending* and *Oblivion*, which are intentionally excluded as they are too easy to achieve.
 
