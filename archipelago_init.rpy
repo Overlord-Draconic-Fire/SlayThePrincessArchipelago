@@ -323,9 +323,9 @@ init -10 python:
                 return False
 
             for required_item in requirements:
-                if not get_chapter_access() in [2, 4] and "(Princess)" in required_item:
+                if not get_chapter_access() in [1, 3] and "(Princess)" in required_item:
                     continue
-                if not get_chapter_access() in [3, 4] and "(Voice)" in required_item:
+                if not get_chapter_access() in [2, 3] and "(Voice)" in required_item:
                     continue
 
                 if not client.has_item(required_item):
