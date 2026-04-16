@@ -93,9 +93,7 @@ This system is still in an early state and may evolve in future updates.
 6. **Launch the game**
    Start the game normally.
    If the installation was successful, the Archipelago menu should appear.
-
-7. **Connect to the server**
-   Follow the in-game instructions to connect and start playing.
+   Log in before starting a new game or a save file!
 
 ---
 
@@ -104,9 +102,6 @@ This system is still in an early state and may evolve in future updates.
 To remove the mod:
 
 * Delete all files that were added to the `game` folder
-* You may safely remove any folders introduced by the mod
-* **Do not delete the `staging` folder**, as it is part of the base game
-  (it originally contains `scratchpad.txt`)
 
 ---
 
