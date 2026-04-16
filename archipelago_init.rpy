@@ -4,23 +4,23 @@ if True:
     define config.console = True
     define config.rollback_enabled = True
 
+init:
+    # Archipelago characters
+    define ap = Character("Archipelago", color = "#ffffff", what_color = "#ffffff", what_text_align=0.5, what_outlines=[ (3, "#000000") ], who_outlines= [ (3, "#000000") ], what_style = "voice_style", ctc="ctc_blink", ctc_position="nestled")
+
 
 init -10 python:
     import os
     import sys
     
-    # Force the correct absolute path
+    # Paths to Add
     base_dir = os.path.join(renpy.config.basedir, "game")
-    
-    # Paths to add in priority order
     paths_to_add = [
-        os.path.join(base_dir, "client", "dependencies"),
-        os.path.join(base_dir, "client"),
-        os.path.join(base_dir, "help"),
+        os.path.join(base_dir, "scripts", "client", "dependencies"),
+        os.path.join(base_dir, "scripts", "client"),
+        os.path.join(base_dir, "scripts", "help"),
         base_dir
     ]
-    
-    # Add ALL paths
     for path in paths_to_add:
         if path not in sys.path:
             sys.path.insert(0, path)

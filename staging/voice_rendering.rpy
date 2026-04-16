@@ -170,8 +170,3 @@ init:
     define herodragon = Character("???", color = "#ffffff00", what_color = "D7ECF5", what_outlines=[ (3, "#00557A") ], what_style = "hero_dragon_style", ctc="ctc_hero_blink", ctc_position="nestled")
 
     define colddragon = Character("???", color = "#ffffff00", what_color = "#BDC5DA", what_outlines=[ (3, "#000000") ], what_style = "cold_dragon_style", ctc="ctc_cold_blink", ctc_position="nestled")
-
-
-    # Archipelago characters
-
-    define ap = Character("Archipelago", color = "#ffffff", what_color = "#ffffff", what_text_align=0.5, what_outlines=[ (3, "#000000") ], who_outlines= [ (3, "#000000") ], what_style = "voice_style", ctc="ctc_blink", ctc_position="nestled")
