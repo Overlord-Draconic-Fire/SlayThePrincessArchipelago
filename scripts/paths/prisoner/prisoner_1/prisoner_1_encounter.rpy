@@ -110,7 +110,7 @@ label prisoner_encounter_start:
 
             jump prisoner_menu
 
-        "{i}• [[Slay the Princess.]{/i}" if blade_held and prisoner_can_slay_attempt:
+        "{i}• [[Slay the Princess.]{/i}" if blade_held and prisoner_can_slay_attempt and hasThisDagger(Item.dagger_prisoner):
             if grey_encountered:
                 $ prisoner_can_slay_attempt = False
                 voice "audio/voices/mound/bonus/path.flac"
@@ -574,11 +574,11 @@ label prisoner_menu:
         "{i}• ''Okay. I'm trusting you.'' [[Give her the knife.]{/i}" if prisoner_what_do:
             jump prisoner_knife_given
 
-        "{i}• ''If you want to leave, I'm going to be the one with the weapon. Deal with it.'' [[Cut her out on your own.]{/i}" if prisoner_what_do:
+        "{i}• ''If you want to leave, I'm going to be the one with the weapon. Deal with it.'' [[Cut her out on your own.]{/i}" if prisoner_what_do and hasThisDagger(Item.dagger_prisoner):
             $ prisoner_player_attempt_cut = True
             jump prisoner_strangle_join
 
-        "{i}• ''If that's how you're going to be, then I guess I have to do this.'' [[Slay the Princess.]{/i}" if blade_held and prisoner_no_give_explore and prisoner_can_slay_attempt:
+        "{i}• ''If that's how you're going to be, then I guess I have to do this.'' [[Slay the Princess.]{/i}" if blade_held and prisoner_no_give_explore and prisoner_can_slay_attempt and hasThisDagger(Item.dagger_prisoner):
             if grey_encountered:
                 $ prisoner_can_slay_attempt = False
                 voice "audio/voices/mound/bonus/path.flac"
@@ -589,7 +589,7 @@ label prisoner_menu:
             sp "You don't have to do anything, but fine. Let's see if you'll live to regret trying to kill me.\n"
             jump prisoner_strangle_join
 
-        "{i}• ''It seems I don't have much of a choice. I'm sorry.'' [[Slay the Princess.]{/i}" if blade_held and prisoner_locked and prisoner_can_slay_attempt:
+        "{i}• ''It seems I don't have much of a choice. I'm sorry.'' [[Slay the Princess.]{/i}" if blade_held and prisoner_locked and prisoner_can_slay_attempt and hasThisDagger(Item.dagger_prisoner):
             if grey_encountered:
                 $ prisoner_can_slay_attempt = False
                 voice "audio/voices/mound/bonus/path.flac"
@@ -622,7 +622,7 @@ label prisoner_menu:
             with dissolve
             jump prisoner_locked_join
 
-        "{i}• [[Slay the Princess.]{/i}" if blade_held and prisoner_can_slay_attempt:
+        "{i}• [[Slay the Princess.]{/i}" if blade_held and prisoner_can_slay_attempt and hasThisDagger(Item.dagger_prisoner):
             if grey_encountered:
                 $ prisoner_can_slay_attempt = False
                 voice "audio/voices/mound/bonus/path.flac"
@@ -1388,7 +1388,7 @@ label prisoner_strangle_join:
         menu:
             extend ""
 
-            "{i}• [[Slay the Princess.]{/i}" if prisoner_can_slay_attempt:
+            "{i}• [[Slay the Princess.]{/i}" if prisoner_can_slay_attempt and hasThisDagger(Item.dagger_prisoner):
                 default prisoner_slain_by_player = False
                 if grey_encountered:
                     $ prisoner_can_slay_attempt = False
@@ -1700,7 +1700,7 @@ label prisoner_strangle_join:
                                     skeptic "All right. I'll make this quick.\n"
                                     jump prisoner_slay_self_join
 
-                                "{i}• [[Slay yourself.]{/i}":
+                                "{i}• [[Slay yourself.]{/i}" if hasThisDagger(Item.dagger_prisoner):
                                     jump prisoner_slay_self_join
 
                                 "{i}• Sorry, but we're not doing that.{/i}":
@@ -1726,7 +1726,7 @@ label prisoner_strangle_join:
 
 
 
-                "{i}• [[Slay yourself.]{/i}" if prisoner_happy_menu_suggestion_explore:
+                "{i}• [[Slay yourself.]{/i}" if prisoner_happy_menu_suggestion_explore and hasThisDagger(Item.dagger_prisoner):
                     label prisoner_slay_self_join:
                         voice "audio/voices/ch2/prisoner/_basement/narrator/116.flac"
                         n "You goddamned spiteful bastard. Are you really going to turn down immortality itself just to make me lose?\n"
