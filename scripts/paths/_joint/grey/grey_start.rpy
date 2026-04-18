@@ -1044,7 +1044,7 @@ label grey_damsel:
                     jump grey_damsel_grudge_explore_join
                 jump grey_damsel_menu
 
-            "{i}• [[Rush for the blade.]{/i}":
+            "{i}• [[Rush for the blade.]{/i}" if hasThisDagger(Item.dagger_grey):
                 $ grey_dams_knife_var = True
                 $ grey_rush = "blade"
                 play sound "audio/final/grey_fire_loop3.ogg" loop
@@ -1368,7 +1368,7 @@ label grey_prisoner:
                     show grey p stairs neutral onlayer back
                 jump grey_prisoner_menu
 
-            "{i}• [[Rush for the blade.]{/i}":
+            "{i}• [[Rush for the blade.]{/i}" if hasThisDagger(Item.dagger_grey):
                 jump grey_prisoner_rush
 
             "{i}• [[Rush to the door.]{/i}":
