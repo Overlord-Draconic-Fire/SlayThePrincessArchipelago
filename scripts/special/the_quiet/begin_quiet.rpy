@@ -1,7 +1,4 @@
 label begin_quiet:
-    $ send_location(Location.goddess)
-    if not hasRegionRequirements(Region.goddess):
-        jump chapter_requirements_failed
     $ gallery_ztlq.unlock_item(1)
     $ renpy.save_persistent()
     stop music2
@@ -79,6 +76,10 @@ label begin_quiet:
                 extend ""
 
                 "{i}• [[Approach her.]{/i}":
+                    $ send_location(Location.goddess)
+                    if not hasRegionRequirements(Region.goddess):
+                        jump chapter_requirements_failed
+
                     $ quick_menu = False
                     play audio "audio/one_shot/footsteps_hike_short.flac"
                     scene bg black
