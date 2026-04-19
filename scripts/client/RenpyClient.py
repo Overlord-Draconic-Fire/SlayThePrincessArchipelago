@@ -177,6 +177,10 @@ class RenpyContext(CommonContext):
         """Read slot_data['mirror_rando'] as bool."""
         return self.get_slot_option_bool("mirror_rando", True)
 
+    def get_memoriesanity(self) -> int:
+        """Read slot_data['memoriesanity'] as int enum."""
+        return self.get_slot_option_int("memoriesanity", 0)
+
     def _notify(self, message: str) -> None:
         """Thread-safe bridge to on_text_callback (ap_notify)."""
         logger.info(message)
@@ -205,13 +209,22 @@ class RenpyContext(CommonContext):
 
     def item_received(self, net_item: NetworkItem) -> None:
         """Notify Ren'Py when this client actually receives an item."""
-        if self.on_text_callback:
-            try:
-                item_name: str = self.item_names.lookup_in_slot(net_item.item, self.slot)
-                sender: str = self.player_names.get(net_item.player, str(net_item.player))
+        try:
+            item_name: str = self.item_names.lookup_in_slot(net_item.item, self.slot)
+            sender: str = self.player_names.get(net_item.player, str(net_item.player))
+
+            if self.on_text_callback:
                 self.on_text_callback(f"Received: {item_name} ({sender})")
-            except Exception:
-                logger.exception("item_received callback failed")
+
+            item_callback: typing.Optional[typing.Callable[[str, str, NetworkItem], None]] = getattr(
+                self,
+                "on_item_received_callback",
+                None,
+            )
+            if item_callback is not None:
+                item_callback(item_name, sender, net_item)
+        except Exception:
+            logger.exception("item_received callback failed")
 
 
 def create_renpy_client(

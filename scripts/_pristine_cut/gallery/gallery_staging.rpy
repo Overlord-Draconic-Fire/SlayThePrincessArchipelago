@@ -84,7 +84,25 @@ init -1 python:
         def clear_hints(self):
             self.hints = []
 
-        def unlock_item(self, index, checkAchievement = True ):
+        def unlock_item(self, index, checkAchievement = True, from_server = False):
+            if not from_server:
+                try:
+                    memoriesanity_mode = get_memoriesanity()
+                except Exception:
+                    ap_debug("Failed to get memoriesanity mode. Defaulting to 0.")
+                    return
+
+                if memoriesanity_mode != 0:
+                    try:
+                        location_name = get_gallery_location_name(self.key, index)
+                        if location_name:
+                            send_location(location_name)
+                    except Exception:
+                        pass
+
+                if memoriesanity_mode == 2:
+                    return
+
             setattr(persistent, "gallery_" + str(self.key) + "_" + str(index), True)
             if checkAchievement == True:
                 galleryAchievementChecker.checkAchievement()

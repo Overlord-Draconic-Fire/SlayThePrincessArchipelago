@@ -8,6 +8,9 @@ init:
     # Archipelago characters
     define ap = Character("Archipelago", color = "#ffffff", what_color = "#ffffff", what_text_align=0.5, what_outlines=[ (3, "#000000") ], who_outlines= [ (3, "#000000") ], what_style = "voice_style", ctc="ctc_blink", ctc_position="nestled")
 
+init 1 python:
+    if get_memoriesanity():
+        ap_gallery_lock_images()
 
 init -10 python:
     import os
@@ -32,6 +35,7 @@ init -10 python:
     import websockets
 
     import Location
+    import GalleryLocation
     import Item
     import Region
     import DAGGER_CHAPTER_MAP
@@ -40,6 +44,7 @@ init -10 python:
     store.last_region_checked = None  # Global variable tracking the last region checked
     store.last_region_failed_requirement = None  # Global variable tracking the failed requirements in the last region checked
     store.Location = Location
+    store.GalleryLocation = GalleryLocation
     store.Item = Item
     store.Region = Region
     store.DAGGER_CHAPTER_MAP = DAGGER_CHAPTER_MAP
@@ -102,6 +107,11 @@ init -10 python:
     def set_archipelago_client(client: RenpyContext) -> None:
         """Thread-safe update of archipelago_client."""
         archipelago.set_client(client)
+        if client:
+            try:
+                client.on_item_received_callback = ap_handle_received_item
+            except Exception:
+                pass
         try:
             renpy.restart_interaction()
         except Exception:
@@ -240,6 +250,16 @@ init -10 python:
             ap_debug(f"Error in get_mirror_rando(): {e}")
         return False
 
+    def get_memoriesanity() -> int:
+        """Read slot_data['memoriesanity']."""
+        try:
+            client : RenpyContext = get_archipelago_client()
+            if client:
+                return client.get_memoriesanity()
+        except Exception as e:
+            ap_debug(f"Error in get_memoriesanity(): {e}")
+        return 0
+
     def hasThisDagger(dagger_value : str) -> bool:
         """
         Check whether the player has a dagger.
@@ -335,6 +355,164 @@ init -10 python:
             return True
         except Exception as e:
             ap_debug(f"Error in hasRegionRequirements({region_value}): {e}")
+            return False
+
+    def _get_gallery_item_numbers(route) -> list:
+        """Return every item index for a gallery route, even if items are not initialized yet."""
+        try:
+            if hasattr(route, "items") and route.items:
+                return [item.itemNumber for item in route.items]
+
+            length = int(getattr(route, "imagesLength", 0))
+            if length > 0:
+                return list(range(1, length + 1))
+        except Exception:
+            pass
+
+        return []
+
+    def _gallery_list_name_from_route_key(route_key: str) -> str:
+        route_map = {
+            "zch1": "princess",
+            "ztlq": "spaceBetween",
+            "zfinale": "finale",
+        }
+        return route_map.get(route_key, route_key)
+
+    def _gallery_route_key_from_list_name(list_name: str) -> str:
+        list_map = {
+            "princess": "zch1",
+            "spaceBetween": "ztlq",
+            "finale": "zfinale",
+        }
+        return list_map.get(list_name, list_name)
+
+    def get_gallery_location_name(route_key: str, index: int) -> str:
+        """Resolve the AP location string for one gallery image by route key + 1-based index."""
+        try:
+            list_name = _gallery_list_name_from_route_key(str(route_key))
+            gallery_list = getattr(GalleryLocation, list_name, None)
+            item_index = int(index)
+            if isinstance(gallery_list, list) and 0 < item_index < len(gallery_list):
+                return gallery_list[item_index]
+        except Exception as e:
+            ap_debug(f"Error in get_gallery_location_name({route_key}, {index}): {e}")
+        return ""
+
+    def _resolve_gallery_item_from_name(item_name: str):
+        """Return (route_key, index) for a gallery AP item/location name, else None."""
+        try:
+            target = str(item_name).strip().lower()
+            for list_name in dir(GalleryLocation):
+                if list_name.startswith("_"):
+                    continue
+                values = getattr(GalleryLocation, list_name, None)
+                if not isinstance(values, list):
+                    continue
+                for idx in range(1, len(values)):
+                    if str(values[idx]).strip().lower() == target:
+                        return (_gallery_route_key_from_list_name(list_name), idx)
+        except Exception as e:
+            ap_debug(f"Error in _resolve_gallery_item_from_name({item_name}): {e}")
+        return None
+
+    def _get_gallery_route_by_key(route_key: str):
+        return globals().get(f"gallery_{route_key}")
+
+    def ap_unlock_gallery_item_from_name(item_name: str, unlock_route: bool = True) -> bool:
+        """Unlock a single gallery image from an AP item/location display name."""
+        try:
+            resolved = _resolve_gallery_item_from_name(item_name)
+            if not resolved:
+                return False
+
+            route_key, index = resolved
+            route = _get_gallery_route_by_key(route_key)
+
+            if route:
+                if unlock_route:
+                    route.unlock_gallery()
+
+                try:
+                    route.unlock_item(index, False, True)
+                except TypeError:
+                    route.unlock_item(index, False)
+            else:
+                if unlock_route:
+                    setattr(persistent, f"{route_key}_flag", True)
+                setattr(persistent, f"gallery_{route_key}_{index}", True)
+
+            renpy.save_persistent()
+            return True
+        except Exception as e:
+            ap_debug(f"Error in ap_unlock_gallery_item_from_name({item_name}): {e}")
+            return False
+
+    def ap_handle_received_item(item_name: str, sender: str = "", net_item = None) -> None:
+        """Handle AP item reception hooks and unlock gallery items when received from the server."""
+        try:
+            if ap_unlock_gallery_item_from_name(item_name, unlock_route=True):
+                ap_info(f"Gallery item unlocked from server: {item_name}")
+        except Exception as e:
+            ap_debug(f"Error in ap_handle_received_item({item_name}): {e}")
+
+    def ap_gallery_lock_images() -> bool:
+        """
+        Unlock every gallery route while keeping all gallery images locked.
+        Useful when you want full gallery navigation without showing CGs.
+        """
+        try:
+            route_groups = [
+                globals().get("routesParent", []),
+                globals().get("altRoutesParent", []),
+                globals().get("routesParentLower", []),
+            ]
+
+            total_routes = 0
+            total_images_locked = 0
+
+            for group in route_groups:
+                for route in group:
+                    route.unlock_gallery()
+                    total_routes += 1
+
+                    for index in _get_gallery_item_numbers(route):
+                        route.lock_item(index)
+                        total_images_locked += 1
+
+            renpy.save_persistent()
+            ap_info(f"Gallery updated: {total_routes} routes unlocked, {total_images_locked} images locked.")
+            return True
+        except Exception as e:
+            ap_debug(f"Error in ap_gallery_lock_images(): {e}")
+            return False
+
+    def ap_gallery_unlock_everything() -> bool:
+        """
+        Fully unlock every gallery route and every gallery image.
+        """
+        try:
+            if "galleryInitializer" in globals() and galleryInitializer is not None:
+                galleryInitializer.unlock_all_galleries_debug()
+            else:
+                # Fallback path if galleryInitializer is unavailable.
+                route_groups = [
+                    globals().get("routesParent", []),
+                    globals().get("altRoutesParent", []),
+                    globals().get("routesParentLower", []),
+                ]
+
+                for group in route_groups:
+                    for route in group:
+                        route.unlock_gallery()
+                        for index in _get_gallery_item_numbers(route):
+                            route.unlock_item(index, False)
+
+            renpy.save_persistent()
+            ap_info("Gallery updated: full unlock applied.")
+            return True
+        except Exception as e:
+            ap_debug(f"Error in ap_gallery_unlock_everything(): {e}")
             return False
 
 
