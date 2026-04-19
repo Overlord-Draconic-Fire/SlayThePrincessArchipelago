@@ -2342,7 +2342,7 @@ label dragon_opportunist_fight_soft:
                     menu:
                         extend ""
 
-                        "{i}• ''Yeah. Sorry about that.'' [[Finish the job.]{/i}":
+                        "{i}• ''Yeah. Sorry about that.'' [[Finish the job.]{/i}" if hasThisDagger(Item.dagger_dragon):
                             jump dragon_soft_opp_slay_join
 
                         "{i}• ''I'm obviously not going to kill you.''{/i}":
@@ -2359,7 +2359,7 @@ label dragon_opportunist_fight_soft:
                             jump dragon_opp_soft_leave_silent
 
 
-            "{i}• Good to be back boys. [[Finish the job.]{/i}":
+            "{i}• Good to be back boys. [[Finish the job.]{/i}" if hasThisDagger(Item.dagger_dragon):
                 voice "audio/_pristine/voice/dragon/narrator/3a.flac"
                 show princess dragon soft stabbed sad neutral onlayer back
                 with dissolve
@@ -2474,7 +2474,7 @@ label dragon_opportunist_fight_soft:
                                 menu:
                                     extend ""
 
-                                    "{i}• [[Slay the Princess.]{/i}":
+                                    "{i}• [[Slay the Princess.]{/i}" if hasThisDagger(Item.dagger_dragon):
                                         $ dragon_opp_soft_leave_betray = True
                                         #voice "audio/_pristine/voice/dragon/narrator/32.flac"
                                         #n "Thank you. Clearly someone here is sane. Clearly someone here has realized that boring doesn't matter!\n" id dragon_soft_leave_late_join_53a15926
@@ -2487,7 +2487,7 @@ label dragon_opportunist_fight_soft:
                                         jump dragon_soft_opp_slay_join
 
 
-                                    "{i}• [[Cut her free on your own.]{/i}":
+                                    "{i}• [[Cut her free on your own.]{/i}" if hasThisDagger(Item.dagger_dragon):
                                         $ dragon_opp_soft_leave_keep_blade = True
                                         label dragon_opp_soft_free_oops:
                                             $ gallery_dragon.unlock_item(13)
