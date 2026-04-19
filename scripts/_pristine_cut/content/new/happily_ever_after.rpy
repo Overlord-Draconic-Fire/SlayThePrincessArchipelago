@@ -1316,7 +1316,7 @@ label happy_menu:
         "{i}• [[Silently push yourself from your seat.]{/i}" if happy_get_up_attempt == False:
             jump happy_get_up_attempt_join
 
-        "{i}• [[Slay the Princess.]{/i}" if happy_slay_explore == False and happy_get_up_attempt == False:
+        "{i}• [[Slay the Princess.]{/i}" if happy_slay_explore == False and happy_get_up_attempt == False and hasThisDagger(Item.dagger_happily):
             $ happy_slay_explore = True
             label happy_get_up_attempt_join:
                 $ happy_torch_comment_immediate = False
@@ -1769,7 +1769,7 @@ label happy_climax:
             p "I don't think this is the sort of thing anybody needs to apologize for. Even if we both feel empty. Even if an important part of us is gone.\n"
             jump happy_climax_silent
 
-        "{i}• [[Slay the Princess.]{/i}" if happy_slay_attempted == False:
+        "{i}• [[Slay the Princess.]{/i}" if happy_slay_attempted == False and hasThisDagger(Item.dagger_happily):
             label happy_slay:
                 default happy_mixed_signals = False
                 $ happy_slay_attempted = True
@@ -1818,10 +1818,10 @@ label happy_climax:
                         else:
                             jump happy_climax_silent
 
-                    "{i}• Don't get cold feet now. This is for the good of everyone. I'm saving the world here. [[Slay the Princess.]{/i}":
+                    "{i}• Don't get cold feet now. This is for the good of everyone. I'm saving the world here. [[Slay the Princess.]{/i}" if hasThisDagger(Item.dagger_happily):
                         jump happy_murder_end
 
-                    "{i}• I know what I decided to do. [[Slay the Princess.]{/i}":
+                    "{i}• I know what I decided to do. [[Slay the Princess.]{/i}" if hasThisDagger(Item.dagger_happily):
                         jump happy_murder_end
 
                 label happy_murder_end:
@@ -2075,7 +2075,7 @@ label happy_climax:
                 show happy leaving neutral onlayer front
                 jump happy_stairs_leaving
 
-            "{i}• [[Slay the Princess.]{/i}" if happy_slay_attempted == False:
+            "{i}• [[Slay the Princess.]{/i}" if happy_slay_attempted == False and hasThisDagger(Item.dagger_happily):
                 jump happy_slay
 
             "{i}• [[Say nothing.]{/i}":
