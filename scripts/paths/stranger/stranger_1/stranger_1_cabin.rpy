@@ -601,9 +601,14 @@ label stranger_basement_menu:
             voice "audio/voices/ch2/stranger/_encounter/contrarian/19a.flac"
             contrarian "Just do something! Do anything! Do all of it if that's what you want. This place is hell and it's only getting worse.\n"
 
+            if not hasThisDagger(Item.dagger_stranger):
+                $ config.menu_include_disabled = True
 
     menu:
         extend ""
+
+        "{i}• [[You have no choice left, come back later with Stranger dagger]{/i}" if False:
+            return
 
         "{i}• (Explore) ''I'm sorry... I didn't realize I was here.''{/i}" if stranger_schism_count == 1 and stranger_menu_sorry == False:
             $ stranger_menu_sorry = True
@@ -1339,15 +1344,18 @@ label stranger_basement_menu:
             jump stranger_basement_menu
 
 
-        "{i}• ''I'm getting you out of here.'' [[Try and free her.]\n• ''I don't know what you are, but I can't trust you. I can't trust anything here.'' [[Leave her in the basement.]\n• [[Slay the Princess.]\n{/i}" if blade_held and stranger_schism_count >= 2:
+        "{i}• ''I'm getting you out of here.'' [[Try and free her.]\n• ''I don't know what you are, but I can't trust you. I can't trust anything here.'' [[Leave her in the basement.]\n• [[Slay the Princess.]\n{/i}" if blade_held and stranger_schism_count >= 2 and hasThisDagger(Item.dagger_stranger):
+            $ config.menu_include_disabled = False
             $ stranger_floating = "slay"
             jump stranger_ending
 
-        "{i}• ''I'm getting you out of here.'' [[Try and free her.]\n• ''I don't know what you are, but I can't trust you. I can't trust anything here.'' [[Leave her in the basement.]\n• [[Retrieve the blade.]\n{/i}" if blade_held == False and stranger_1_cabin_blade_tossed == False and stranger_schism_count >= 2:
+        "{i}• ''I'm getting you out of here.'' [[Try and free her.]\n• ''I don't know what you are, but I can't trust you. I can't trust anything here.'' [[Leave her in the basement.]\n• [[Retrieve the blade.]\n{/i}" if blade_held == False and stranger_1_cabin_blade_tossed == False and stranger_schism_count >= 2 and hasThisDagger(Item.dagger_stranger):
+            $ config.menu_include_disabled = False
             $ stranger_floating = "retrieve"
             jump stranger_ending
 
-        "{i}• ''I'm getting you out of here.'' [[Try and free her.]\n• ''I don't know what you are, but I can't trust you. I can't trust anything here.'' [[Leave her in the basement.]\n• [[Regretfully think about that time you threw the blade out the window.]\n{/i}" if blade_held == False and stranger_1_cabin_blade_tossed and stranger_schism_count >= 2:
+        "{i}• ''I'm getting you out of here.'' [[Try and free her.]\n• ''I don't know what you are, but I can't trust you. I can't trust anything here.'' [[Leave her in the basement.]\n• [[Regretfully think about that time you threw the blade out the window.]\n{/i}" if blade_held == False and stranger_1_cabin_blade_tossed and stranger_schism_count >= 2 and hasThisDagger(Item.dagger_stranger):
+            $ config.menu_include_disabled = False
             $ stranger_floating = "mourn"
             jump stranger_ending
 

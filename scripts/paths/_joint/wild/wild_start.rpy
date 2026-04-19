@@ -802,10 +802,16 @@ label wild_side_narrator:
     voice "audio/voices/ch3/wild/narrator/36.flac"
     n "You have to. You know you have to.\n"
     $ current_princess = "wildwound"
+    if not hasThisDagger(Item.dagger_wild):
+        $ config.menu_include_disabled = True
     menu:
         extend ""
 
-        "{i}• ''I never wanted to kill you. Not really. But we can't be the same thing as each other. I had to put an end to whatever happened to us.'' [[Cut her free.]{/i}":
+        "{i}• [[You have no choice left, come back later with Wild dagger]{/i}" if False:
+            return
+
+        "{i}• ''I never wanted to kill you. Not really. But we can't be the same thing as each other. I had to put an end to whatever happened to us.'' [[Cut her free.]{/i}" if hasThisDagger(Item.dagger_wild):
+            $ config.menu_include_disabled = False
             voice "audio/voices/ch3/wild/narrator/37.flac"
             n "You devious little bastard. If you think I'm going to just let you free her, you have another thing coming.\n"
             if trait_cheated:
@@ -929,7 +935,8 @@ label wild_side_narrator:
             jump mirror_start
             # END
 
-        "{i}• [[Slay the Princess.]{/i}":
+        "{i}• [[Slay the Princess.]{/i}" if hasThisDagger(Item.dagger_wild):
+            $ config.menu_include_disabled = False
             $ quick_menu = False
             voice "audio/voices/ch3/wild/narrator/42old.flac"
             play audio "audio/final/Tower_KnifeBlow_3.flac"
