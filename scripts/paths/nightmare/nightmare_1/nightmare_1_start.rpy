@@ -461,7 +461,7 @@ label nightmare_1_cabin_arrival:
                 $ nightmare_1_cabin_mirror_approached = True
                 jump nightmare_cabin_1_mirror_join
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if nightmare_1_cabin_blade_taken == False and hasThisDagger(Item.dagger_nightmare):
+            "{i}• (Explore) [[Take the blade.]{/i}" if nightmare_1_cabin_blade_taken == False and hasThisBlade(Item.blade_nightmare):
                 $ nightmare_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

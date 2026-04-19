@@ -1182,7 +1182,7 @@ label adversary_1_upstairs:
         menu:
             extend ""
 
-            "{i}• [[Take the blade.]{/i}" if blade_held == False and hasThisDagger(Item.dagger_adversary):
+            "{i}• [[Take the blade.]{/i}" if blade_held == False and hasThisBlade(Item.blade_adversary):
                 $ blade_held = True
                 $ default_mouse = "blade"
                 play audio "audio/one_shot/knife_pickup.flac"
@@ -1706,7 +1706,7 @@ label adversary_1_refuse:
                             n "You shouldn't trust her, but it doesn't really matter if she's telling the truth, does it? You need a weapon to do this right. But keep your eyes on her, and don't take her at her word.\n"
                             jump adversary_pacifism_divert_menu
 
-                        "{i}• ''Okay. I'll be right back.'' [[Retrieve the blade.]{/i}" if adversary_1_cabin_blade_taken == False and adversary_1_retrieve_knife_already == False and hasThisDagger(Item.dagger_adversary):
+                        "{i}• ''Okay. I'll be right back.'' [[Retrieve the blade.]{/i}" if adversary_1_cabin_blade_taken == False and adversary_1_retrieve_knife_already == False and hasThisBlade(Item.blade_adversary):
                             #GOHERE
                             voice "audio/voices/ch2/adversary/_shared/princess/adv_73.flac"
                             if adversary_combat_to_pacifism:
@@ -2007,7 +2007,7 @@ label adversary_1_retrieve_knife:
                 n "Absolutely not. If you leave, she'll leave, and that'll be the end of everything as we know it.\n"
                 jump adversary_1_retrieve_knife_menu
 
-            "{i}• [[Take the blade from the altar.]{/i}" if blade_held == False and hasThisDagger(Item.dagger_adversary):
+            "{i}• [[Take the blade from the altar.]{/i}" if blade_held == False and hasThisBlade(Item.blade_adversary):
                 default adversary_1_retrieve_knife_already = False
                 $ adversary_1_retrieve_knife_already = True
                 $ blade_held = True

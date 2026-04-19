@@ -456,7 +456,7 @@ label witch_1_cabin_arrival:
                 $ witch_1_cabin_mirror_approached = True
                 jump witch_cabin_1_mirror_join
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if witch_1_cabin_blade_taken == False and hasThisDagger(Item.dagger_witch):
+            "{i}• (Explore) [[Take the blade.]{/i}" if witch_1_cabin_blade_taken == False and hasThisBlade(Item.blade_witch):
                 $ witch_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

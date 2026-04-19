@@ -448,7 +448,7 @@ label prisoner_1_cabin_arrival:
                 $ prisoner_1_cabin_mirror_approached = True
                 jump prisoner_cabin_1_mirror_join
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if prisoner_1_cabin_blade_taken == False and hasThisDagger(Item.dagger_prisoner):
+            "{i}• (Explore) [[Take the blade.]{/i}" if prisoner_1_cabin_blade_taken == False and hasThisBlade(Item.blade_prisoner):
                 $ prisoner_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"
@@ -508,10 +508,10 @@ label prisoner_1_cabin_arrival:
                                 voice "audio/voices/ch2/prisoner/narrator/s4.flac"
                                 n "No, you don't have to do anything. But you'd do well to use it regardless. {i}Sigh{/i}. Moving on.\n"
 
-                            "{i}• [[Let it go and take the blade.]{/i}" if prisoner_knife_take_force_explore and hasThisDagger(Item.dagger_prisoner):
+                            "{i}• [[Let it go and take the blade.]{/i}" if prisoner_knife_take_force_explore and hasThisBlade(Item.blade_prisoner):
                                 jump prisoner_knife_take_force_join
 
-                            "{i}• [[Take the blade.]{/i}" if prisoner_knife_take_force_explore == False and hasThisDagger(Item.dagger_prisoner):
+                            "{i}• [[Take the blade.]{/i}" if prisoner_knife_take_force_explore == False and hasThisBlade(Item.blade_prisoner):
                                 label prisoner_knife_take_force_join:
                                     $ prisoner_1_cabin_blade_taken = True
                                     $ blade_held = True

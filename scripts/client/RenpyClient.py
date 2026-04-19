@@ -153,9 +153,9 @@ class RenpyContext(CommonContext):
         """Read slot_data['chapter_access'] as an int enum."""
         return self.get_slot_option_int("chapter_access", 4)
 
-    def get_pristine_dagger_rando(self) -> int:
-        """Read slot_data['pristine_dagger_rando'] as an int enum."""
-        return self.get_slot_option_int("pristine_dagger_rando", 2)
+    def get_pristine_blade_rando(self) -> int:
+        """Read slot_data['pristine_blade_rando'] as an int enum."""
+        return self.get_slot_option_int("pristine_blade_rando", 2)
 
     def get_gift_rando(self) -> bool:
         """Read slot_data['gift_rando'] as bool."""

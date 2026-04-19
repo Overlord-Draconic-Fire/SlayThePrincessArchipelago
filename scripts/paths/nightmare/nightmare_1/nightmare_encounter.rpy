@@ -1443,7 +1443,7 @@ label nightmare_kill_upstairs:
                         n "Right. I mean other than that.\n"
                     jump nightmare_falling_forever
 
-                "{i}• (Explore) [[Take the blade from her body.]{/i}" if nightmare_falling_drop == False and nightmare_falling == False and blade_held == False and hasThisDagger(Item.dagger_nightmare):
+                "{i}• (Explore) [[Take the blade from her body.]{/i}" if nightmare_falling_drop == False and nightmare_falling == False and blade_held == False and hasThisBlade(Item.blade_nightmare):
                     voice "audio/voices/ch2/nightmare/_encounter/narrator/bonus_2.flac"
                     $ blade_held = True
                     $ default_mouse = "blood"
@@ -1468,7 +1468,7 @@ label nightmare_kill_upstairs:
                         n "Right. I mean other than that.\n"
                     jump nightmare_falling_forever
 
-                "{i}• [[Slay yourself.]{/i}" if nightmare_falling_drop == False and blade_held and hasThisDagger(Item.dagger_nightmare):
+                "{i}• [[Slay yourself.]{/i}" if nightmare_falling_drop == False and blade_held and hasThisBlade(Item.blade_nightmare):
                     voice "audio/voices/ch2/nightmare/_encounter/narrator/94.flac"
                     n "{i}Sigh.{/i} I don't like this, but I suppose there's not much I can do to stop you, is there?\n"
                     voice "audio/voices/ch2/nightmare/_encounter/narrator/95.flac"

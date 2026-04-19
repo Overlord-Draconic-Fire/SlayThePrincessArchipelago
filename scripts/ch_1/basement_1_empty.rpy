@@ -452,7 +452,7 @@ label basement_1_empty_start:
                             menu:
                                 extend ""
 
-                                "{i}• [[Retrieve the blade.]{/i}" if (beast_encountered == False or witch_encountered == False) and hasThisDagger(Item.dagger_princess):
+                                "{i}• [[Retrieve the blade.]{/i}" if (beast_encountered == False or witch_encountered == False) and hasThisBlade(Item.blade_princess):
                                     voice "audio/voices/ch1/empty/narrator/empty_n_36.flac"
                                     n "{i}Thank{/i} you.\n"
                                     play audio "audio/one_shot/footsteps_creaky.flac"
@@ -525,7 +525,7 @@ label basement_1_empty_start:
                                             with fade
                                             jump nightmare_join
 
-                                        "{i}• Oh that's a relief! I was afraid I'd already committed to not slaying her.{/i}" if (beast_encountered == False or witch_encountered == False) and hasThisDagger(Item.dagger_princess):
+                                        "{i}• Oh that's a relief! I was afraid I'd already committed to not slaying her.{/i}" if (beast_encountered == False or witch_encountered == False) and hasThisBlade(Item.blade_princess):
                                             voice "audio/voices/ch1/empty/narrator/empty_n_35.flac"
                                             n "It's never too late to do the right thing. Now hurry.\n"
                                             hide basement stairs open onlayer front
@@ -535,7 +535,7 @@ label basement_1_empty_start:
                     "{i}• ''I'm going to keep you locked away down here. At least for a little bit. We can get to know each other better while I decide what to do.'' [[Keep her locked away.]{/i}" if nightmare_encountered == False:
                         jump basement_1_empty_no_kill
 
-                    "{i}• ''I'm sorry, but I just can't trust you. This doesn't add up, and it isn't worth the risk to take your word over the potential fate of the world.''{/i} [[Retrieve the blade.]" if (beast_encountered == False or witch_encountered == False) and hasThisDagger(Item.dagger_princess):
+                    "{i}• ''I'm sorry, but I just can't trust you. This doesn't add up, and it isn't worth the risk to take your word over the potential fate of the world.''{/i} [[Retrieve the blade.]" if (beast_encountered == False or witch_encountered == False) and hasThisBlade(Item.blade_princess):
                         show princess c haughty onlayer back
                         with dissolve
                         default basement_1_empty_not_worth_risk = False
@@ -569,7 +569,7 @@ label basement_1_empty_start:
                             n "She has to be bluffing. But... hurry.\n"
                         jump basement_1_empty_retrieve_knife
 
-                    "{i}• [[Go back upstairs to retrieve the blade without saying another word.]{/i}" if (beast_encountered == False or witch_encountered == False) and hasThisDagger(Item.dagger_princess):
+                    "{i}• [[Go back upstairs to retrieve the blade without saying another word.]{/i}" if (beast_encountered == False or witch_encountered == False) and hasThisBlade(Item.blade_princess):
                         show princess c haughty onlayer back
                         with dissolve
                         voice "audio/voices/ch1/empty/narrator/empty_n_36.flac"
@@ -871,7 +871,7 @@ label basement_1_empty_rescue:
                         menu:
                             extend ""
 
-                            "{i}• [[Slay the Princess.]{/i}" if witch_encountered == False and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if witch_encountered == False and hasThisBlade(Item.blade_princess):
                                 label basement_1_empty_rescue_controlled_start:
                                     voice "audio/voices/ch1/empty/hero/empty_h_27.flac"
                                     hero "Okay. There's no going back now. I'm with you to the end.\n"
@@ -968,43 +968,43 @@ label basement_1_empty_rescue:
                                     jump start_2
 
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
                             "{i}• [[Warn her.]{/i}":
@@ -1042,7 +1042,7 @@ label basement_1_empty_rescue:
                                 menu:
                                     extend ""
 
-                                    "{i}• [[Slay the Princess.]{/i}" if witch_encountered == False and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if witch_encountered == False and hasThisBlade(Item.blade_princess):
                                         label basement_1_empty_rescue_controlled_2_start:
                                             $ small_yadj = False
                                             $ config.menu_include_disabled = False
@@ -1063,43 +1063,43 @@ label basement_1_empty_rescue:
                                             #sp "I'll do my best to make this quick.\n"
                                             jump basement_1_empty_beast
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
                                     "{i}• [[Resist.]{/i}" if damsel_encountered == False:
@@ -1196,37 +1196,37 @@ label basement_1_empty_rescue:
                                         $ small_yadj = False
                                         jump start_2
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                                    "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                         jump basement_1_empty_rescue_controlled_2_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisDagger(Item.dagger_princess):
+                            "{i}• [[Slay the Princess.]{/i}" if (witch_encountered == False and preferences.self_voicing == False) and hasThisBlade(Item.blade_princess):
                                 jump basement_1_empty_rescue_controlled_start
 
-            "{i}• [[Slay the Princess.]{/i}" if ((basement_1_empty_save_lie_explore or basement_1_empty_save_explore == False) and (beast_encountered == False or witch_encountered == False or nightmare_encountered == False)) and hasThisDagger(Item.dagger_princess):
+            "{i}• [[Slay the Princess.]{/i}" if ((basement_1_empty_save_lie_explore or basement_1_empty_save_explore == False) and (beast_encountered == False or witch_encountered == False or nightmare_encountered == False)) and hasThisBlade(Item.blade_princess):
                 default beast_1_both_arms = False
                 $ basement_1_empty_wounded = True
                 $ beast_1_both_arms = True

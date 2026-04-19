@@ -2122,7 +2122,7 @@ label cabin_interrior_1:
         menu:
             extend ""
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and ch1_can_knife and hasThisDagger(Item.dagger_princess):
+            "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and ch1_can_knife and hasThisBlade(Item.blade_princess):
                 $ blade_taken_1 = True
                 $ blade_held = True
                 $ default_mouse = "blade"

@@ -761,7 +761,7 @@ label witch_2_basement_menu:
                     hero "We're not making things worse. I think she wants to trust us.\n"
             jump witch_2_basement_menu
 
-        "{i}• (Explore) ''Then maybe it's past time for either of us to say anything. All that counts is action'' [[Reach for the blade.]{/i}" if blade_held == False and witch_2_what_say and witch_2_player_hostile == False and witch_2_ask_approve == False and hasThisDagger(Item.dagger_thorn):
+        "{i}• (Explore) ''Then maybe it's past time for either of us to say anything. All that counts is action'' [[Reach for the blade.]{/i}" if blade_held == False and witch_2_what_say and witch_2_player_hostile == False and witch_2_ask_approve == False and hasThisBlade(Item.blade_thorn):
             $ witch_2_menu_count += 1
             jump witch_2_take_blade_join
 
@@ -786,7 +786,7 @@ label witch_2_basement_menu:
             with dissolve
             jump witch_2_basement_menu
 
-        "{i}• (Explore) [[Reach for the blade.]{/i}" if blade_held == False and witch_2_blade_hostile_attempt == False and hasThisDagger(Item.dagger_thorn):
+        "{i}• (Explore) [[Reach for the blade.]{/i}" if blade_held == False and witch_2_blade_hostile_attempt == False and hasThisBlade(Item.blade_thorn):
             $ witch_2_menu_count += 1
             if witch_2_follow or witch_2_blade_ask:
                 label witch_2_take_blade_join:
@@ -883,13 +883,13 @@ label witch_2_basement_menu:
         "{i}• ''Fine. If you're going to be like that, I'm going to leave. Have a nice life.'' [[Turn and leave.]{/i}" if blade_held == False:
             jump witch_2_leave
 
-        "{i}• [[Cut her free.]{/i}" if blade_held and hasThisDagger(Item.dagger_thorn):
+        "{i}• [[Cut her free.]{/i}" if blade_held and hasThisBlade(Item.blade_thorn):
             jump witch_2_free
 
-        "{i}• [[Slay the Princess.]{/i}" if blade_held and hasThisDagger(Item.dagger_thorn):
+        "{i}• [[Slay the Princess.]{/i}" if blade_held and hasThisBlade(Item.blade_thorn):
             jump witch_2_slain
 
-        "{i}• ''I just wanted my blade back. You're on your own.'' [[Turn and leave.]{/i}" if blade_held and hasThisDagger(Item.dagger_thorn):
+        "{i}• ''I just wanted my blade back. You're on your own.'' [[Turn and leave.]{/i}" if blade_held and hasThisBlade(Item.blade_thorn):
             jump witch_2_leave
 
 label witch_2_slain:
@@ -1503,7 +1503,7 @@ label witch_2_leave:
         menu:
             extend ""
 
-            "{i}• [[Rush for the blade.]{/i}" if hasThisDagger(Item.dagger_thorn):
+            "{i}• [[Rush for the blade.]{/i}" if hasThisBlade(Item.blade_thorn):
                 stop music fadeout 20.0
                 stop sound fadeout 20.0
                 stop tertiary fadeout 20.0

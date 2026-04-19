@@ -38,7 +38,7 @@ init -10 python:
     import GalleryLocation
     import Item
     import Region
-    import DAGGER_CHAPTER_MAP
+    import BLADE_CHAPTER_MAP
     import REGION_REQUIREMENTS
 
     store.last_region_checked = None  # Global variable tracking the last region checked
@@ -47,7 +47,7 @@ init -10 python:
     store.GalleryLocation = GalleryLocation
     store.Item = Item
     store.Region = Region
-    store.DAGGER_CHAPTER_MAP = DAGGER_CHAPTER_MAP
+    store.BLADE_CHAPTER_MAP = BLADE_CHAPTER_MAP
     
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:
@@ -190,15 +190,15 @@ init -10 python:
             ap_debug(f"Error in get_chapter_access(): {e}")
         return ChapterAccessRando.default
 
-    def get_pristine_dagger_rando() -> int:
-        """Read slot_data['pristine_dagger_rando']."""
+    def get_pristine_blade_rando() -> int:
+        """Read slot_data['pristine_blade_rando']."""
         try:
             client : RenpyContext = get_archipelago_client()
             if client:
-                return client.get_pristine_dagger_rando()
+                return client.get_pristine_blade_rando()
         except Exception as e:
-            ap_debug(f"Error in get_pristine_dagger_rando(): {e}")
-        return PristineDaggerRando.default
+            ap_debug(f"Error in get_pristine_blade_rando(): {e}")
+        return PristineBladeRando.default
 
     def get_gift_rando() -> bool:
         """Read slot_data['gift_rando']."""
@@ -260,13 +260,13 @@ init -10 python:
             ap_debug(f"Error in get_memoriesanity(): {e}")
         return 0
 
-    def hasThisDagger(dagger_value : str) -> bool:
+    def hasThisBlade(blade_value : str) -> bool:
         """
-        Check whether the player has a dagger.
-        Accepts an item value like Item.dagger_wild and returns True if:
-        - The player has the specific dagger, OR
-        - The player has the chapter dagger (dagger3 for chapter 3), OR
-        - The player has the global dagger (dagger)
+        Check whether the player has a blade.
+        Accepts an item value like Item.blade_wild and returns True if:
+        - The player has the specific blade, OR
+        - The player has the chapter blade (blade3 for chapter 3), OR
+        - The player has the global blade (blade)
         """
         try:
             client : RenpyContext = get_archipelago_client()
@@ -274,28 +274,28 @@ init -10 python:
                 ap_info("archipelago not initialized")
                 return False
 
-            # Check specific dagger
-            if client.has_item(dagger_value):
-                ap_debug(f"Player has specific dagger: {dagger_value}")
+            # Check specific blade
+            if client.has_item(blade_value):
+                ap_debug(f"Player has specific blade: {blade_value}")
                 return True
             
-            # Check chapter-specific dagger
-            if dagger_value in DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP:
-                chapter = DAGGER_CHAPTER_MAP.DAGGER_CHAPTER_MAP[dagger_value]
-                chapter_dagger = f"dagger{chapter}"
-                chapter_item = getattr(Item, chapter_dagger)
+            # Check chapter-specific blade
+            if blade_value in BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP:
+                chapter = BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP[blade_value]
+                chapter_blade = f"blade{chapter}"
+                chapter_item = getattr(Item, chapter_blade)
                 if client.has_item(chapter_item):
-                    ap_debug(f"Player has chapter dagger: {chapter_item}")
+                    ap_debug(f"Player has chapter blade: {chapter_item}")
                     return True
             
-            # Check global dagger
-            if client.has_item(Item.dagger):
-                ap_debug(f"Player has global dagger: {Item.dagger}")
+            # Check global blade
+            if client.has_item(Item.blade):
+                ap_debug(f"Player has global blade: {Item.blade}")
                 return True
             
-            return get_pristine_dagger_rando() == 0
+            return get_pristine_blade_rando() == 0
         except Exception as e:
-            ap_debug(f"Error in hasThisDagger({dagger_value}): {e}")
+            ap_debug(f"Error in hasThisBlade({blade_value}): {e}")
             return False
 
     def hasXItem(item_value : str, x : int) -> bool:

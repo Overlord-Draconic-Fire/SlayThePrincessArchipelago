@@ -464,7 +464,7 @@ label tower_1_cabin_arrival:
                 $ tower_1_cabin_mirror_approached = True
                 jump tower_cabin_1_mirror_join
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if tower_1_cabin_blade_taken == False and hasThisDagger(Item.dagger_tower):
+            "{i}• (Explore) [[Take the blade.]{/i}" if tower_1_cabin_blade_taken == False and hasThisBlade(Item.blade_tower):
                 $ tower_resist_count += 1
                 $ tower_1_cabin_blade_taken = True
                 $ blade_held = True
