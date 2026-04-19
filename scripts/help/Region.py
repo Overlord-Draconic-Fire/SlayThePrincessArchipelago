@@ -24,10 +24,10 @@ needle_skeptic = "Chapter III - The Eye of the Needle (Skeptic)"
 
 fury = "Chapter III - The Fury"
 fury_weathered_heart = "Chapter III - The Fury (Weathered Heart)"
-fury_pacifism = "Chapter III - The Fury (Pacifism)"
+fury_cold = "Chapter III - The Fury (Cold)"
 fury_unarmed_broken = "Chapter III - The Fury (Unarmed Broken)"
 fury_unarmed_contrarian = "Chapter III - The Fury (Unarmed Contrarian)"
-fury_other = "Chapter III - The Fury (Other)"
+fury_broken = "Chapter III - The Fury (Broken)"
 fury_tower = "Chapter III - The Fury (Tower)"
 
 apotheosis = "Chapter III - The Apotheosis"

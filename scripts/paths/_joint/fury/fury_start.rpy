@@ -20,7 +20,7 @@ label fury_start:
         if not hasRegionRequirements(Region.fury_tower):
             jump chapter_requirements_failed
     elif fury_source == "pacifism":
-        if not hasRegionRequirements(Region.fury_pacifism):
+        if not hasRegionRequirements(Region.fury_cold):
             jump chapter_requirements_failed
     elif fury_source == "unarmed":
         if fury_unarmed_sub == "broken":
@@ -30,7 +30,7 @@ label fury_start:
             if not hasRegionRequirements(Region.fury_unarmed_contrarian):
                 jump chapter_requirements_failed
     else:
-        if not hasRegionRequirements(Region.fury_other):
+        if not hasRegionRequirements(Region.fury_broken):
             jump chapter_requirements_failed
             
     show text _("{color=#FFFFFF00}Chapter Three. The Fury.{/color}") at Position(ypos=850)

@@ -25,10 +25,10 @@ REGION_REQUIREMENTS = {
     Region.needle_skeptic: [Item.needle, Item.stubborn, Item.skeptic],
     
     # Chapter III - Fury (from Adversary → Stubborn)
-    Region.fury_pacifism: [Item.fury, Item.stubborn, Item.cold],
+    Region.fury_cold: [Item.fury, Item.stubborn, Item.cold],
     Region.fury_unarmed_broken: [Item.fury, Item.stubborn, Item.broken],
     Region.fury_unarmed_contrarian: [Item.fury, Item.stubborn, Item.contrarian],
-    Region.fury_other: [Item.fury, Item.stubborn, Item.broken],
+    Region.fury_broken: [Item.fury, Item.stubborn, Item.broken],
     Region.fury_tower: [Item.fury, Item.broken, Item.stubborn],  # From Tower → Broken
     
     # Chapter III - Apotheosis (from Tower → Broken)
