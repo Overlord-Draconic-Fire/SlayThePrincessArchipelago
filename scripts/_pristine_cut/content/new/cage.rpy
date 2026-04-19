@@ -734,7 +734,7 @@ label cage_basement_start:
         "{i}• ''Why the hell did you cut your head off?''{/i}":
             jump cage_basement_second_menu
 
-        "{i}• [[Attack her.]{/i}" if blade_held:
+        "{i}• [[Attack her.]{/i}" if blade_held and hasThisDagger(Item.dagger_cage):
             play audio "audio/final/Adversary_StabCut_9.flac"
             $ cage_action = True
             jump cage_encounter_start
@@ -797,7 +797,7 @@ label cage_basement_second_menu:
         "{i}• (Explore) ''Look, I'm sorry about what happened last time. I'm... supposed to be sorry, right?''{/i}":
             jump cage_second_menu_response
 
-        "{i}• (Explore) ''Screw it.'' [[Attack her.]{/i}" if blade_held:
+        "{i}• (Explore) ''Screw it.'' [[Attack her.]{/i}" if blade_held and hasThisDagger(Item.dagger_cage):
             $ cage_action = True
             voice "audio/_pristine/voice/cage/skeptic/47.flac"
             skeptic "What? But she's so far away.\n"
@@ -812,7 +812,7 @@ label cage_basement_second_menu:
             $ cage_action = True
             jump cage_encounter_start
 
-        "{i}• (Explore) [[Try to cut yourself free.]{/i}" if paranoid_can_free_cage:
+        "{i}• (Explore) [[Try to cut yourself free.]{/i}" if paranoid_can_free_cage and hasThisDagger(Item.dagger_cage):
             default cage_cut_route = False
             $ cage_cut_route = True
             voice "audio/_pristine/voice/cage/narrator/45.flac"
@@ -1022,18 +1022,18 @@ label cage_encounter_start:
             #voice "audio/_pristine/voice/cage/skeptic/56.flac"
             #skeptic "'Designated role?' What, like we're actors? Wouldn't that be convenient. Then we could just kill the director and be done with it.\n"
 
-        "{i}• (Explore) [[Attempt to cut yourself free.]{/i}" if blade_held and cage_cut_route == False:
+        "{i}• (Explore) [[Attempt to cut yourself free.]{/i}" if blade_held and cage_cut_route == False and hasThisDagger(Item.dagger_cage):
             voice "audio/_pristine/voice/cage/narrator/58.flac"
             play tertiary "audio/final/Adversary_StabCut_9.flac"
             queue tertiary "audio/one_shot/STP_knifle cobblestone single_1.flac"
             n "You try to move your arm, but the hooks buried deep in your wrist and elbow keep you firmly, painfully, in place. You do your best to rotate the knife in your palm, but it only clinks against the metal chain, unable to so much as leave a scratch.\n"
 
-        "{i}• (Explore) [[Swing your blade.]{/i}" if blade_held:
+        "{i}• (Explore) [[Swing your blade.]{/i}" if blade_held and hasThisDagger(Item.dagger_cage):
             voice "audio/_pristine/voice/cage/narrator/59.flac"
             play audio "audio/final/Adversary_StabCut_9.flac"
             n "You try to move your arm, but do little more than rotate the hook planted firmly in your wrist. It is an excruciating and fruitless attempt, which the Princess doesn't so much as acknowledge.\n"
 
-        "{i}• (Explore) [[Keep cutting.]{/i}" if blade_held and cage_cut_route:
+        "{i}• (Explore) [[Keep cutting.]{/i}" if blade_held and cage_cut_route and hasThisDagger(Item.dagger_cage):
             default cage_cut_2 = False
             $ cage_cut_2 = True
             voice "audio/_pristine/voice/cage/paranoid/25.flac"
@@ -1146,7 +1146,7 @@ label cage_menu_2_start:
     menu:
         extend ""
 
-        "{i}• [[Cut yourself free.]{/i}" if cage_cut_2:
+        "{i}• [[Cut yourself free.]{/i}" if cage_cut_2 and hasThisDagger(Item.dagger_cage):
             default cage_cut_3 = False
             $ cage_cut_3 = True
             voice "audio/_pristine/voice/cage/narrator/62.flac"
