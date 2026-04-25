@@ -26,8 +26,7 @@ REGION_REQUIREMENTS = {
     
     # Chapter III - Fury (from Adversary → Stubborn)
     Region.fury_cold: [Item.fury, Item.stubborn, Item.cold],
-    Region.fury_unarmed_broken: [Item.fury, Item.stubborn, Item.broken],
-    Region.fury_unarmed_contrarian: [Item.fury, Item.stubborn, Item.contrarian],
+    Region.fury_contrarian: [Item.fury, Item.stubborn, Item.contrarian],
     Region.fury_broken: [Item.fury, Item.stubborn, Item.broken],
     Region.fury_tower: [Item.fury, Item.broken, Item.stubborn],  # From Tower → Broken
     

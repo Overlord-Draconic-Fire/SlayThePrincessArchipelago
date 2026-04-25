@@ -23,12 +23,8 @@ label fury_start:
         if not hasRegionRequirements(Region.fury_cold):
             jump chapter_requirements_failed
     elif fury_source == "unarmed":
-        if fury_unarmed_sub == "broken":
-            if not hasRegionRequirements(Region.fury_unarmed_broken):
-                jump chapter_requirements_failed
-        else:
-            if not hasRegionRequirements(Region.fury_unarmed_contrarian):
-                jump chapter_requirements_failed
+        if not hasRegionRequirements(Region.fury_contrarian):
+            jump chapter_requirements_failed
     else:
         if not hasRegionRequirements(Region.fury_broken):
             jump chapter_requirements_failed
