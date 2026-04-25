@@ -79,8 +79,8 @@ REGION_REQUIREMENTS = {
     Region.cage_broken: [Item.cage, Item.skeptic, Item.broken],
     
     # Chapter III - Grey (from Prisoner → Skeptic and Damsel → Smitten)
-    Region.grey_drowned: [Item.grey, Item.skeptic],
-    Region.grey_burned: [Item.grey, Item.smitten],
+    Region.grey_drowned: [Item.grey, Item.skeptic, Item.cold],
+    Region.grey_burned: [Item.grey, Item.smitten, Item.cold],
     
     # Epilogue - Happily Ever After (from Damsel → Smitten)
     Region.happily_skeptic: [Item.happily, Item.skeptic],
