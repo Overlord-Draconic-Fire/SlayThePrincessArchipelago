@@ -90,14 +90,16 @@ init -1 python:
                     memoriesanity_mode = get_memoriesanity()
                 except Exception:
                     ap_debug("Failed to get memoriesanity mode. Defaulting to 0.")
-                    return
+                    memoriesanity_mode = 0
 
                 if memoriesanity_mode != 0:
                     try:
-                        location_name = get_gallery_location_name(self.key, index)
+                        location_name = f"{self.routeName} (Gallery {index})"
                         if location_name:
                             send_location(location_name)
-                    except Exception:
+                    except Exception as e:
+                        ap_debug(f"Failed to send location for {self.routeName} index {index}.")
+                        ap_debug(f"Error: {e}")
                         pass
 
                 if memoriesanity_mode == 2:
