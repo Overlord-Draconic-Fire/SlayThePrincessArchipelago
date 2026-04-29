@@ -433,10 +433,8 @@ init -10 python:
                 if unlock_route:
                     route.unlock_gallery()
 
-                try:
-                    route.unlock_item(index, False, True)
-                except TypeError:
-                    route.unlock_item(index, False)
+                route.unlock_item(index, False, True)
+                
             else:
                 if unlock_route:
                     setattr(persistent, f"{route_key}_flag", True)

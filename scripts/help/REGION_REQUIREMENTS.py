@@ -47,7 +47,10 @@ REGION_REQUIREMENTS = {
     # Chapter III - Clarity (needs all voices)
     Region.clarity: [Item.clarity, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
     
-    # Chapter III - Razor variants (from Razor → Cheated)
+    # Chapter III and IV - Razor variants (from Razor → Cheated)
+    Region.razor_chap3: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
+
+    # No use for these
     Region.razor_no_way_broken: [Item.razor, Item.cheated, Item.contrarian, Item.broken],
     Region.razor_no_way_paranoid: [Item.razor, Item.cheated, Item.contrarian, Item.paranoid],
     Region.razor_no_way_stubborn: [Item.razor, Item.cheated, Item.contrarian, Item.stubborn],
@@ -84,9 +87,6 @@ REGION_REQUIREMENTS = {
     # Epilogue - Happily Ever After (from Damsel → Smitten)
     Region.happily_skeptic: [Item.happily, Item.skeptic],
     Region.happily_opportunist: [Item.happily, Item.opportunist],
-    
-    # Chapter IV - Razor (all voices)
-    Region.razor_chap4: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
 
     # The Long Quiet - The Shifting Mound
     Region.goddess: [Item.goddess],
