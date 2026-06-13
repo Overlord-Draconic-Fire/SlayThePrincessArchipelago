@@ -15,16 +15,14 @@ import websockets
 
 import Utils
 
-if __name__ == "__main__":
-    Utils.init_logging("TextClient", exception_logger="Client")
-
-from NetUtils import Endpoint, decode, NetworkItem, encode, ClientStatus, NetworkSlot, SlotType
-from Utils import Version, async_start
-from worlds import network_data_package
+from NetUtils import Endpoint, decode, NetworkItem, encode, ClientStatus, NetworkSlot, SlotType, DataPackage
+from Utils import Version, async_start, KeyedDefaultDict
 import os
 import ssl
 
 logger = logging.getLogger("Client")
+
+network_data_package: DataPackage = {"games": {}}
 
 @Utils.cache_argsless
 def get_ssl_context():
@@ -46,7 +44,7 @@ class CommonContext:
             self._unknown_item: typing.Callable[[int], str] = lambda key: f"Unknown {lookup_type} (ID: {key})"
             self._archipelago_lookup: typing.Dict[int, str] = {}
             self._game_store: typing.Dict[str, typing.ChainMap[int, str]] = collections.defaultdict(
-                lambda: collections.ChainMap(self._archipelago_lookup, Utils.KeyedDefaultDict(self._unknown_item)))
+                lambda: collections.ChainMap(self._archipelago_lookup, KeyedDefaultDict(self._unknown_item)))
 
         # noinspection PyTypeChecker
         def __getitem__(self, key: str) -> typing.Mapping[int, str]:
@@ -87,7 +85,7 @@ class CommonContext:
 
         def update_game(self, game: str, name_to_id_lookup_table: typing.Dict[str, int]) -> None:
             """Overrides existing lookup tables for a particular game."""
-            id_to_name_lookup_table = Utils.KeyedDefaultDict(self._unknown_item)
+            id_to_name_lookup_table = KeyedDefaultDict(self._unknown_item)
             id_to_name_lookup_table.update({code: name for name, code in name_to_id_lookup_table.items()})
             self._game_store[game] = collections.ChainMap(self._archipelago_lookup, id_to_name_lookup_table)
             if game == "Archipelago":
@@ -185,13 +183,7 @@ class CommonContext:
         self.server_address = server_address
         self.username : str | None = None
         self.password = password
-        self.hint_cost = None
         self.slot_info = {}
-        self.permissions = {
-            "release": "disabled",
-            "collect": "disabled",
-            "remaining": "disabled",
-        }
 
         # own state
         self.finished_game = False
@@ -237,24 +229,8 @@ class CommonContext:
         self.location_names = self.NameLookupDict(self, "location")
         self.checksums = {}
 
-        if self.game:
-            self.checksums[self.game] = network_data_package["games"][self.game]["checksum"]
-        self.update_data_package(network_data_package)
-
         # execution
         self.keep_alive_task = asyncio.create_task(keep_alive(self), name="Bouncy")
-
-    @property
-    def suggested_address(self) -> str:
-        if self.server_address:
-            return self.server_address
-        return Utils.persistent_load().get("client", {}).get("last_server_address", "")
-
-    @property
-    def total_locations(self) -> typing.Optional[int]:
-        """Will return None until connected."""
-        if self.checked_locations or self.missing_locations:
-            return len(self.checked_locations | self.missing_locations)
 
     async def connection_closed(self):
         if self.server and self.server.socket is not None:
@@ -271,24 +247,21 @@ class CommonContext:
         self.generator_version = Version(0, 0, 0)
         self.server = None
         self.server_task = None
-        self.hint_cost = None
-        self.permissions = {
-            "release": "disabled",
-            "collect": "disabled",
-            "remaining": "disabled",
-        }
 
     async def disconnect(self, allow_autoreconnect: bool = False):
-        if not allow_autoreconnect:
-            self.disconnected_intentionally = True
-            if self.cancel_autoreconnect():
-                logger.info("Cancelled auto-reconnect.")
-        if self.server and not self.server.socket.closed:
-            await self.server.socket.close()
-        if self.server_task is not None:
-            await self.server_task
-        if self.ui:
-            self.ui.update_hints()
+        try:
+            if not allow_autoreconnect:
+                self.disconnected_intentionally = True
+                if self.cancel_autoreconnect():
+                    logger.info("Cancelled auto-reconnect.")
+            if self.server and self.server.socket:
+                await self.server.socket.close()
+            if self.server_task is not None:
+                await self.server_task
+            if self.ui:
+                self.ui.update_hints()
+        except Exception as e:
+            print(e, flush=True)
 
     async def send_msgs(self, msgs: typing.List[typing.Any]) -> None:
         """Send JSON-serializable messages if the websocket is alive."""
@@ -304,12 +277,6 @@ class CommonContext:
         self.player_names = {slot: name for team, slot, name, orig_name in package if self.team == team}
         self.player_names[0] = "Archipelago"
 
-    def event_invalid_slot(self):
-        raise Exception('Invalid Slot; please verify that you have connected to the correct world.')
-
-    def event_invalid_game(self):
-        raise Exception('Invalid Game; please verify that you connected with the right game to the correct world.')
-
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
             logger.error("Password required but not provided; aborting connection.")
@@ -317,16 +284,7 @@ class CommonContext:
             if self.server and self.server.socket:
                 await self.server.socket.close()
             return None
-
-    async def get_username(self):
-        if not self.auth:
-            self.auth = self.username
-            if not self.auth:
-                logger.error("Slot name missing; cannot prompt in embedded mode.")
-                self.disconnected_intentionally = True
-                if self.server and self.server.socket:
-                    await self.server.socket.close()
-                return None
+        await self.send_connect()
 
     async def send_connect(self, **kwargs: typing.Any) -> None:
         """
@@ -425,7 +383,7 @@ class CommonContext:
         self.username = None
         self.password = None
         self.cancel_autoreconnect()
-        if self.server and not self.server.socket.closed:
+        if self.server and not self.server.socket:
             await self.server.socket.close()
         if self.server_task:
             await self.server_task
@@ -460,7 +418,7 @@ class CommonContext:
 
             cached_checksum: typing.Optional[str] = self.checksums.get(game)
             # no action required if cached version is new enough
-            if remote_checksum != cached_checksum:
+            if remote_checksum != cached_checksum: #SUPRIMER TOUT CE QUI EST INUTILE network_data_package toujours vide ({'games': {}})
                 local_checksum: typing.Optional[str] = network_data_package["games"].get(game, {}).get("checksum")
                 if remote_checksum == local_checksum:
                     self.update_game(network_data_package["games"][game], game)
@@ -555,7 +513,7 @@ class CommonContext:
             self.tags.add("DeathLink")
         else:
             self.tags -= {"DeathLink"}
-        if old_tags != self.tags and self.server and not self.server.socket.closed:
+        if old_tags != self.tags and self.server and not self.server.socket:
             await self.send_msgs([{"cmd": "ConnectUpdate", "tags": self.tags}])
 
     def handle_connection_loss(self, msg: str) -> None:
@@ -715,10 +673,10 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
         errors = args["errors"]
         if 'InvalidSlot' in errors:
             ctx.disconnected_intentionally = True
-            ctx.event_invalid_slot()
+            raise Exception('Invalid Slot; please verify that you have connected to the correct world.')
         elif 'InvalidGame' in errors:
             ctx.disconnected_intentionally = True
-            ctx.event_invalid_game()
+            raise Exception('Invalid Game; please verify that you connected with the right game to the correct world.')
         elif 'IncompatibleVersion' in errors:
             ctx.disconnected_intentionally = True
             raise Exception('Server reported your client version as incompatible. '

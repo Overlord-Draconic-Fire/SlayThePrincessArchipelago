@@ -18,25 +18,6 @@ class RenpyContext(CommonContext):
     items_handling = 0b111
     want_slot_data = True
 
-    async def server_auth(self, password_requested: bool = False) -> None:
-        """Send Connect packet when server is ready, matching the protocol."""
-        logger.info(f"[RenpyContext.server_auth] Called with password_requested={password_requested}")
-        if password_requested and not self.password:
-            # No console input available in Ren'Py; abort if password was not provided by the caller.
-            logger.error("Password required but not provided; aborting connection.")
-            self.disconnected_intentionally = True
-            if self.server and self.server.socket:
-                await self.server.socket.close()
-            return
-        if not self.auth:
-            self.auth = self.username
-        logger.info(
-            f"[RenpyContext.server_auth] Sending Connect with slot: {self.auth}, game: {self.game}, "
-            f"items_handling: {self.items_handling}"
-        )
-        await self.send_connect()
-        logger.info("[RenpyContext.server_auth] Connect sent")
-
     def has_item(self, item_name: str) -> bool:
         """Return True if the player owns at least one instance of the given item name."""
         item_lookup: typing.Mapping[int, str] = self.item_names[self.game]
@@ -227,15 +208,9 @@ class RenpyContext(CommonContext):
             logger.exception("item_received callback failed")
 
 
-def create_renpy_client(
-    server_address: str,
-    slot_name: str,
-    password: typing.Optional[str] = None,
-    *,
-    tags: typing.Optional[typing.Iterable[str]] = None,
-    on_text: typing.Optional[typing.Callable[[str], None]] = None,
-    on_json: typing.Optional[typing.Callable[[typing.Any], None]] = None,
-) -> RenpyContext:
+def create_renpy_client(server_address: str, slot_name: str, password: typing.Optional[str] = None, *,
+    tags: typing.Optional[typing.Iterable[str]] = None, on_text: typing.Optional[typing.Callable[[str], None]] = None,
+    on_json: typing.Optional[typing.Callable[[typing.Any], None]] = None) -> RenpyContext:
     """Factory for embedding the client in non-text hosts (e.g., Ren'Py).
 
     Connection is not started automatically; call ctx.connect() then await ctx.message_loop().
