@@ -53,7 +53,6 @@ REGION_REQUIREMENTS = {
     # No use for these
     Region.razor_no_way_broken: [Item.razor, Item.cheated, Item.contrarian, Item.broken],
     Region.razor_no_way_paranoid: [Item.razor, Item.cheated, Item.contrarian, Item.paranoid],
-    Region.razor_no_way_stubborn: [Item.razor, Item.cheated, Item.contrarian, Item.stubborn],
     Region.razor_race_broken: [Item.razor, Item.cheated, Item.hunted, Item.broken],
     Region.razor_race_paranoid: [Item.razor, Item.cheated, Item.hunted, Item.paranoid],
     Region.razor_race_stubborn: [Item.razor, Item.cheated, Item.hunted, Item.stubborn],

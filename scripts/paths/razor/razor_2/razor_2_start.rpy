@@ -32,9 +32,6 @@ label razor_2_start:
     #    elif trait_paranoid:
     #        if not hasRegionRequirements(Region.razor_no_way_paranoid):
     #            jump chapter_requirements_failed
-    #    else:
-    #        if not hasRegionRequirements(Region.razor_no_way_stubborn):
-    #            jump chapter_requirements_failed
                 
     if razor_1_cabin_blade_taken:
         scene chapter arms with fade
