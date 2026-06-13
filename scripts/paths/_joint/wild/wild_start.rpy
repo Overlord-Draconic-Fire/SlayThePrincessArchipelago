@@ -802,15 +802,14 @@ label wild_side_narrator:
     voice "audio/voices/ch3/wild/narrator/36.flac"
     n "You have to. You know you have to.\n"
     $ current_princess = "wildwound"
+    
     if not hasThisBlade(Item.blade_wild):
-        $ config.menu_include_disabled = True
+        jump no_chose_left
+
     menu:
         extend ""
 
-        "{i}• [[You have no choice left, come back later with Wild blade]{/i}" if False:
-            return
-
-        "{i}• ''I never wanted to kill you. Not really. But we can't be the same thing as each other. I had to put an end to whatever happened to us.'' [[Cut her free.]{/i}" if hasThisBlade(Item.blade_wild):
+        "{i}• ''I never wanted to kill you. Not really. But we can't be the same thing as each other. I had to put an end to whatever happened to us.'' [[Cut her free.]{/i}":
             $ config.menu_include_disabled = False
             voice "audio/voices/ch3/wild/narrator/37.flac"
             n "You devious little bastard. If you think I'm going to just let you free her, you have another thing coming.\n"
@@ -935,7 +934,7 @@ label wild_side_narrator:
             jump mirror_start
             # END
 
-        "{i}• [[Slay the Princess.]{/i}" if hasThisBlade(Item.blade_wild):
+        "{i}• [[Slay the Princess.]{/i}":
             $ config.menu_include_disabled = False
             $ quick_menu = False
             voice "audio/voices/ch3/wild/narrator/42old.flac"

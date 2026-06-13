@@ -470,10 +470,14 @@ label nightmare_2_cabin_arrive:
                         stop secondary fadeout 1.0
                         cold "Take it. It's the only way forward.\n"
                         $ config.menu_include_disabled = True
+
+                        if not hasThisBlade(Item.blade_clarity):
+                            jump no_chose_left
+
                         menu:
                             extend ""
 
-                            "{i}• [[Take the blade.]{/i}" if hasThisBlade(Item.blade_clarity):
+                            "{i}• [[Take the blade.]{/i}":
                                 label nightmare_2_blade_join:
                                     hide stars onlayer farback
                                     hide midground onlayer back
@@ -498,7 +502,7 @@ label nightmare_2_cabin_arrive:
                             "{i}• [[Don't you remember?]{/i}" if false_choice:
                                 jump nightmare_2_blade_join
 
-                            "{i}• [[You have to take the blade.]{/i}" if hasThisBlade(Item.blade_clarity):
+                            "{i}• [[You have to take the blade.]{/i}":
                                 jump nightmare_2_blade_join
 
     play audio "audio/final/Assorted_Static_4.flac"

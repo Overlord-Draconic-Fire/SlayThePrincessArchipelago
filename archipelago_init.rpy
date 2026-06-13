@@ -458,6 +458,29 @@ label chapter_requirements_failed:
     $ ap_info(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
-        "Return to the main menu.":
+        ap "Your story cannot continue from here."
+
+        "{i}• [[Return to the main menu.]]{/i}":
+            $ renpy.full_restart()
+    return
+
+label no_chose_left:
+    $ ap_info("No choices left")
+    menu:
+        ap "Your story cannot continue from here."
+
+        "{i}• [[Maybe something was forgotten.]{/i}":
+            pass
+
+        "{i}• [[Maybe somewhere else awaits first.]{/i}":
+            pass
+
+        "{i}• [[Maybe this is not the right time.]{/i}":
+            pass
+
+        "{i}• [[Return when fate allows it.]{/i}":
+            pass
+
+        "{i}• [[Return to the main menu.]]{/i}":
             $ renpy.full_restart()
     return

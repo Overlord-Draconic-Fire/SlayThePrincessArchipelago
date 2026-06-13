@@ -602,13 +602,10 @@ label stranger_basement_menu:
             contrarian "Just do something! Do anything! Do all of it if that's what you want. This place is hell and it's only getting worse.\n"
 
             if not hasThisBlade(Item.blade_stranger):
-                $ config.menu_include_disabled = True
+                jump no_chose_left
 
     menu:
         extend ""
-
-        "{i}• [[You have no choice left, come back later with Stranger blade]{/i}" if False:
-            return
 
         "{i}• (Explore) ''I'm sorry... I didn't realize I was here.''{/i}" if stranger_schism_count == 1 and stranger_menu_sorry == False:
             $ stranger_menu_sorry = True

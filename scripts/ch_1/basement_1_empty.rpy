@@ -449,6 +449,10 @@ label basement_1_empty_start:
                             with dissolve
                             voice "audio/voices/ch1/empty/narrator/empty_n_26.flac"
                             n "You have to make a choice. Let's hope for all our sakes it's the right one.\n"
+
+                            if not hasThisBlade(Item.blade_princess) and damsel_encountered and nightmare_encountered:
+                                jump no_chose_left
+
                             menu:
                                 extend ""
 
@@ -783,6 +787,10 @@ label basement_1_empty_rescue:
         hero "Or we could use it to free her.\n"
         voice "audio/voices/ch1/empty/narrator/empty_n_58.flac"
         n "You won't like what happens if you do that.\n"
+
+        if not hasThisBlade(Item.blade_princess) and damsel_encountered and witch_encountered:
+            jump no_chose_left
+
         menu:
             extend ""
 
@@ -1039,6 +1047,10 @@ label basement_1_empty_rescue:
                                 n "But the Princess dodges, stumbling back against the wall before the blade has a chance to connect.\n"
                                 voice "audio/voices/ch1/empty/narrator/empty_n_81.flac"
                                 n "Stop it! Stop trying to resist me! I'm trying to get you out of here alive.\n"
+
+                                if not hasThisBlade(Item.blade_princess) and damsel_encountered:
+                                    jump no_chose_left
+
                                 menu:
                                     extend ""
 

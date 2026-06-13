@@ -1984,6 +1984,10 @@ label adversary_1_retrieve_knife:
     stubborn "Great. Now pick it up and march back down there. I'm tired of us constantly moving in circles instead of fighting her like we're supposed to.\n"
     label adversary_1_retrieve_knife_menu:
         default adversary_1_retrieve_knife_explore = False
+        
+        if not hasThisBlade(Item.blade_adversary) and not adversary_can_fury and adversary_1_retrieve_knife_explore:
+            jump no_chose_left
+
         menu:
             extend ""
 
