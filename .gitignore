@@ -15,8 +15,10 @@ audio/*
 gui/*
 images/*
 saves/*
-staging/image_setup/*
+staging/*
 tl/*
 *.txt
 /.idea
 /.vscode
+gui.rpy
+shader.rpy
