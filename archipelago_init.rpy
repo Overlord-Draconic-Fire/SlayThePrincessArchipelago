@@ -469,16 +469,16 @@ label no_chose_left:
     menu:
         ap "Your story cannot continue from here."
 
-        "{i}• [[Maybe something was forgotten.]{/i}":
+        "{i}• [[Maybe something was forgotten.]{/i}" if False:
             pass
 
-        "{i}• [[Maybe somewhere else awaits first.]{/i}":
+        "{i}• [[Maybe somewhere else awaits first.]{/i}" if False:
             pass
 
-        "{i}• [[Maybe this is not the right time.]{/i}":
+        "{i}• [[Maybe this is not the right time.]{/i}" if False:
             pass
 
-        "{i}• [[Return when fate allows it.]{/i}":
+        "{i}• [[Return when fate allows it.]{/i}" if False:
             pass
 
         "{i}• [[Return to the main menu.]]{/i}":
