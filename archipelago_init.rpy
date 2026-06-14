@@ -48,6 +48,9 @@ init -10 python:
     store.Item = Item
     store.Region = Region
     store.BLADE_CHAPTER_MAP = BLADE_CHAPTER_MAP
+
+    if not hasattr(renpy.store, "gallery_lock"):
+        renpy.store.gallery_lock = threading.Lock()
     
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:

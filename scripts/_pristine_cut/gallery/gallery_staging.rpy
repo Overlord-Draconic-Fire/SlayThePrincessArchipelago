@@ -69,7 +69,8 @@ init -1 python:
                 self.hints = []
 
         def get_flag(self):
-            return getattr(persistent, self.flag, False)
+            with renpy.store.gallery_lock:
+                return getattr(persistent, self.flag, False)
 
         def get_flag_key(self):
             return self.flag
@@ -104,19 +105,22 @@ init -1 python:
 
                 if memoriesanity_mode == 2:
                     return
-
-            setattr(persistent, "gallery_" + str(self.key) + "_" + str(index), True)
+            with renpy.store.gallery_lock:
+                setattr(persistent, "gallery_" + str(self.key) + "_" + str(index), True)
             if checkAchievement == True:
                 galleryAchievementChecker.checkAchievement()
 
         def unlock_gallery(self):
-            setattr(persistent, self.flag, True)
+            with renpy.store.gallery_lock:
+                setattr(persistent, self.flag, True)
 
         def lock_gallery(self):
-            setattr(persistent, self.flag, False)
+            with renpy.store.gallery_lock:
+                setattr(persistent, self.flag, False)
 
         def lock_item(self, index):
-            setattr(persistent, "gallery_" + str(self.key)+ "_" + str(index), False)
+            with renpy.store.gallery_lock:
+                setattr(persistent, "gallery_" + str(self.key)+ "_" + str(index), False)
 
     class GalleryItem:
         def __init__(self, parentKey, itemNumber):
@@ -134,7 +138,8 @@ init -1 python:
             return "gallery_" + str(self.parentKey)+"_"+str(self.itemNumber)
 
         def get_flag(self):
-            return getattr(persistent, "gallery_" + str(self.parentKey)+"_"+str(self.itemNumber), False)
+            with renpy.store.gallery_lock:
+                return getattr(persistent, "gallery_" + str(self.parentKey)+"_"+str(self.itemNumber), False)
 
 
 ##############Route & Gallery setup
