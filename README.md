@@ -9,8 +9,8 @@ Exceptions: the *Good Ending* and *Oblivion*, which are intentionally excluded a
 
 ## Items
 
-* **Dagger**
-  You cannot pick up or use the dagger unless it has been unlocked.
+* **Blade**
+  You cannot pick up or use the blade unless it has been unlocked.
 
 * **Princesses & Voices**
   Access to a chapter requires the corresponding princess and all required voices.
