@@ -2345,13 +2345,15 @@ init python:
 
         try:
             import asyncio
+            future = asyncio.run_coroutine_threadsafe(_disconnect_and_stop(client), loop)
+            future.result(timeout=5)
 
-            asyncio.run_coroutine_threadsafe(_disconnect_and_stop(client), loop)
-            # Clear reference so UI immediately switches back to "Connect".
             set_archipelago_client(None)
             ap_info("Disconnected")
         except Exception as e:
+            import traceback
             ap_debug(f"Disconnection error: {e}")
+            traceback.print_exc()
 
     def load_persistent_client_fields():
         """Load AP fields from the client persistent YAML file."""
@@ -2374,8 +2376,6 @@ init python:
         new_connect_websocket(server_url, slot_name, password)
 
     def new_connect_websocket(url, name, mdp):
-        if url and not (url.startswith("ws://") or url.startswith("wss://")):
-            url = f"wss://{url}"
         def run_connection():
             async def connect_and_listen():
                 archipelago_client = None
@@ -2393,12 +2393,16 @@ init python:
 
                     # wait until AP sends the real Connected packet (slot assigned)
                     # so notify + button state change happen together
-                    for _ in range(200):
+                    for _ in range(100):
                         if getattr(archipelago_client, "slot", None) is not None:
                             ap_info("Connected")
                             renpy.restart_interaction()
                             break
                         await asyncio.sleep(0.05)
+                    else:
+                        ap_info("Connect Failed")
+                        set_archipelago_client(None)
+                        return
 
                     await archipelago_client.message_loop()
                     await archipelago_client.shutdown()
@@ -2409,10 +2413,10 @@ init python:
                 asyncio.run(connect_and_listen())
             except Exception as e:
                 import traceback
-                error_msg = f"Connection error: {str(e)}"
-                ap_debug(error_msg)
+                ap_debug(f"Connection error: {e}")
                 traceback.print_exc()
-        
+                set_archipelago_client(None)
+
         t = threading.Thread(target=run_connection)
         t.daemon = True
         t.start()

@@ -49,7 +49,6 @@ razor_chap3 = "Chapter III - Razor"
 razor_no_way = "Chapter III - No Way Out"
 razor_no_way_broken = "Chapter III - No Way Out (Broken)"
 razor_no_way_paranoid = "Chapter III - No Way Out (Paranoid)"
-razor_no_way_stubborn = "Chapter III - No Way Out (Stubborn)"
 
 razor_race = "Chapter III - The Arms Race"
 razor_race_broken = "Chapter III - The Arms Race (Broken)"

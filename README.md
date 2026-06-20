@@ -9,8 +9,8 @@ Exceptions: the *Good Ending* and *Oblivion*, which are intentionally excluded a
 
 ## Items
 
-* **Dagger**
-  You cannot pick up or use the dagger unless it has been unlocked.
+* **Blade**
+  You cannot pick up or use the blade unless it has been unlocked.
 
 * **Princesses & Voices**
   Access to a chapter requires the corresponding princess and all required voices.
@@ -37,6 +37,8 @@ Locations are triggered by specific in-game events:
 * Seeing your reflection in the end-of-loop mirror (*The Body, The Bloat, etc.*)
 
 * Bringing back a heart (or vessel) (*A XXX Heart*)
+
+* Collecting an image from the gallery (can also be a filler item)
 
 ---
 
@@ -90,10 +92,13 @@ This system is still in an early state and may evolve in future updates.
      You do not need to modify this. A new folder named
      `SlaythePrincess-Archipelago` will be created automatically.
 
-6. **Launch the game**
-   Start the game normally.
-   If the installation was successful, the Archipelago menu should appear.
-   Log in before starting a new game or a save file!
+6. **Launch the game at least 2 times.**
+   * When you start the game for the first time:
+      * If the installation was successful, the Archipelago menu should appear
+      * Close the game and remove the `saves` folder from the game folder (even if you've already done it before)
+      * The next times you launch the game, you should no longer see the vanilla game saves.
+
+   * Log in before starting a new game or a save file!
 
 ---
 

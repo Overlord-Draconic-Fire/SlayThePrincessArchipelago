@@ -383,7 +383,7 @@ class CommonContext:
         self.username = None
         self.password = None
         self.cancel_autoreconnect()
-        if self.server and not self.server.socket:
+        if self.server and self.server.socket:
             await self.server.socket.close()
         if self.server_task:
             await self.server_task
@@ -513,7 +513,7 @@ class CommonContext:
             self.tags.add("DeathLink")
         else:
             self.tags -= {"DeathLink"}
-        if old_tags != self.tags and self.server and not self.server.socket:
+        if old_tags != self.tags and self.server and self.server.socket:
             await self.send_msgs([{"cmd": "ConnectUpdate", "tags": self.tags}])
 
     def handle_connection_loss(self, msg: str) -> None:

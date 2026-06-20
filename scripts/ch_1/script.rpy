@@ -2119,6 +2119,10 @@ label cabin_interrior_1:
 
         default blade_taken_1 = False
         default blade_held = False
+
+        if not hasThisBlade(Item.blade_princess) and not ch1_can_empty:
+            jump no_chose_left
+
         menu:
             extend ""
 

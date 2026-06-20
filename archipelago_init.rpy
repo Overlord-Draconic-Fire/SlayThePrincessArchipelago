@@ -48,6 +48,9 @@ init -10 python:
     store.Item = Item
     store.Region = Region
     store.BLADE_CHAPTER_MAP = BLADE_CHAPTER_MAP
+
+    if not hasattr(renpy.store, "gallery_lock"):
+        renpy.store.gallery_lock = threading.Lock()
     
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:
@@ -458,6 +461,29 @@ label chapter_requirements_failed:
     $ ap_info(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
-        "Return to the main menu.":
+        ap "Your story cannot continue from here."
+
+        "{i}• [[Return to the main menu.]]{/i}":
+            $ renpy.full_restart()
+    return
+
+label no_chose_left:
+    $ ap_info("No choices left")
+    menu:
+        ap "Your story cannot continue from here."
+
+        "{i}• [[Maybe something was forgotten.]{/i}" if False:
+            pass
+
+        "{i}• [[Maybe somewhere else awaits first.]{/i}" if False:
+            pass
+
+        "{i}• [[Maybe this is not the right time.]{/i}" if False:
+            pass
+
+        "{i}• [[Return when fate allows it.]{/i}" if False:
+            pass
+
+        "{i}• [[Return to the main menu.]]{/i}":
             $ renpy.full_restart()
     return
