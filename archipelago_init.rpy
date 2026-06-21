@@ -9,12 +9,14 @@ init:
     define ap = Character("Archipelago", color = "#ffffff", what_color = "#ffffff", what_text_align=0.5, what_outlines=[ (3, "#000000") ], who_outlines= [ (3, "#000000") ], what_style = "voice_style", ctc="ctc_blink", ctc_position="nestled")
 
 #init 1 python:
-#    if get_memoriesanity():
+#    if archipelago.get_memoriesanity():
 #        ap_gallery_unlock_all_without_images()
 
 init -10 python:
     import os
     import sys
+    import builtins
+    from collections import deque
     
     # Paths to Add
     base_dir = os.path.join(renpy.config.basedir, "game")
@@ -57,211 +59,75 @@ init -10 python:
         def __init__(self):
             self.client = None
             self.lock = threading.Lock()
-        
-        def get_client(self):
-            """Thread-safe access to archipelago_client from any thread."""
-            with self.lock:
-                return self.client
-        
-        def set_client(self, client):
-            """Thread-safe update of archipelago_client."""
+            self.connecting = False
+            self.stopping = False
+
+        def set_client(self, client: RenpyContext) -> None:
+            """Thread-safe update of archipelago client."""
             with self.lock:
                 self.client = client
+                if client:
+                    try:
+                        client.on_item_received_callback = ap_handle_received_item
+                        renpy.restart_interaction()
+                    except Exception:
+                        import traceback
+                        ap_error("error with on_item_received_callback")
+                        traceback.print_exc()
+        
+        def __getattr__(self, name):
+            try:
+                with self.lock:
+                    if self.client is None:
+                        ap_error("Archipelago not initialized")
+                        return
+
+                    return getattr(self.client, name)
+            except Exception:
+                import traceback
+                ap_error(f"error whith the function {name}")
+                traceback.print_exc()
     
     # Global instance
     archipelago = ArchipelagoManager()
 
     def ap_notify(message, level: str = "debug") -> None:
-        """
-        Unified AP notification helper.
-        - level="debug": console/dev only, prefixed with [DEBUG]
-        - level="ap": player-facing only, prefixed with [AP]
-        - level="info": both console and player, prefixed with [INFO]
-        """
         msg_str = str(message)
         level_key = str(level).lower().strip()
 
-        if level_key not in ("debug", "ap", "info"):
+        if level_key not in ("debug", "error", "info"):
             level_key = "debug"
 
         prefix_map = {
+            "error": "[ERROR]",
             "debug": "[DEBUG]",
-            "ap": "[AP]",
             "info": "[INFO]",
         }
         full_message = f"{prefix_map[level_key]} {msg_str}"
 
-        renpy.notify(msg_str)
+        if level_key != "debug":
+            renpy.notify(msg_str)
         print(full_message)
 
     def ap_debug(message) -> None:
         ap_notify(message, "debug")
 
-    def ap_player(message) -> None:
-        ap_notify(message, "ap")
+    def ap_error(message) -> None:
+        ap_notify(message, "error")
 
     def ap_info(message) -> None:
         ap_notify(message, "info")
 
-    def get_archipelago_client() -> RenpyContext:
-        """Thread-safe access to archipelago_client from any thread."""
-        return archipelago.get_client()
-    
-    def set_archipelago_client(client: RenpyContext) -> None:
-        """Thread-safe update of archipelago_client."""
-        archipelago.set_client(client)
-        if client:
-            try:
-                client.on_item_received_callback = ap_handle_received_item
-            except Exception:
-                pass
-        try:
-            renpy.restart_interaction()
-        except Exception:
-            pass
-
     def send_location(location_name : str) -> None:
         """Send an arbitrary location check."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                if "Find" in location_name and not get_chapter_rando():
-                    return
-                if "Reach" in location_name and not get_global_chapter_rando():
-                    return
-                if "Heart" in location_name and not get_heart_rando():
-                    return
+        if "Find" in location_name and not archipelago.get_chapter_rando():
+            return
+        if "Reach" in location_name and not archipelago.get_global_chapter_rando():
+            return
+        if "Heart" in location_name and not archipelago.get_heart_rando():
+            return
 
-                client.send_location(location_name)
-            else:
-                ap_info("archipelago not initialized")
-        except Exception as e:
-            import traceback
-            ap_debug(f"Error while sending location: {e}")
-            traceback.print_exc()
-
-    def send_goal() -> None:
-        """Mark current AP slot as having completed its goal."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                client.send_goal()
-            else:
-                ap_info("archipelago not initialized")
-        except Exception as e:
-            import traceback
-            ap_debug(f"Error while sending goal status: {e}")
-            traceback.print_exc()
-
-    def get_slot_data() -> dict:
-        """Return AP slot_data for this player (empty dict if unavailable)."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_slot_data()
-        except Exception as e:
-            ap_debug(f"Error in get_slot_data(): {e}")
-        return {}
-
-    def get_slot_option_bool(key: str, default: bool = False) -> bool:
-        """Read a boolean option from AP slot_data."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_slot_option_bool(key, default)
-        except Exception as e:
-            ap_debug(f"Error in get_slot_option_bool({key}): {e}")
-        return default
-
-    def get_slot_option_int(key: str, default: int = 0) -> int:
-        """Read an integer option from AP slot_data."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_slot_option_int(key, default)
-        except Exception as e:
-            ap_debug(f"Error in get_slot_option_int({key}): {e}")
-        return default
-
-    def get_chapter_access() -> int:
-        """Read slot_data['chapter_access']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_chapter_access()
-        except Exception as e:
-            ap_debug(f"Error in get_chapter_access(): {e}")
-        return ChapterAccessRando.default
-
-    def get_pristine_blade_rando() -> int:
-        """Read slot_data['pristine_blade_rando']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_pristine_blade_rando()
-        except Exception as e:
-            ap_debug(f"Error in get_pristine_blade_rando(): {e}")
-        return PristineBladeRando.default
-
-    def get_gift_rando() -> bool:
-        """Read slot_data['gift_rando']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_gift_rando()
-        except Exception as e:
-            ap_debug(f"Error in get_gift_rando(): {e}")
-        return False
-
-    def get_chapter_rando() -> bool:
-        """Read slot_data['chapter_rando']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_chapter_rando()
-        except Exception as e:
-            ap_debug(f"Error in get_chapter_rando(): {e}")
-        return False
-
-    def get_global_chapter_rando() -> bool:
-        """Read slot_data['global_chapter_rando']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_global_chapter_rando()
-        except Exception as e:
-            ap_debug(f"Error in get_global_chapter_rando(): {e}")
-        return False
-
-    def get_heart_rando() -> bool:
-        """Read slot_data['heart_rando']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_heart_rando()
-        except Exception as e:
-            ap_debug(f"Error in get_heart_rando(): {e}")
-        return False
-
-    def get_mirror_rando() -> bool:
-        """Read slot_data['mirror_rando']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_mirror_rando()
-        except Exception as e:
-            ap_debug(f"Error in get_mirror_rando(): {e}")
-        return False
-
-    def get_memoriesanity() -> int:
-        """Read slot_data['memoriesanity']."""
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if client:
-                return client.get_memoriesanity()
-        except Exception as e:
-            ap_debug(f"Error in get_memoriesanity(): {e}")
-        return 0
+        archipelago.send_location(location_name)
 
     def hasThisBlade(blade_value : str) -> bool:
         """
@@ -271,61 +137,43 @@ init -10 python:
         - The player has the chapter blade (blade3 for chapter 3), OR
         - The player has the global blade (blade)
         """
-        try:
-            client : RenpyContext = get_archipelago_client()
-            if not client:
-                ap_info("archipelago not initialized")
-                return False
-
-            # Check specific blade
-            if client.has_item(blade_value):
-                ap_debug(f"Player has specific blade: {blade_value}")
+        # Check specific blade
+        if archipelago.has_item(blade_value):
+            ap_debug(f"Player has specific blade: {blade_value}")
+            return True
+        
+        # Check chapter-specific blade
+        if blade_value in BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP:
+            chapter = BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP[blade_value]
+            chapter_blade = f"blade{chapter}"
+            chapter_item = getattr(Item, chapter_blade)
+            if archipelago.has_item(chapter_item):
+                ap_debug(f"Player has chapter blade: {chapter_item}")
                 return True
-            
-            # Check chapter-specific blade
-            if blade_value in BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP:
-                chapter = BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP[blade_value]
-                chapter_blade = f"blade{chapter}"
-                chapter_item = getattr(Item, chapter_blade)
-                if client.has_item(chapter_item):
-                    ap_debug(f"Player has chapter blade: {chapter_item}")
-                    return True
-            
-            # Check global blade
-            if client.has_item(Item.blade):
-                ap_debug(f"Player has global blade: {Item.blade}")
-                return True
-            
-            return get_pristine_blade_rando() == 0
-        except Exception as e:
-            ap_debug(f"Error in hasThisBlade({blade_value}): {e}")
-            return False
+        
+        # Check global blade
+        if archipelago.has_item(Item.blade):
+            ap_debug(f"Player has global blade: {Item.blade}")
+            return True
+        
+        return archipelago.get_pristine_blade_rando() == 0
 
     def hasXItem(item_value : str, x : int) -> bool:
         """
         Check whether the player has at least x of the specified item.
         Accepts an item value like Item.heart and returns True if the player has at least x of that item.
         """
-        try:
-            store.last_region_checked = None
-            if item_value == Item.gift:
-                store.last_region_checked = Region.space_between
+        store.last_region_checked = None
+        if item_value == Item.gift:
+            store.last_region_checked = Region.space_between
 
-            store.last_region_failed_requirement = None
+        store.last_region_failed_requirement = None
 
-            client : RenpyContext = get_archipelago_client()
-            if not client:
-                ap_info("archipelago not initialized")
-                return False
-
-            count = client.count_item(item_value)
-            ap_debug(f"Player has {count} of {item_value} (needs {x})")
-            if count < x:
-                store.last_region_failed_requirement = (x - count) + " " + item_value
-            return count >= x
-        except Exception as e:
-            ap_debug(f"Error in hasXItem({item_value}, {x}): {e}")
-            return False
+        count = archipelago.count_item(item_value)
+        ap_debug(f"Player has {count} of {item_value} (needs {x})")
+        if count < x:
+            store.last_region_failed_requirement = (x - count) + " " + item_value
+        return count >= x
 
     def hasRegionRequirements(region_value : str) -> bool:
         """
@@ -333,31 +181,27 @@ init -10 python:
         The parameter must be a region value (e.g., Region.needle_hunted).
         """
         try:
-            store.last_region_checked = region_value
-            store.last_region_failed_requirement = None
-
-            client : RenpyContext = get_archipelago_client()
-            if not client:
-                return False
+            builtins.last_region_checked = region_value
+            builtins.last_region_failed_requirement = None
 
             requirements = REGION_REQUIREMENTS.REGION_REQUIREMENTS.get(region_value)
             if not requirements:
-                ap_debug(f"No requirements found for region: {region_value}")
+                ap_error(f"No requirements found for region: {region_value}")
                 return False
 
             for required_item in requirements:
-                if not get_chapter_access() in [1, 3] and "(Princess)" in required_item:
+                if not archipelago.get_chapter_access() in [1, 3] and "(Princess)" in required_item:
                     continue
-                if not get_chapter_access() in [2, 3] and "(Voice)" in required_item:
+                if not archipelago.get_chapter_access() in [2, 3] and "(Voice)" in required_item:
                     continue
 
-                if not client.has_item(required_item):
-                    store.last_region_failed_requirement = required_item
+                if not archipelago.has_item(required_item):
+                    builtins.last_region_failed_requirement = required_item
                     return False
 
             return True
         except Exception as e:
-            ap_debug(f"Error in hasRegionRequirements({region_value}): {e}")
+            ap_error(f"Error in hasRegionRequirements({region_value}): {e}")
             return False
 
     def _build_gallery_route_map():
@@ -402,11 +246,10 @@ init -10 python:
                 galleryAchievementChecker.checkAchievement()
 
             renpy.save_persistent()
-            ap_info("Gallery updated: full unlock applied.")
+            ap_debug("Gallery updated: full unlock applied.")
             return True
-
         except Exception as e:
-            ap_debug(f"Error in ap_gallery_unlock_all(): {e}")
+            ap_error(f"Error in ap_gallery_unlock_all(): {e}")
             return False
 
     def ap_gallery_unlock_all_without_images() -> bool:
@@ -424,11 +267,11 @@ init -10 python:
                         route.lock_item(item.itemNumber)
 
             renpy.save_persistent()
-            ap_info("Gallery updated: galleries unlocked, images locked.")
+            ap_debug("Gallery updated: galleries unlocked, images locked.")
             return True
 
         except Exception as e:
-            ap_debug(f"Error in ap_gallery_unlock_all_without_images(): {e}")
+            ap_error(f"Error in ap_gallery_unlock_all_without_images(): {e}")
             return False
 
     def ap_handle_received_item(item_name: str, sender: str = "", net_item = None) -> None:
@@ -442,12 +285,12 @@ init -10 python:
             route = route_map.get(route_name)
 
             if route is None:
-                ap_debug(f"Unknown gallery route: {route_name}")
+                ap_error(f"Unknown gallery route: {route_name}")
                 return
 
             # sécurité index
             if index < 1 or index > len(route.items):
-                ap_debug(f"Invalid index {index} for {route_name}")
+                ap_error(f"Invalid index {index} for {route_name}")
                 return
 
             route.unlock_gallery()
@@ -455,10 +298,10 @@ init -10 python:
 
             renpy.save_persistent()
         except Exception as e:
-            ap_debug(f"Error in ap_handle_received_item({item_name}): {e}")
+            ap_error(f"Error in ap_handle_received_item({item_name}): {e}")
 
 label chapter_requirements_failed:
-    $ ap_info(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
+    $ ap_debug(f"{builtins.last_region_checked}: missing {builtins.last_region_failed_requirement}")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
         ap "Your story cannot continue from here."
@@ -468,7 +311,7 @@ label chapter_requirements_failed:
     return
 
 label no_chose_left:
-    $ ap_info("No choices left")
+    $ ap_debug("No choices left")
     menu:
         ap "Your story cannot continue from here."
 

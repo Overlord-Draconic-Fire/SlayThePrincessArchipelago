@@ -79,7 +79,7 @@ label begin_quiet:
                     $ send_location(Location.goddess)
                     if not hasRegionRequirements(Region.goddess):
                         jump chapter_requirements_failed
-                    if get_gift_rando() and not hasXItem(Item.gift, loops_finished+1):
+                    if archipelago.get_gift_rando() and not hasXItem(Item.gift, loops_finished+1):
                         jump chapter_requirements_failed
 
                     $ quick_menu = False

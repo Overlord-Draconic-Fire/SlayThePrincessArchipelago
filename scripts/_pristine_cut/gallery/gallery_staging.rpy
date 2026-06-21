@@ -88,7 +88,7 @@ init -1 python:
         def unlock_item(self, index, checkAchievement = True, from_server = False):
             if not from_server:
                 try:
-                    memoriesanity_mode = get_memoriesanity()
+                    memoriesanity_mode = archipelago.get_memoriesanity()
                 except Exception:
                     ap_debug("Failed to get memoriesanity mode. Defaulting to 0.")
                     memoriesanity_mode = 0

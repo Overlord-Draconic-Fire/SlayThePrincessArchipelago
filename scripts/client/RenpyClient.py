@@ -18,6 +18,8 @@ class RenpyContext(CommonContext):
     items_handling = 0b111
     want_slot_data = True
 
+    trying_to_connect: bool = False
+
     def has_item(self, item_name: str) -> bool:
         """Return True if the player owns at least one instance of the given item name."""
         item_lookup: typing.Mapping[int, str] = self.item_names[self.game]
@@ -60,33 +62,33 @@ class RenpyContext(CommonContext):
         location_id: int | None = normalized_reverse.get(norm_target)
 
         if location_id is None:
-            self._notify(f"Unknown location: '{location_name}'")
+            self._notify(f"Unknown location: '{location_name}'", "error")
             return False
 
         # Check if already sent to server (from any previous session or this one)
         if location_id in self.checked_locations:
-            self._notify(f"Location already sent: '{location_name}' ({location_id})")
+            self._notify(f"Location already sent: '{location_name}' ({location_id})", "debug")
             return False
 
         # Send the location check on the background event loop
         if not self.loop or self.loop.is_closed():
-            self._notify(f"Cannot send location: inactive event loop ({location_name})")
+            self._notify(f"Cannot send location: inactive event loop ({location_name})", "error")
             return False
 
         import asyncio
         try:
             asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), self.loop)
-            self._notify(f"Location sent: '{location_name}' ({location_id})")
+            self._notify(f"Location sent: '{location_name}' ({location_id})", "info")
             return True
         except Exception:
             logger.exception("send_location failed")
-            self._notify(f"Error while sending location '{location_name}'")
+            self._notify(f"Error while sending location '{location_name}'", "error")
             return False
 
     def send_goal(self) -> bool:
         """Mark this slot as goal-complete on the Archipelago server."""
         if not self.loop or self.loop.is_closed():
-            self._notify("Cannot send goal: inactive event loop")
+            self._notify("Cannot send goal: inactive event loop", "error")
             return False
 
         import asyncio
@@ -96,15 +98,11 @@ class RenpyContext(CommonContext):
                 self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]),
                 self.loop,
             ).result(timeout=2.0)
-            self._notify("Goal status sent")
+            self._notify("Goal status sent", "debug")
             return True
         except Exception:
-            self._notify("Error while sending goal status")
+            self._notify("Error while sending goal status", "error")
             return False
-
-    def get_slot_data(self) -> dict[str, typing.Any]:
-        """Return the current slot_data dict received from the server."""
-        return dict(getattr(self, "slot_data", {}))
 
     def get_slot_option(self, key: str, default: typing.Any = None) -> typing.Any:
         """Read one slot_data option by key."""
@@ -162,7 +160,7 @@ class RenpyContext(CommonContext):
         """Read slot_data['memoriesanity'] as int enum."""
         return self.get_slot_option_int("memoriesanity", 0)
 
-    def _notify(self, message: str) -> None:
+    def _notify(self, message: str, level: str = "debug") -> None:
         """Thread-safe bridge to on_text_callback (ap_notify)."""
         logger.info(message)
         
@@ -179,11 +177,11 @@ class RenpyContext(CommonContext):
                 running_loop = None
 
             if self.loop and running_loop and running_loop is self.loop:
-                callback(message)
+                callback(message, level)
             elif self.loop and self.loop.is_running():
                 self.loop.call_soon_threadsafe(callback, message)
             else:
-                callback(message)
+                callback(message, level)
         except Exception:
             logger.exception("_notify failed")
 
@@ -211,10 +209,7 @@ class RenpyContext(CommonContext):
 def create_renpy_client(server_address: str, slot_name: str, password: typing.Optional[str] = None, *,
     tags: typing.Optional[typing.Iterable[str]] = None, on_text: typing.Optional[typing.Callable[[str], None]] = None,
     on_json: typing.Optional[typing.Callable[[typing.Any], None]] = None) -> RenpyContext:
-    """Factory for embedding the client in non-text hosts (e.g., Ren'Py).
 
-    Connection is not started automatically; call ctx.connect() then await ctx.message_loop().
-    """
     ctx = RenpyContext(server_address, password)
     ctx.username = slot_name
     ctx.auth = slot_name

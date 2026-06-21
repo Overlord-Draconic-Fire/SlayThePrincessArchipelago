@@ -490,27 +490,27 @@ label mirror_sort:
     hide chain onlayer back
 
     if loops_finished == 0:
-        if get_mirror_rando():
+        if archipelago.get_mirror_rando():
             $ send_location(Location.mirror1)
         jump mirror_1_join
 
     elif loops_finished == 1:
-        if get_mirror_rando():
+        if archipelago.get_mirror_rando():
             $ send_location(Location.mirror2)
         jump mirror_2_join
 
     elif loops_finished == 2:
-        if get_mirror_rando():
+        if archipelago.get_mirror_rando():
             $ send_location(Location.mirror3)
         jump mirror_3_join
 
     elif loops_finished == 3:
-        if get_mirror_rando():
+        if archipelago.get_mirror_rando():
             $ send_location(Location.mirror4)
         jump mirror_4_join
 
     else:
-        if get_mirror_rando():
+        if archipelago.get_mirror_rando():
             $ send_location(Location.mirror5)
         jump mirror_finale
 

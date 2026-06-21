@@ -8,17 +8,12 @@ import urllib.parse
 import sys
 import typing
 import time
-import functools
-import warnings
-
+import ssl
 import websockets
-
 import Utils
 
 from NetUtils import Endpoint, decode, NetworkItem, encode, ClientStatus, NetworkSlot, SlotType, DataPackage
 from Utils import Version, async_start, KeyedDefaultDict
-import os
-import ssl
 
 logger = logging.getLogger("Client")
 
@@ -142,6 +137,8 @@ class CommonContext:
     seed_name: typing.Optional[str]
     """Seed name that will be validated on opening a socket if present"""
 
+    trying_to_connect: bool
+
     # locations
     locations_checked: set[int]
     """
@@ -192,6 +189,8 @@ class CommonContext:
         self.slot = None
         self.auth = None
         self.seed_name = None
+
+        self.trying_to_connect = False
 
         self.locations_checked = set()  # local state
         self.locations_scouted = set()
@@ -247,6 +246,7 @@ class CommonContext:
         self.generator_version = Version(0, 0, 0)
         self.server = None
         self.server_task = None
+        self.trying_to_connect = False
 
     async def disconnect(self, allow_autoreconnect: bool = False):
         try:
@@ -313,6 +313,7 @@ class CommonContext:
     async def connect(self, address: typing.Optional[str] = None) -> None:
         """ disconnect any previous connection, and open new connection to the server """
         await self.disconnect()
+        self.trying_to_connect = True
         self.server_task = asyncio.create_task(server_loop(self, address), name="server loop")
 
     async def message_loop(self) -> None:
@@ -520,6 +521,7 @@ class CommonContext:
         """Helper for logging a loss of connection. Must be called from an except block."""
         exc_info = sys.exc_info()
         logger.exception(msg, exc_info=exc_info, extra={'compact_gui': True})
+        self.trying_to_connect = False
 
 async def keep_alive(ctx: CommonContext, seconds_between_checks=100):
     """some ISPs/network configurations drop TCP connections if no payload is sent (ignore TCP-keep-alive)
@@ -548,8 +550,7 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
 
     ctx.cancel_autoreconnect()
 
-    address = f"ws://{address}" if "://" not in address \
-        else address.replace("archipelago://", "ws://")
+    address = f"ws://{address}" if "://" not in address else address.replace("archipelago://", "ws://")
 
     server_url = urllib.parse.urlparse(address)
     if server_url.username:
@@ -566,6 +567,7 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
         socket = await websockets.connect(address, port=port, ping_timeout=None, ping_interval=None,
                                         ssl=get_ssl_context() if address.startswith("wss://") else None,
                                         max_size=ctx.max_size)
+
         if ctx.ui is not None:
             ctx.ui.update_address_bar(server_url.netloc)
         ctx.server = Endpoint(socket)
@@ -577,6 +579,7 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
             for msg in decode(data):
                 await process_server_cmd(ctx, msg)
         logger.warning(f"Disconnected from multiworld server{reconnect_hint()}")
+
     except websockets.InvalidMessage:
         # probably encrypted or not an AP server; avoid crashing
         if address.startswith("ws://"):

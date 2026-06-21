@@ -2294,7 +2294,8 @@ screen main_menu():
                 sensitive not ap_is_connection_locked()
                 action SetScreenVariable("ap_show_password", not ap_show_password)
 
-            textbutton ("Disconnect" if ap_is_connected() else "Connect"):
+            textbutton ("Waiting to connect..." if archipelago.connecting else ("Disconnect" if ap_is_connected() else "Connect")):
+                sensitive not archipelago.connecting 
                 action If(ap_is_connected(), Function(ap_disconnect), Function(ap_connect))
 
 default server_url = "archipelago.gg:"
@@ -2305,15 +2306,14 @@ init python:
     def ap_is_connected() -> bool:
         """Return True when the AP websocket is currently open."""
         try:
-            client = get_archipelago_client()
-            if not client:
+            if not archipelago.client:
                 return False
 
             # After successful auth, slot is assigned and connection is usable.
-            if getattr(client, "slot", None) is not None:
+            if getattr(archipelago.client, "slot", None) is not None:
                 return True
 
-            server = getattr(client, "server", None)
+            server = getattr(archipelago.client, "server", None)
             sock = getattr(server, "socket", None)
             if not sock:
                 return False
@@ -2324,19 +2324,18 @@ init python:
 
     def ap_is_connection_locked() -> bool:
         """Return True while the AP client is connecting or already connected."""
-        return get_archipelago_client() is not None
+        return archipelago.client is not None or archipelago.connecting
 
     def ap_disconnect() -> None:
         """Disconnect AP client from the UI thread."""
-        client = get_archipelago_client()
-        if not client:
-            ap_info("archipelago not initialized")
+        if not archipelago.client:
+            ap_error("archipelago not initialized")
             return
 
-        loop = getattr(client, "loop", None)
+        loop = getattr(archipelago.client, "loop", None)
         if not loop or loop.is_closed():
-            set_archipelago_client(None)
-            ap_info("AP client cleaned up.")
+            archipelago.set_client(None)
+            ap_debug("AP client cleaned up.")
             return
 
         async def _disconnect_and_stop(ctx):
@@ -2345,14 +2344,14 @@ init python:
 
         try:
             import asyncio
-            future = asyncio.run_coroutine_threadsafe(_disconnect_and_stop(client), loop)
+            future = asyncio.run_coroutine_threadsafe(_disconnect_and_stop(archipelago.client), loop)
             future.result(timeout=5)
 
-            set_archipelago_client(None)
+            archipelago.set_client(None)
             ap_info("Disconnected")
         except Exception as e:
             import traceback
-            ap_debug(f"Disconnection error: {e}")
+            ap_error(f"Disconnection error: {e}")
             traceback.print_exc()
 
     def load_persistent_client_fields():
@@ -2370,53 +2369,77 @@ init python:
             if last_slot:
                 store.slot_name = last_slot
         except Exception as e:
-            renpy.log(f"[AP] Failed to load persistent client data: {e!r}")
+            renpy.log(f"[ERROR] Failed to load persistent client data: {e}")
 
     def ap_connect():
+        if ap_is_connection_locked():
+            ap_info("AP connection already in progress.")
+            return
         new_connect_websocket(server_url, slot_name, password)
 
     def new_connect_websocket(url, name, mdp):
+        archipelago.connecting = True
         def run_connection():
             async def connect_and_listen():
-                archipelago_client = None
+                archipelago.client = None
                 try:
                     ap_info("Starting connection...")
                     import RenpyClient
-                    archipelago_client = RenpyClient.create_renpy_client(
+                    archipelago.client = RenpyClient.create_renpy_client(
                         url, name, mdp,
                         on_text=ap_notify,
                     )
                     # Capture the running loop so other threads can schedule work safely
-                    archipelago_client.loop = asyncio.get_running_loop()
-                    set_archipelago_client(archipelago_client)
-                    await archipelago_client.connect(url)
+                    archipelago.client.loop = asyncio.get_running_loop()
+                    archipelago.set_client(archipelago.client)
+                    await archipelago.client.connect(url)
 
                     # wait until AP sends the real Connected packet (slot assigned)
-                    # so notify + button state change happen together
                     for _ in range(100):
-                        if getattr(archipelago_client, "slot", None) is not None:
+                        if not getattr(archipelago.client, "trying_to_connect", False):
+                            ap_info("Failed to connect to server")
+                            archipelago.set_client(None)
+                            archipelago.connecting = False
+                            renpy.restart_interaction()
+                            return
+                        if getattr(archipelago.client, "slot", None) is not None:
                             ap_info("Connected")
+                            archipelago.connecting = False
                             renpy.restart_interaction()
                             break
                         await asyncio.sleep(0.05)
                     else:
                         ap_info("Connect Failed")
-                        set_archipelago_client(None)
+                        archipelago.set_client(None)
+                        archipelago.connecting = False
+                        renpy.restart_interaction()
                         return
 
-                    await archipelago_client.message_loop()
-                    await archipelago_client.shutdown()
+                    # Check if slot was assigned; if not, timeout
+                    if getattr(archipelago.client, "slot", None) is None:
+                        ap_info("Connection timeout: slot not assigned after 10 seconds")
+                        await archipelago.client.disconnect(allow_autoreconnect=False)
+                        archipelago.set_client(None)
+                        archipelago.connecting = False
+                        renpy.restart_interaction()
+                        return
+
+                    await archipelago.client.message_loop()
+                    await archipelago.client.shutdown()
                 finally:
-                    if archipelago_client and get_archipelago_client() is archipelago_client:
-                        set_archipelago_client(None)
+                    if archipelago.client:
+                        archipelago.set_client(None)
+                    archipelago.connecting = False
+                    renpy.restart_interaction()
             try:
                 asyncio.run(connect_and_listen())
             except Exception as e:
                 import traceback
                 ap_debug(f"Connection error: {e}")
                 traceback.print_exc()
-                set_archipelago_client(None)
-
+                archipelago.set_client(None)
+                archipelago.connecting = False
+        
         t = threading.Thread(target=run_connection)
         t.daemon = True
         t.start()
