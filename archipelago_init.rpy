@@ -312,6 +312,7 @@ label chapter_requirements_failed:
 
 label no_chose_left:
     $ ap_debug("No choices left")
+    $ config.menu_include_disabled = True
     menu:
         ap "Your story cannot continue from here."
 
@@ -328,5 +329,6 @@ label no_chose_left:
             pass
 
         "{i}• [[Return to the main menu.]]{/i}":
+            $ config.menu_include_disabled = False
             $ renpy.full_restart()
     return
