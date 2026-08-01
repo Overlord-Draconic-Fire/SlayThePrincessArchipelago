@@ -220,6 +220,7 @@ class CommonContext:
         # optional callbacks for host apps (e.g., Ren'Py)
         self.on_text_callback: typing.Optional[typing.Callable[[str], None]] = None
         self.on_json_callback: typing.Optional[typing.Callable[[typing.Any], None]] = None
+        self.on_kill_callback: typing.Optional[typing.Callable[[], None]] = None
 
         # Async loop reference (set when running inside asyncio.run in background thread)
         self.loop: typing.Optional[asyncio.AbstractEventLoop] = None

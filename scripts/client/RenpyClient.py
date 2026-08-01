@@ -128,6 +128,10 @@ class RenpyContext(CommonContext):
         except (TypeError, ValueError):
             return default
 
+    def get_deathlink(self) -> int:
+        """Read slot_data['death_link'] as int enum."""
+        return self.get_slot_option_int("death_link", 0)
+
     def get_chapter_access(self) -> int:
         """Read slot_data['chapter_access'] as an int enum."""
         return self.get_slot_option_int("chapter_access", 4)
@@ -192,8 +196,7 @@ class RenpyContext(CommonContext):
             item_name: str = self.item_names.lookup_in_slot(net_item.item, self.slot)
             sender: str = self.player_names.get(net_item.player, str(net_item.player))
 
-            if self.on_text_callback:
-                self.on_text_callback(f"Received: {item_name} ({sender})")
+            self._notify(f"Received: {item_name} ({sender})")
 
             item_callback: typing.Optional[typing.Callable[[str, str, NetworkItem], None]] = getattr(
                 self,
@@ -205,10 +208,34 @@ class RenpyContext(CommonContext):
         except Exception:
             logger.exception("item_received callback failed")
 
+    async def want_deathlink(self) -> None:
+        """Request DeathLink support from the server if the slot allows it."""
+        if self.get_deathlink() > 0:
+            import asyncio
+            try:
+                await self.update_death_link(True)
+                self._notify("DeathLink requested", "debug")
+            except Exception:
+                self._notify("Error while requesting DeathLink", "error")
+
+    def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
+        """Gets dispatched when a new DeathLink is triggered by another linked player."""
+        self.last_death_link = max(data["time"], self.last_death_link)
+        text = data.get("cause", "")
+        if text:
+            self._notify(f"DeathLink: {text}")
+        else:
+            self._notify(f"DeathLink: Received from {data['source']}")
+
+        try:
+            if self.on_kill_callback:
+                self.on_kill_callback()
+        except Exception:
+            logger.exception("DeathLink label jump failed")
 
 def create_renpy_client(server_address: str, slot_name: str, password: typing.Optional[str] = None, *,
     tags: typing.Optional[typing.Iterable[str]] = None, on_text: typing.Optional[typing.Callable[[str], None]] = None,
-    on_json: typing.Optional[typing.Callable[[typing.Any], None]] = None) -> RenpyContext:
+    on_json: typing.Optional[typing.Callable[[typing.Any], None]] = None, on_kill: typing.Optional[typing.Callable[[], None]] = None) -> RenpyContext:
 
     ctx = RenpyContext(server_address, password)
     ctx.username = slot_name
@@ -219,4 +246,5 @@ def create_renpy_client(server_address: str, slot_name: str, password: typing.Op
         ctx.tags |= set(tags)
     ctx.on_text_callback = on_text
     ctx.on_json_callback = on_json
+    ctx.on_kill_callback = on_kill
     return ctx

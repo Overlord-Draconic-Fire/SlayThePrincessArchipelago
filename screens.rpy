@@ -2388,6 +2388,7 @@ init python:
                     archipelago.client = RenpyClient.create_renpy_client(
                         url, name, mdp,
                         on_text=ap_notify,
+                        on_kill=instante_kill,
                     )
                     # Capture the running loop so other threads can schedule work safely
                     archipelago.client.loop = asyncio.get_running_loop()
@@ -2403,6 +2404,7 @@ init python:
                             renpy.restart_interaction()
                             return
                         if getattr(archipelago.client, "slot", None) is not None:
+                            await archipelago.want_deathlink()
                             ap_info("Connected")
                             archipelago.connecting = False
                             renpy.restart_interaction()

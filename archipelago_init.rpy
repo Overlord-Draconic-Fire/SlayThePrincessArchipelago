@@ -50,6 +50,16 @@ init -10 python:
     store.Item = Item
     store.Region = Region
     store.BLADE_CHAPTER_MAP = BLADE_CHAPTER_MAP
+    store._deathlink_event = threading.Event()
+
+    def _ap_process_pending_deathlink() -> bool:
+        if store._deathlink_event.is_set():
+            store._deathlink_event.clear()
+            renpy.call_in_new_context("deathlink")
+        return False
+
+    if _ap_process_pending_deathlink not in renpy.config.periodic_callbacks:
+        renpy.config.periodic_callbacks.append(_ap_process_pending_deathlink)
 
     if not hasattr(renpy.store, "gallery_lock"):
         renpy.store.gallery_lock = threading.Lock()
@@ -204,6 +214,28 @@ init -10 python:
             ap_error(f"Error in hasRegionRequirements({region_value}): {e}")
             return False
 
+    def send_deathlink(message: str, type_death: bool) -> None:
+        #DEBUG!!! Rajouter la fonction chaque fois que le perso meurt (Everything goes dark)
+        """Send a deathlink to the Archipelago server."""
+        try:
+            deathlink = archipelago.get_deathlink()
+
+            if deathlink in (0, 1) or deathlink == {True: 2, False: 3}[type_death]:
+                return
+
+            import asyncio
+            message = message.replace("[player_name]", archipelago.player_names[archipelago.slot])
+            asyncio.run_coroutine_threadsafe(archipelago.send_death(message), archipelago.loop)
+            ap_debug(f"DeathLink sent: {message}")
+        except Exception as e:
+            ap_error(f"Error while sending DeathLink '{message}': {e}")
+
+    def instante_kill() -> None:
+        ap_debug("DeathLink applied")
+        store._deathlink_event.set()
+        if renpy.display.interface is not None:
+            renpy.display.interface.post_time_event()
+
     def _build_gallery_route_map():
         route_map = {}
 
@@ -301,6 +333,7 @@ init -10 python:
             ap_error(f"Error in ap_handle_received_item({item_name}): {e}")
 
 label chapter_requirements_failed:
+    $ send_deathlink("[player_name] does not have the necessary items", False)
     $ ap_debug(f"{builtins.last_region_checked}: missing {builtins.last_region_failed_requirement}")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
@@ -311,6 +344,7 @@ label chapter_requirements_failed:
     return
 
 label no_chose_left:
+    $ send_deathlink("[player_name] cannot make a choice.", False)
     $ ap_debug("No choices left")
     $ config.menu_include_disabled = True
     menu:
@@ -332,3 +366,7 @@ label no_chose_left:
             $ config.menu_include_disabled = False
             $ renpy.full_restart()
     return
+
+label deathlink:
+    ap "Another soul has fallen. Fate demands you do the same."
+    $ renpy.full_restart()

@@ -9,17 +9,20 @@ from json import JSONEncoder, JSONDecoder
 if typing.TYPE_CHECKING:
     from websockets import WebSocketServerProtocol as ServerConnection
 
-from Utils import ByValue, Version
+from Utils import Version
 
-class ClientStatus(ByValue, enum.IntEnum):
+class ClientStatus(enum.IntEnum):
     CLIENT_UNKNOWN = 0
     CLIENT_CONNECTED = 5
     CLIENT_READY = 10
     CLIENT_PLAYING = 20
     CLIENT_GOAL = 30
 
+    def __reduce_ex__(self, prot):
+        return self.__class__, (self._value_, )
 
-class SlotType(ByValue, enum.IntFlag):
+
+class SlotType(enum.IntFlag):
     spectator = 0b00
     player = 0b01
     group = 0b10
@@ -28,6 +31,9 @@ class SlotType(ByValue, enum.IntFlag):
     def always_goal(self) -> bool:
         """Mark this slot as having reached its goal instantly."""
         return self.value != 0b01
+    
+    def __reduce_ex__(self, prot):
+        return self.__class__, (self._value_, )
 
 class NetworkPlayer(typing.NamedTuple):
     """Represents a particular player on a particular team."""
