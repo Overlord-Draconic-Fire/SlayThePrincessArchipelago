@@ -1813,6 +1813,7 @@ label spectre_kill_player:
                             hide farback onlayer farback
                             scene bg black
                             with fade
+                            $ send_deathlink("[player_name] died in Spectre.", True)
                             n "I'm afraid you'll never know. As she crushes your precious organ in her hand, everything goes dark, and you die.\n"
                             $ trait_cheated = True
                             $ blade_held = False
@@ -1852,6 +1853,7 @@ label spectre_kill_player:
                             hide farback onlayer farback
                             scene bg black
                             with fade
+                            $ send_deathlink("[player_name] died in Spectre.", True)
                             n "She crushes it, blood and ruined vascular tissue leaking from between her fingers, dribbling unceremoniously to the floor. Everything goes dark, and you die.\n"
                             $ blade_held = False
                             $ default_mouse = "default"
@@ -1892,6 +1894,7 @@ label spectre_kill_player:
                     hide farback onlayer farback
                     scene bg black
                     with fade
+                    $ send_deathlink("[player_name] died in Spectre.", True)
                     n "She crushes it, blood and ruined vascular tissue leaking from between her fingers, dribbling unceremoniously to the floor. Everything goes dark, and you die.\n"
                     $ blade_held = False
                     $ default_mouse = "default"

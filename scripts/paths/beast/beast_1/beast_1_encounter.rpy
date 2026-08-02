@@ -364,6 +364,7 @@ label beast_1_encounter_start:
                                     hide heart onlayer back
                                     hide bg onlayer farback
                                     with fade
+                                    $ send_deathlink("[player_name] died in Beast.", True)
                                     n "With those prophetic words, you do not draw another breath, your body tangled and melting in the cooling folds of the Princess' flesh. Everything goes dark, and you die.\n"
                                     voice "audio/voices/ch2/beast/_encounter/narrator/24.flac"
                                     n "But at least you've saved the world. I hope.\n"
@@ -403,6 +404,7 @@ label beast_1_encounter_start:
                                     stop secondary fadeout 3.0
                                     stop tertiary fadeout 3.0
                                     voice "audio/voices/ch2/beast/_encounter/narrator/27.flac"
+                                    $ send_deathlink("[player_name] died in Beast.", True)
                                     n "But in the end, the opinions of stray voices mean little in the grand scheme of things. Everything goes dark, and you die.\n"
                                     $ default_mouse = "default"
                                     $ wild_source = "beast"
@@ -434,6 +436,7 @@ label beast_1_encounter_start:
                                     hide fore onlayer front
                                     hide player onlayer inyourface
                                     with fade
+                                    $ send_deathlink("[player_name] died in Beast.", True)
                                     n "Your vision finally begins to blur, your eyes clouding over as they melt in their sockets. Everything goes dark, and you die.\n"
                                     $ default_mouse = "default"
                                     $ wild_source = "beast"
@@ -1226,6 +1229,7 @@ label beast_skeptic_end:
         hide bg onlayer back
         hide bg onlayer farback
         with fade
+        $ send_deathlink("[player_name] died in Beast.", True)
         n "But you don't have time to protest her premature observation of your death, because everything goes dark and you die.\n"
         hide bg onlayer back
         scene bg black
@@ -1254,6 +1258,7 @@ label beast_devour_die:
     hide fore onlayer front
     hide bg onlayer back
     with dissolve
+    $ send_deathlink("[player_name] died in Beast.", True)
     n "What little air remains in this rancid stew of flesh and slippery organs is finally too foul to breathe, and your lungs mercifully give out before you have to suffer another burning, liquefying moment. Everything goes dark and you die.\n"
     $ quick_menu = False
     $ wild_source = "beast"

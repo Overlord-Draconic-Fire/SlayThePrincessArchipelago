@@ -971,6 +971,7 @@ label basement_1_empty_rescue:
                                         hide beast onlayer front
                                         show bg black onlayer back at Position(ypos=1125)
                                         with dissolve
+                                        $ send_deathlink("[player_name] died in the chapter 1.", True)
                                         n "Everything goes dark, and you die.\n"
                                         hide bg black onlayer back with dissolve
                                     jump start_2
@@ -1201,6 +1202,7 @@ label basement_1_empty_rescue:
                                         with dissolve
                                         n "Oh, that's rich coming from you. As much as I'd prefer for things to have gone differently, I can't deny the reality of what's happened. The two of you made your choice. It's over.\n"
                                         voice "audio/voices/ch1/empty/narrator/empty_n_133.flac"
+                                        $ send_deathlink("[player_name] died in the chapter 1.", True)
                                         n "Everything goes dark, and you die.\n"
                                         hide bg black onlayer back
                                         hide princess onlayer front
@@ -1363,6 +1365,7 @@ label basement_1_empty_rescue:
                                 hide beast onlayer front
                                 show bg black onlayer back at Position(ypos=1125)
                                 with dissolve
+                                $ send_deathlink("[player_name] died in the chapter 1.", True)
                                 n "Before you can answer, everything goes dark, and you die.\n"
                                 hide bg black onlayer back with dissolve
                                 jump start_2
@@ -1429,6 +1432,7 @@ label basement_1_empty_rescue:
                                 hide beast onlayer front
                                 show bg black onlayer back at Position(ypos=1125)
                                 with dissolve
+                                $ send_deathlink("[player_name] died in the chapter 1.", True)
                                 n "But you don't have time to worry about such things. Everything goes dark, and you die.\n"
                                 hide bg black onlayer back with dissolve
                                 jump start_2
@@ -1714,6 +1718,7 @@ label basement_1_empty_retrieve_knife:
                             n "I'm sorry, but it is.\n"
                             $ persistent.death_count += 1
                             voice "audio/voices/ch1/empty/narrator/empty_n_133.flac"
+                            $ send_deathlink("[player_name] died in the chapter 1.", True)
                             n "Everything goes dark, and you die.\n"
                             hide bg black onlayer back with dissolve
                             jump start_2
@@ -1795,6 +1800,7 @@ label basement_1_empty_retrieve_knife:
                         hide beast onlayer front
                         show bg black onlayer back at Position(ypos=1125)
                         with dissolve
+                        $ send_deathlink("[player_name] died in the chapter 1.", True)
                         n "The world ends, and you end with it.\n"
                         hide bg black onlayer back with dissolve
                         jump start_2
@@ -1904,6 +1910,7 @@ label basement_1_empty_retrieve_knife:
                                                 hide beast onlayer front
                                                 show bg black onlayer back at Position(ypos=1125)
                                                 with dissolve
+                                                $ send_deathlink("[player_name] died in the chapter 1.", True)
                                                 n "Everything goes dark, and you die.\n"
                                                 hide bg black onlayer back with dissolve
                                                 jump start_2
@@ -1982,6 +1989,7 @@ label basement_1_empty_retrieve_knife:
                                                 hide beast onlayer front
                                                 show bg black onlayer back at Position(ypos=1125)
                                                 with dissolve
+                                                $ send_deathlink("[player_name] died in the chapter 1.", True)
                                                 n "Everything goes dark, and you die.\n"
                                                 hide bg black onlayer back with dissolve
                                                 jump start_2
@@ -2060,6 +2068,7 @@ label basement_1_empty_retrieve_knife:
                                             hide beast onlayer front
                                             show bg black onlayer back at Position(ypos=1125)
                                             with dissolve
+                                            $ send_deathlink("[player_name] died in the chapter 1.", True)
                                             n "Everything goes dark, and you die.\n"
                                             hide bg black onlayer back with dissolve
                                             jump start_2

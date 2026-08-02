@@ -569,6 +569,7 @@ label razor_1_initiative:
             hide bg onlayer back
             hide cg onlayer front
             with fade
+            $ send_deathlink("[player_name] died in Razor.", True)
             n "Everything goes dark, and you die.\n"
             $ quick_menu = False
             $ blade_held = False
@@ -651,6 +652,7 @@ label razor_1_approach:
     hide bg onlayer back
     hide cg onlayer back
     scene bg black
+    $ send_deathlink("[player_name] died in Razor.", True)
     n "And with a quick jerk of her elbow, she does just that. Everything goes dark, and you die.\n"
     $ trait_broken = True
     jump razor_2_start
@@ -738,6 +740,7 @@ label razor_1_slay_attempt:
     hide bg onlayer back
     hide cg onlayer back
     scene bg black
+    $ send_deathlink("[player_name] died in Razor.", True)
     n "With a twist of her knee and a painful squelch, she does just that. Everything goes dark, and you die.\n"
     $ trait_stubborn = True
     $ quick_menu = False

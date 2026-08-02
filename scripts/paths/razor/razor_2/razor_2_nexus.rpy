@@ -1472,6 +1472,7 @@ label razor_2_armed_beat_2:
         hide montage6 onlayer inyourface
         with fade
         voice "audio/voices/ch3/razor/nexus/narrator/45.flac"
+        $ send_deathlink("[player_name] died in Razor.", True)
         n "And then everything goes dark, and you die.\n"
         $ razor_blade = True
         jump razor_final_staging
@@ -2728,6 +2729,7 @@ label razor_2_unarmed_beat_2:
         hide montage6 onlayer inyourface
         scene bg black
         with fade
+        $ send_deathlink("[player_name] died in Razor.", True)
         n "And then everything goes dark, and you die.\n"
         jump razor_final_staging
 return

@@ -340,6 +340,7 @@ label quiet_4_menu:
             hide hands onlayer front
             hide bg onlayer farback
             show bg black onlayer farback at Position(ypos=1125)
+            $ send_deathlink("[player_name] died in The Quiet.", True)
             truth "Everything goes dark, and you die.\n"
             hide bg onlayer farback
             with fade

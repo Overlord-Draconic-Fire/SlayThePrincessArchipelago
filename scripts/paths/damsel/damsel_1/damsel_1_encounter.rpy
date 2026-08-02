@@ -369,6 +369,7 @@ label damsel_1_murder:
         scene bg black
         with fade
         voice "audio/voices/ch2/damsel/_basement/narrator/28.flac"
+        $ send_deathlink("[player_name] died in Damsel.", True)
         n "Everything goes dark, and you die.\n"
         jump grey_start
 
@@ -1505,6 +1506,7 @@ label damsel_leave:
                             hide bg onlayer back
                             hide damsel onlayer back
                             scene bg black
+                            $ send_deathlink("[player_name] died in Damsel.", True)
                             n "Yes.\n"
                             jump happy_start
                             # Next chapter

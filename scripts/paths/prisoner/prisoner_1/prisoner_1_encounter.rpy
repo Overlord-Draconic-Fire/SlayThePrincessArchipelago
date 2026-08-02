@@ -1775,6 +1775,7 @@ label prisoner_strangle_join:
                             n "You raise the blade, then drive it into your heart.\n"
                             voice "audio/voices/ch2/prisoner/_basement/narrator/120.flac"
                             play audio "audio/one_shot/collapse.flac"
+                            $ send_deathlink("[player_name] died in Prisoner.", True)
                             n "You collapse to the floor. Everything goes dark, and you die. You're a genocidal maniac, you know that, right?\n"
                         voice "audio/voices/ch2/prisoner/_basement/skeptic/85.flac"
                         skeptic "Yeah. We'll see about that.\n"

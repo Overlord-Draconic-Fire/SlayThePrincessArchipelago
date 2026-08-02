@@ -497,6 +497,7 @@ label nightmare_encounter_menu:
                     stop sound
                     stop secondary
                     scene bg black
+                    $ send_deathlink("[player_name] died in Nightmare.", True)
                     truth "Your body is dead, but you live on.\n"
                     $ achievement.grant("ACH_NIGHT_MONOLITH")
                     jump nightmare_2_start
@@ -1496,6 +1497,7 @@ label nightmare_kill_upstairs:
                         voice "audio/voices/ch2/nightmare/_encounter/narrator/96.flac"
                         n "You'd better get this right next time. Do you hear me? Don't blow it.\n"
                         voice "audio/voices/ch2/nightmare/_encounter/narrator/97.flac"
+                    $ send_deathlink("[player_name] died in Nightmare.", True)
                     n "Everything goes dark, and you die.\n"
                     $ blade_held = False
                     $ default_mouse = "default"
@@ -1537,6 +1539,7 @@ label nightmare_kill_upstairs:
                         hide bg onlayer back
                         scene bg black
                         with Dissolve(5.0)
+                        $ send_deathlink("[player_name] died in Nightmare.", True)
                         n "No, you really shouldn't have. But biology and time are immutable forces, and eventually, long before forever gets the chance to come, everything goes dark, and you die.\n"
                         if nightmare_falling_come_back:
                             voice "audio/voices/ch2/nightmare/_encounter/narrator/103.flac"

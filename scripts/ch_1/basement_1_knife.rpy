@@ -430,6 +430,7 @@ label basement_1_nerves_steeled:
                                     voice "audio/voices/ch1/knife/narrator/knife_n_30.flac"
                                     $ persistent.death_count += 1
 
+                                    $ send_deathlink("[player_name] died in chapter 1.", True)
                                     n "Everything goes dark and you die.\n"
                                     hide bg black onlayer back with dissolve
                                     jump start_2
@@ -478,6 +479,7 @@ label basement_1_nerves_steeled:
                                     show bg black onlayer back at Position(ypos=1125)
                                     with dissolve
                                     voice "audio/voices/ch1/knife/narrator/knife_n_33.flac"
+                                    $ send_deathlink("[player_name] died in chapter 1.", True)
                                     n "But you don't have time to worry over such things. Everything goes dark, and you die.\n"
                                     hide bg black onlayer back with dissolve
                                     jump start_2
@@ -548,6 +550,7 @@ label basement_1_nerves_steeled:
                             show bg black onlayer back at Position(ypos=1125)
                             with dissolve
                             voice "audio/voices/ch1/knife/narrator/knife_n_40.flac"
+                            $ send_deathlink("[player_name] died in chapter 1.", True)
                             n "Everything goes dark, and you die.\n"
                             hide bg black onlayer back with dissolve
                             jump start_2
@@ -653,6 +656,7 @@ label basement_1_nerves_steeled:
                                     show bg black onlayer back at Position(ypos=1125)
                                     with dissolve
                                     voice "audio/voices/ch1/knife/narrator/knife_n_52.flac"
+                                    $ send_deathlink("[player_name] died in chapter 1.", True)
                                     n "Everything goes dark, and you die.\n"
                                     hide bg black onlayer back with dissolve
                                     jump start_2
@@ -721,6 +725,7 @@ label basement_1_nerves_steeled:
                                     show bg black onlayer back at Position(ypos=1125)
                                     with dissolve
                                     voice "audio/voices/ch1/knife/narrator/knife_n_59.flac"
+                                    $ send_deathlink("[player_name] died in chapter 1.", True)
                                     n "But you don't have time to worry over such things. Everything goes dark, and you die.\n"
                                     hide bg black onlayer back with dissolve
                                     jump start_2
@@ -983,6 +988,7 @@ label basement_1_nerves_steeled:
                                                 with fade
                                                 $ persistent.death_count += 1
                                                 voice "audio/voices/ch1/knife/narrator/knife_nr_22.flac"
+                                                $ send_deathlink("[player_name] died in chapter 1.", True)
                                                 n "Everything goes dark, and you die.\n"
                                                 hide bg black onlayer back with dissolve
                                                 jump start_2
@@ -1256,6 +1262,7 @@ label basement_1_nerves_steeled:
                                             scene bg generic dark onlayer back at Position(ypos=1125)
                                             show player self end onlayer front at Position(ypos=1125)
                                             with fade
+                                            $ send_deathlink("[player_name] died in the chapter 1.", True)
                                             n "You pick up the blade, you stab yourself, and you {i}die{/i}.\n"
                                             $ persistent.death_count += 1
                                             play secondary "audio/one_shot/knife_stab.flac"
@@ -2101,6 +2108,7 @@ label basement_1_knife_rescue:
                                         hide fury onlayer front
                                         show bg black onlayer back at Position(ypos=1125)
                                         with dissolve
+                                        $ send_deathlink("[player_name] died in chapter 1.", True)
                                         n "Everything goes dark, and you die.\n"
                                         hide bg black onlayer back with dissolve
                                         jump start_2
@@ -2261,6 +2269,7 @@ label basement_1_knife_rescue:
                                             hide fury onlayer front
                                             show bg black onlayer back at Position(ypos=1125)
                                             with dissolve
+                                            $ send_deathlink("[player_name] died in chapter 1.", True)
                                             n "Everything goes dark, and you die.\n"
                                             hide bg black onlayer back with dissolve
                                             jump start_2
@@ -2363,6 +2372,7 @@ label basement_1_knife_rescue:
                                         show bg black onlayer back at Position(ypos=1125)
                                         with dissolve
                                         voice "audio/voices/ch1/knife/narrator/knife_nr_8.flac"
+                                        $ send_deathlink("[player_name] died in chapter 1.", True)
                                         n "I'm afraid it is. Everything goes dark, and you die. I hope it was worth it.\n"
                                         hide bg black onlayer back with dissolve
                                         jump start_2
@@ -2524,6 +2534,7 @@ label basement_1_knife_rescue:
                                 hide fury onlayer front
                                 show bg black onlayer back at Position(ypos=1125)
                                 with dissolve
+                                $ send_deathlink("[player_name] died in chapter 1.", True)
                                 n "Everything goes dark, and you die.\n"
                                 hide bg black onlayer back with dissolve
                                 jump start_2
@@ -2586,6 +2597,7 @@ label basement_1_knife_rescue:
                                 hide fury onlayer front
                                 show bg black onlayer back at Position(ypos=1125)
                                 with dissolve
+                                $ send_deathlink("[player_name] died in chapter 1.", True)
                                 n "Everything goes dark, and you die.\n"
                                 hide bg black onlayer back with dissolve
                                 jump start_2

@@ -534,6 +534,7 @@ label witch_1_menu:
                         with fade
                         $ blade_held = False
                         $ default_mouse = "default"
+                        $ send_deathlink("[player_name] died in Witch.", True)
                         n "Everything goes dark, and you die.\n"
                         $ achievement.grant("ACH_WITCH_SACRIFICE")
                         #truth "NOTE. THE NEXT CHAPTER IS CURRENTLY UNAVAILABLE. WE'RE WORKING ON FINISHING IT AS SOON AS POSSIBLE, THANKS FOR BEARING WITH US! It's a good one :)\n"
@@ -1024,6 +1025,7 @@ label witch_1_menu:
                                 voice sustain
                                 hide witch onlayer back
                                 scene bg black
+                                $ send_deathlink("[player_name] died in Witch.", True)
                                 n "And then you pop. Everything goes dark, and you die.\n"
                                 $ wild_source = "witch"
                                 jump wild_start
@@ -2026,6 +2028,7 @@ label witch_1_flee:
                     voice sustain
                     hide witch onlayer back
                     scene bg black
+                    $ send_deathlink("[player_name] died in Witch.", True)
                     n "And then you pop. Everything goes dark, and you die.\n"
                     $ wild_source = "witch"
                     $ wild_bonus_voice = "paranoid"

@@ -631,6 +631,7 @@ label tower_1_battle_motive_join:
                     hide player onlayer front
                     scene bg black
                     with fade
+                    $ send_deathlink("[player_name] died in Tower.", True)
                     np "Everything goes dark, and you die.\n"
                     #voice "audio/voices/ch2/tower/_cont/princess/p40.flac"
                     #p "Everything goes dark, and you die.\n"
@@ -1057,6 +1058,7 @@ label tower_post_advance_menu:
                             hide flutter onlayer front
                             hide bg onlayer back
                             with fade
+                            $ send_deathlink("[player_name] died in Tower.", True)
                             n "Regardless of how you feel about it, it's finally over. Thank you. Everything goes dark, and you die.\n"
                             $ fury_source = "tower"
                             jump fury_start

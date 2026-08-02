@@ -1362,6 +1362,7 @@ label adversary_1_upstairs:
                 with fade
                 if persistent.quick_menu:
                     $ quick_menu = True
+                $ send_deathlink("[player_name] died in Adversary.", True)
                 n "Everything goes dark, and you die.\n"
                 $ trait_hunted = True
                 jump adversary_2_start
@@ -1945,6 +1946,7 @@ label adversary_1_refuse:
                                 stop music fadeout 5.0
                                 stop secondary fadeout 5.0
                                 stop tertiary fadeout 5.0
+                                $ send_deathlink("[player_name] died in Adversary.", True)
                                 if adversary_1_narrator_proof:
                                     voice "audio/voices/ch2/adversary/_shared/narrator/93.flac"
                                     n "I won't be seeing you, but I suppose something like me will. Everything goes dark, and you die.\n"
@@ -2196,6 +2198,7 @@ label adversary_1_fight_unarmed:
     hide bg onlayer farback
     hide bg onlayer back
     scene bg black
+    $ send_deathlink("[player_name] died in Adversary.", True)
     n "You don't so much as see her movement before she deals the killing blow. Everything goes dark, and you die.\n"
     voice "audio/voices/ch2/adversary/_shared/hero/47.flac"
     hero "Are... are you serious? That's it?\n"
@@ -2369,6 +2372,7 @@ label adversary_1_face_missing_post:
     hide bg onlayer farback
     hide bg onlayer back
     scene bg black
+    $ send_deathlink("[player_name] died in Adversary.", True)
     n "She lands another devastating—no, lethal—blow. Everything goes dark. Again. And you die. Again.\n"
     voice "audio/voices/ch2/adversary/_shared/stubborn/55.flac"
     stubborn "You know what I'm going to say.\n"
@@ -2493,6 +2497,7 @@ label adversary_1_fight:
         hide bg onlayer back
         hide adversary onlayer front
         scene bg black
+        $ send_deathlink("[player_name] died in Adversary.", True)
         n "Your mind and body both hesitating, the Princess smashes into you. You failed to draw first blood, and you'll never have the chance to draw second. Everything goes dark, and you die. I'm sorry.\n"
         voice "audio/voices/ch2/adversary/_shared/hero/53.flac"
         hero "That's it?\n"
@@ -2683,6 +2688,7 @@ label adversary_1_fight_agile:
     hide adversary onlayer front
     scene bg black
     voice "audio/voices/ch2/adversary/_shared/narrator/147.flac"
+    $ send_deathlink("[player_name] died in Adversary.", True)
     n "Everything goes dark, and you die.\n"
     $ trait_hunted = True
     jump adversary_2_start
@@ -2847,6 +2853,7 @@ label adversary_free_attempt:
     voice "audio/voices/ch2/adversary/_shared/princess/adv_111.flac"
     sp "That's it, huh? You've gotten really soft.\n"
     voice "audio/voices/ch2/adversary/_shared/narrator/160.flac"
+    $ send_deathlink("[player_name] died in Adversary.", True)
     n "Everything goes dark, and you die.\n"
     voice "audio/voices/ch2/adversary/_shared/hero/60.flac"
     hero "Really? In just one blow?\n"
