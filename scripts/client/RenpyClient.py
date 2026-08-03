@@ -183,7 +183,7 @@ class RenpyContext(CommonContext):
             if self.loop and running_loop and running_loop is self.loop:
                 callback(message, level)
             elif self.loop and self.loop.is_running():
-                self.loop.call_soon_threadsafe(callback, message)
+                self.loop.call_soon_threadsafe(callback, message, level)
             else:
                 callback(message, level)
         except Exception:

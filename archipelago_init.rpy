@@ -51,6 +51,8 @@ init -10 python:
     store.Region = Region
     store.BLADE_CHAPTER_MAP = BLADE_CHAPTER_MAP
     store._deathlink_event = threading.Event()
+    if not hasattr(store, "_ap_text_queue"):
+        store._ap_text_queue = deque()
 
     def _ap_process_pending_deathlink() -> bool:
         if store._deathlink_event.is_set():
@@ -58,8 +60,16 @@ init -10 python:
             renpy.call_in_new_context("deathlink")
         return False
 
+    def _ap_process_pending_text() -> bool:
+        while store._ap_text_queue:
+            msg_str, level_key = store._ap_text_queue.popleft()
+            _ap_notify_mainthread(msg_str, level_key)
+        return False
+
     if _ap_process_pending_deathlink not in renpy.config.periodic_callbacks:
         renpy.config.periodic_callbacks.append(_ap_process_pending_deathlink)
+    if _ap_process_pending_text not in renpy.config.periodic_callbacks:
+        renpy.config.periodic_callbacks.append(_ap_process_pending_text)
 
     if not hasattr(renpy.store, "gallery_lock"):
         renpy.store.gallery_lock = threading.Lock()
@@ -101,6 +111,18 @@ init -10 python:
     # Global instance
     archipelago = ArchipelagoManager()
 
+    def _ap_notify_mainthread(message: str, level_key: str) -> None:
+        prefix_map = {
+            "error": "[ERROR]",
+            "debug": "[DEBUG]",
+            "info": "[INFO]",
+        }
+        full_message = f"{prefix_map[level_key]} {message}"
+
+        if level_key != "debug":
+            renpy.notify(message)
+        print(full_message)
+
     def ap_notify(message, level: str = "debug") -> None:
         msg_str = str(message)
         level_key = str(level).lower().strip()
@@ -108,16 +130,10 @@ init -10 python:
         if level_key not in ("debug", "error", "info"):
             level_key = "debug"
 
-        prefix_map = {
-            "error": "[ERROR]",
-            "debug": "[DEBUG]",
-            "info": "[INFO]",
-        }
-        full_message = f"{prefix_map[level_key]} {msg_str}"
+        store._ap_text_queue.append((msg_str, level_key))
 
-        if level_key != "debug":
-            renpy.notify(msg_str)
-        print(full_message)
+        if threading.current_thread() is not threading.main_thread() and renpy.display.interface is not None:
+            renpy.display.interface.post_time_event()
 
     def ap_debug(message) -> None:
         ap_notify(message, "debug")
