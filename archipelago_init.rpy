@@ -4,6 +4,10 @@ if True:
     define config.console = True
     define config.rollback_enabled = True
 
+default ap_console_command = ""
+default ap_console_messages = []
+default ap_console_history = []
+
 init:
     # Archipelago characters
     define ap = Character("Archipelago", color = "#ffffff", what_color = "#ffffff", what_text_align=0.5, what_outlines=[ (3, "#000000") ], who_outlines= [ (3, "#000000") ], what_style = "voice_style", ctc="ctc_blink", ctc_position="nestled")
@@ -51,8 +55,10 @@ init -10 python:
     store.Region = Region
     store.BLADE_CHAPTER_MAP = BLADE_CHAPTER_MAP
     store._deathlink_event = threading.Event()
-    if not hasattr(store, "_ap_text_queue"):
-        store._ap_text_queue = deque()
+    store._ap_text_queue = deque()
+    store.gallery_lock = threading.Lock()
+    store.ap_console_command = ""
+    store.ap_console_messages = []
 
     def _ap_process_pending_deathlink() -> bool:
         if store._deathlink_event.is_set():
@@ -71,9 +77,54 @@ init -10 python:
     if _ap_process_pending_text not in renpy.config.periodic_callbacks:
         renpy.config.periodic_callbacks.append(_ap_process_pending_text)
 
-    if not hasattr(renpy.store, "gallery_lock"):
-        renpy.store.gallery_lock = threading.Lock()
-    
+    def ap_console_append_message(message: str, level_key: str = "info") -> str:
+        prefix_map = {
+            "error": "[ERROR]",
+            "debug": "[DEBUG]",
+            "info": "[INFO]",
+            "player": "[PLAYER]",
+        }
+        level_key = str(level_key).lower().strip()
+        if level_key not in prefix_map:
+            level_key = "debug"
+
+        full_message = f"{prefix_map[level_key]} {message}"
+        store.ap_console_messages.append({"level": level_key, "text": full_message})
+
+        if len(store.ap_console_messages) > 250:
+            del store.ap_console_messages[: len(store.ap_console_messages) - 250]
+
+        return full_message
+
+    def ap_console_open() -> None:
+        print("Opening Archipelago console...")
+        renpy.show_screen("ap_console")
+        renpy.restart_interaction()
+
+    def ap_console_close() -> None:
+        renpy.hide_screen("ap_console")
+        renpy.restart_interaction()
+
+    def ap_console_submit() -> None:
+        message = str(store.ap_console_command or "").strip()
+        if not message:
+            return
+
+        ap_console_append_message(f" {message}", "player")
+        store.ap_console_command = ""
+
+        try:
+            if getattr(archipelago, "loop", None) and not archipelago.loop.is_closed():
+                import asyncio
+                asyncio.run_coroutine_threadsafe(
+                    archipelago.send_msgs([{"cmd": "Say", "text": message}]),
+                    archipelago.loop,
+                )
+            else:
+                ap_console_append_message("Archipelago is not connected.", "error")
+        except Exception as exc:
+            ap_console_append_message(f"Send failed: {exc}", "error")
+
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:
         def __init__(self):
@@ -112,12 +163,7 @@ init -10 python:
     archipelago = ArchipelagoManager()
 
     def _ap_notify_mainthread(message: str, level_key: str) -> None:
-        prefix_map = {
-            "error": "[ERROR]",
-            "debug": "[DEBUG]",
-            "info": "[INFO]",
-        }
-        full_message = f"{prefix_map[level_key]} {message}"
+        full_message = ap_console_append_message(message, level_key)
 
         if level_key != "debug":
             renpy.notify(message)
@@ -231,7 +277,6 @@ init -10 python:
             return False
 
     def send_deathlink(message: str, type_death: bool) -> None:
-        #DEBUG!!! Rajouter la fonction chaque fois que le perso meurt (Everything goes dark)
         """Send a deathlink to the Archipelago server."""
         try:
             deathlink = archipelago.get_deathlink()

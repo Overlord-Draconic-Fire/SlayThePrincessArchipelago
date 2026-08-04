@@ -11,6 +11,28 @@ init offset = -1
 screen keymap_screen():
     key "K_j" action ShowMenu('history')
     key "pad_righttrigger_pos" action ShowMenu('history')
+    key "K_F6" action Function(ap_console_open)
+
+screen ap_console():
+    modal True
+
+    key "K_F6" action Function(ap_console_close) capture True
+    key "K_ESCAPE" action Function(ap_console_close) capture True
+    key "K_RETURN" action Function(ap_console_submit) capture True
+    key "K_KP_ENTER" action Function(ap_console_submit) capture True
+
+    frame:
+        background "#000000dd"
+        xalign 0.1
+        yalign 0.15
+        xsize 0.7
+        ysize 0.55
+        padding (20, 20)
+
+        vbox:
+            input:
+                value VariableInputValue("ap_console_command")
+                focus True
 
 
 ################################################################################

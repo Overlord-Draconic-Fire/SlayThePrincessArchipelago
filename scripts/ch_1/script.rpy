@@ -78,6 +78,9 @@ init python:
     config.keymap["quick_load"] = ["K_F9"]
     config.keymap['toggle_afm'].append("K_t")
 
+    config.keymap["ap_console"] = ["K_F6"]
+    config.underlay.append(renpy.Keymap(ap_console=ap_console_open, capture=False))
+
     custom_keymap = renpy.Keymap(
         quick_save = QuickSave(),
         quick_load = QuickLoad()

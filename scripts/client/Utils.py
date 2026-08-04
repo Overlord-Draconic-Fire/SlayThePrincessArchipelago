@@ -292,7 +292,7 @@ loglevel_mapping = {'error': logging.ERROR, 'info': logging.INFO, 'warning': log
 _faf_tasks: "Set[asyncio.Task[typing.Any]]" = set()
 
 
-def async_start(co: Coroutine[None, None, typing.Any], name: Optional[str] = None) -> None: #DEBUG!!! 1 USE COMMUNCLIENT
+def async_start(co: Coroutine[None, None, typing.Any], name: Optional[str] = None) -> None:
     """
     Use this to start a task when you don't keep a reference to it or immediately await it,
     to prevent early garbage collection. "fire-and-forget"
