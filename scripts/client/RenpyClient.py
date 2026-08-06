@@ -19,6 +19,7 @@ class RenpyContext(CommonContext):
     want_slot_data = True
 
     trying_to_connect: bool = False
+    ap_console_messages: list[dict[str, str]] = []
 
     def has_item(self, item_name: str) -> bool:
         """Return True if the player owns at least one instance of the given item name."""
@@ -78,7 +79,7 @@ class RenpyContext(CommonContext):
         import asyncio
         try:
             asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), self.loop)
-            self._notify(f"Location sent: '{location_name}' ({location_id})", "info")
+            self._notify(f"Location sent: '{location_name}' ({location_id})", "debug")
             return True
         except Exception:
             logger.exception("send_location failed")
@@ -195,7 +196,7 @@ class RenpyContext(CommonContext):
             item_name: str = self.item_names.lookup_in_slot(net_item.item, self.slot)
             sender: str = self.player_names.get(net_item.player, str(net_item.player))
 
-            self._notify(f"Received: {item_name} ({sender})")
+            self._notify(f"Received: {item_name} ({sender})", "ap")
 
             item_callback: typing.Optional[typing.Callable[[str, str, NetworkItem], None]] = getattr(
                 self,
@@ -237,9 +238,9 @@ class RenpyContext(CommonContext):
         self.last_death_link = max(data["time"], self.last_death_link)
         text = data.get("cause", "")
         if text:
-            self._notify(f"DeathLink: {text}")
+            self._notify(f"DeathLink: {text}", "ap")
         else:
-            self._notify(f"DeathLink: Received from {data['source']}")
+            self._notify(f"DeathLink: Received from {data['source']}", "ap")
 
         try:
             if self.on_kill_callback:

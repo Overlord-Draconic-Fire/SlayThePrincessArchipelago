@@ -54,7 +54,7 @@ screen ap_console():
                 vbox:
                     xfill True
 
-                    for entry in store.ap_console_messages:
+                    for entry in console.ap_console_messages:
                         if entry["level"] == "error":
                             text Text(entry["text"], substitute=False, color="#ff3030") xfill True
                         elif entry["level"] == "debug":

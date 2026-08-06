@@ -5,8 +5,6 @@ if True:
     define config.rollback_enabled = True
 
 default ap_console_command = ""
-default ap_console_messages = []
-default ap_console_history = []
 
 init:
     # Archipelago characters
@@ -58,7 +56,10 @@ init -10 python:
     store._ap_text_queue = deque()
     store.gallery_lock = threading.Lock()
     store.ap_console_command = ""
-    store.ap_console_messages = []
+
+    class ConsoleArchipelago:
+        ap_console_messages: list[dict[str, str]] = []
+    console = ConsoleArchipelago()
 
     def _ap_process_pending_deathlink() -> bool:
         if store._deathlink_event.is_set():
@@ -85,10 +86,10 @@ init -10 python:
 
     def ap_console_append_message(message: str, level_key: str) -> str:
         full_message = f"[{level_key.upper()}] {message}"
-        store.ap_console_messages.append({"level": level_key, "text": str(full_message)})
+        console.ap_console_messages.append({"level": level_key, "text": str(full_message)})
 
-        if len(store.ap_console_messages) > 250:
-            del store.ap_console_messages[: len(store.ap_console_messages) - 250]
+        if len(console.ap_console_messages) > 250:
+            del console.ap_console_messages[: len(console.ap_console_messages) - 250]
 
         store.ap_console_scroll_bottom = True
         renpy.restart_interaction()
@@ -164,7 +165,7 @@ init -10 python:
             renpy.notify(safe_message)
         print(full_message)
 
-    def ap_notify(message: str, level: str) -> None:
+    def ap_notify(message: str, level: str = "level missing") -> None:
         msg_str = str(message)
         level_key = str(level).lower().strip()
 

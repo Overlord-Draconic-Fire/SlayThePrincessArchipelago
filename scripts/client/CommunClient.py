@@ -487,12 +487,17 @@ class CommonContext:
 
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
         """Gets dispatched when a new DeathLink is triggered by another linked player."""
-        self.last_death_link = max(data["time"], self.last_death_link)
+        time_value = data.get("time")
+        if time_value is None:
+            logger.warning("Received DeathLink without time field")
+            return
+        self.last_death_link = max(time_value, self.last_death_link)
         text = data.get("cause", "")
         if text:
             logger.info(f"DeathLink: {text}")
         else:
-            logger.info(f"DeathLink: Received from {data['source']}")
+            source = data.get("source", "unknown")
+            logger.info(f"DeathLink: Received from {source}")
 
     async def send_death(self, death_text: str = ""):
         """Helper function to send a deathlink using death_text as the unique death cause string."""
@@ -817,9 +822,16 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
 
     elif cmd == "Bounced":
         tags = args.get("tags", [])
-        # we can skip checking "DeathLink" in ctx.tags, as otherwise we wouldn't have been send this
-        if "DeathLink" in tags and ctx.last_death_link != args["data"]["time"]:
-            ctx.on_deathlink(args["data"])
+        if "DeathLink" in tags:
+            data = args.get("data")
+            if not isinstance(data, dict):
+                logger.warning("Received malformed Bounced packet without valid data for DeathLink")
+            else:
+                try:
+                    if ctx.last_death_link != data.get("time"):
+                        ctx.on_deathlink(data)
+                except Exception:
+                    logger.exception("DeathLink handling failed")
 
     elif cmd == "Retrieved":
         ctx.stored_data.update(args["keys"])
