@@ -77,27 +77,25 @@ init -10 python:
     if _ap_process_pending_text not in renpy.config.periodic_callbacks:
         renpy.config.periodic_callbacks.append(_ap_process_pending_text)
 
-    def ap_console_append_message(message: str, level_key: str = "info") -> str:
-        prefix_map = {
-            "error": "[ERROR]",
-            "debug": "[DEBUG]",
-            "info": "[INFO]",
-            "player": "[PLAYER]",
-        }
-        level_key = str(level_key).lower().strip()
-        if level_key not in prefix_map:
-            level_key = "debug"
+    def ap_console_force_bottom():
+        store.ap_console_scroll_bottom = False
 
-        full_message = f"{prefix_map[level_key]} {message}"
-        store.ap_console_messages.append({"level": level_key, "text": full_message})
+        if store.ap_console_scroll:
+            store.ap_console_scroll.value = store.ap_console_scroll.range
+
+    def ap_console_append_message(message: str, level_key: str) -> str:
+        full_message = f"[{level_key.upper()}] {message}"
+        store.ap_console_messages.append({"level": level_key, "text": str(full_message)})
 
         if len(store.ap_console_messages) > 250:
             del store.ap_console_messages[: len(store.ap_console_messages) - 250]
 
+        store.ap_console_scroll_bottom = True
+        renpy.restart_interaction()
+
         return full_message
 
     def ap_console_open() -> None:
-        print("Opening Archipelago console...")
         renpy.show_screen("ap_console")
         renpy.restart_interaction()
 
@@ -107,12 +105,10 @@ init -10 python:
 
     def ap_console_submit() -> None:
         message = str(store.ap_console_command or "").strip()
+        store.ap_console_command = ""
         if not message:
             return
-
-        ap_console_append_message(f" {message}", "player")
-        store.ap_console_command = ""
-
+        
         try:
             if getattr(archipelago, "loop", None) and not archipelago.loop.is_closed():
                 import asyncio
@@ -120,8 +116,6 @@ init -10 python:
                     archipelago.send_msgs([{"cmd": "Say", "text": message}]),
                     archipelago.loop,
                 )
-            else:
-                ap_console_append_message("Archipelago is not connected.", "error")
         except Exception as exc:
             ap_console_append_message(f"Send failed: {exc}", "error")
 
@@ -165,29 +159,27 @@ init -10 python:
     def _ap_notify_mainthread(message: str, level_key: str) -> None:
         full_message = ap_console_append_message(message, level_key)
 
-        if level_key != "debug":
-            renpy.notify(message)
+        if level_key not in ["debug", "ap"]:
+            safe_message = message.replace("{", "{{").replace("}", "}}")
+            renpy.notify(safe_message)
         print(full_message)
 
-    def ap_notify(message, level: str = "debug") -> None:
+    def ap_notify(message: str, level: str) -> None:
         msg_str = str(message)
         level_key = str(level).lower().strip()
-
-        if level_key not in ("debug", "error", "info"):
-            level_key = "debug"
 
         store._ap_text_queue.append((msg_str, level_key))
 
         if threading.current_thread() is not threading.main_thread() and renpy.display.interface is not None:
             renpy.display.interface.post_time_event()
 
-    def ap_debug(message) -> None:
+    def ap_debug(message: str) -> None:
         ap_notify(message, "debug")
 
-    def ap_error(message) -> None:
+    def ap_error(message: str) -> None:
         ap_notify(message, "error")
 
-    def ap_info(message) -> None:
+    def ap_info(message: str) -> None:
         ap_notify(message, "info")
 
     def send_location(location_name : str) -> None:

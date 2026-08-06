@@ -11,29 +11,72 @@ init offset = -1
 screen keymap_screen():
     key "K_j" action ShowMenu('history')
     key "pad_righttrigger_pos" action ShowMenu('history')
-    key "K_F6" action Function(ap_console_open)
+
+default ap_console_scroll = ui.adjustment()
+default ap_console_scroll_bottom = False
+
+style ap_console_input:
+    xalign 0.0
+    text_align 0.0
 
 screen ap_console():
     modal True
 
-    key "K_F6" action Function(ap_console_close) capture True
+    key "K_F2" action Function(ap_console_close) capture True
     key "K_ESCAPE" action Function(ap_console_close) capture True
     key "K_RETURN" action Function(ap_console_submit) capture True
     key "K_KP_ENTER" action Function(ap_console_submit) capture True
 
+    if ap_console_scroll_bottom:
+        timer 0.01 action Function(ap_console_force_bottom)
+
     frame:
         background "#000000dd"
-        xalign 0.1
-        yalign 0.15
-        xsize 0.7
-        ysize 0.55
+        xfill True
+        yfill True
         padding (20, 20)
 
         vbox:
-            input:
-                value VariableInputValue("ap_console_command")
-                focus True
+            spacing 10
+            xfill True
+            yfill True
 
+            viewport:
+                xfill True
+                ymaximum 1000
+
+                yadjustment ap_console_scroll
+
+                draggable True
+                mousewheel True
+                scrollbars "vertical"
+
+                vbox:
+                    xfill True
+
+                    for entry in store.ap_console_messages:
+                        if entry["level"] == "error":
+                            text Text(entry["text"], substitute=False, color="#ff3030") xfill True
+                        elif entry["level"] == "debug":
+                            text Text(entry["text"], substitute=False, color="#dda044") xfill True
+                        elif entry["level"] == "player":
+                            text Text(entry["text"], substitute=False, color="#8fd1ff") xfill True
+                        elif entry["level"] == "server":
+                            text Text(entry["text"], substitute=False, color="#2988cc") xfill True
+                        elif entry["level"] == "ap":
+                            text Text(entry["text"], substitute=False, color="#ffffff") xfill True
+                        else:
+                            text Text(entry["text"], substitute=False, color="#ffffff") xfill True
+
+            hbox:
+                text "> ":
+                    xalign 0.0
+
+                input:
+                    value VariableInputValue("ap_console_command")
+                    focus True
+                    xfill True
+                    style "ap_console_input"
 
 ################################################################################
 ## Styles

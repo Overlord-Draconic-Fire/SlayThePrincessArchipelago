@@ -164,7 +164,7 @@ class RenpyContext(CommonContext):
         """Read slot_data['memoriesanity'] as int enum."""
         return self.get_slot_option_int("memoriesanity", 0)
 
-    def _notify(self, message: str, level: str = "debug") -> None:
+    def _notify(self, message: str, level: str) -> None:
         """Thread-safe bridge to on_text_callback (ap_notify)."""
         logger.info(message)
         
@@ -189,7 +189,6 @@ class RenpyContext(CommonContext):
         except Exception:
             logger.exception("_notify failed")
 
-
     def item_received(self, net_item: NetworkItem) -> None:
         """Notify Ren'Py when this client actually receives an item."""
         try:
@@ -207,6 +206,21 @@ class RenpyContext(CommonContext):
                 item_callback(item_name, sender, net_item)
         except Exception:
             logger.exception("item_received callback failed")
+
+    def cmd_received(self, args: dict) -> None:
+        def escape_notify_text(text: str) -> str:
+            return text.replace("{", "{{").replace("}", "}}")
+
+        try:
+            if args["cmd"] == "PrintJSON":
+                if args["type"] == "Chat":
+                    self._notify(escape_notify_text(str(args["data"][0]["text"])), "player")
+                elif args["type"] == "ServerChat":
+                    self._notify(escape_notify_text(str(args["data"][0]["text"][10:])), "server")
+                elif args["type"] in ["CommandResult", "Join", "TagsChanged", "Tutorial"]:
+                    self._notify(escape_notify_text(str(args["data"][0]["text"])), "ap")
+        except Exception:
+            logger.exception("cmd_received failed")
 
     async def want_deathlink(self) -> None:
         """Request DeathLink support from the server if the slot allows it."""

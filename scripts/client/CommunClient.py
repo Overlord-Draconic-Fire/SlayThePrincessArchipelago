@@ -612,6 +612,8 @@ async def server_autoreconnect(ctx: CommonContext):
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
 async def process_server_cmd(ctx: CommonContext, args: dict):
+    ctx.cmd_received(args)
+
     try:
         cmd = args["cmd"]
     except Exception:
