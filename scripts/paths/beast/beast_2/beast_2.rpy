@@ -352,7 +352,7 @@ label beast_2_interior:
         menu:
             extend ""
 
-            "{i}• (Explore) [[Take the blade.]{/i}" if beast_2_blade_taken == False and hasThisBlade(Item.blade_beast):
+            "{i}• (Explore) [[Take the blade.]{/i}" if beast_2_blade_taken == False and hasThisBlade(Item.blade_den):
                 $ beast_2_blade_taken = True
                 voice "audio/voices/ch3/den/hunted/10.flac"
                 hunted "Yes. Take the steel claw.\n"
