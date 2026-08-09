@@ -45,7 +45,7 @@ wraith_opportunist = "Chapter III - The Wraith (Opportunist)"
 
 clarity = "Chapter ??? - The Moment of Clarity"
 
-razor_chap3 = "Chapter III - Razor"
+razor_chap3 = "Chapter III - The Razor"
 razor_no_way = "Chapter III - No Way Out"
 razor_no_way_broken = "Chapter III - No Way Out (Broken)"
 razor_no_way_paranoid = "Chapter III - No Way Out (Paranoid)"
@@ -55,9 +55,9 @@ razor_race_broken = "Chapter III - The Arms Race (Broken)"
 razor_race_paranoid = "Chapter III - The Arms Race (Paranoid)"
 razor_race_stubborn = "Chapter III - The Arms Race (Stubborn)"
 
-den = "Chapter III - Den"
-den_skeptic = "Chapter III - Den (Skeptic)"
-den_stubborn = "Chapter III - Den (Stubborn)"
+den = "Chapter III - The Den"
+den_skeptic = "Chapter III - The Den (Skeptic)"
+den_stubborn = "Chapter III - The Den (Stubborn)"
 
 wild = "Chapter III - The Wild"
 wild_blade = "Chapter III - The Wild [Blade Only]"
@@ -86,7 +86,7 @@ happily = "Epilogue - Happily Ever After"
 happily_skeptic = "Epilogue - Happily Ever After (Skeptic)"
 happily_opportunist = "Epilogue - Happily Ever After (Opportunist)"
 
-razor_chap4 = "Chapter IV - Razor"
+razor_chap4 = "Chapter IV - The Razor"
 razor_empty = "Chapter IV - The Empty Cup"
 razor_destruction = "Chapter IV - Mutually Assured Destruction"
 
