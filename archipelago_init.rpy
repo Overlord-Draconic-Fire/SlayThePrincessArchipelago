@@ -184,11 +184,11 @@ init -10 python:
 
     def send_location(location_name : str) -> None:
         """Send an arbitrary location check."""
-        if "Find" in location_name and not archipelago.get_chapter_rando():
+        if "Find" in location_name and not archipelago.get_chapter_rando() in [1, 3]:
             return
-        if "Reach" in location_name and not archipelago.get_global_chapter_rando():
+        elif "Reach" in location_name and not archipelago.get_chapter_rando() in [2, 3]:
             return
-        if "Heart" in location_name and not archipelago.get_heart_rando():
+        elif "Heart" in location_name and not archipelago.get_heart_rando():
             return
 
         archipelago.send_location(location_name)
