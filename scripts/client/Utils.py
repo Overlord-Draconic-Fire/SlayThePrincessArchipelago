@@ -1,39 +1,23 @@
 from __future__ import annotations
 
 import asyncio
-import concurrent.futures
 import json
 import typing
-import builtins
 import os
-import itertools
-import subprocess
 import sys
-import pickle
 import functools
-import io
 import collections
-import importlib
 import logging
 import warnings
 
-from argparse import Namespace
-from time import sleep
-from typing import BinaryIO, Coroutine, Optional, Set, Dict, Any, Union
-try:
-    from typing import TypeGuard
-except ImportError:
-    TypeGuard = bool  # type: ignore  # Python 3.9 compatibility
+from typing import Coroutine, Optional, Set, Dict, Any, Union
 from yaml import load, load_all, dump
 
 try:
-    from yaml import CLoader as UnsafeLoader, CSafeLoader as SafeLoader, CDumper as Dumper
+    from yaml import CLoader as UnsafeLoader, CDumper as Dumper
 except ImportError:
-    from yaml import Loader as UnsafeLoader, SafeLoader, Dumper
+    from yaml import Loader as UnsafeLoader, Dumper
 
-if typing.TYPE_CHECKING:
-    import tkinter
-    import pathlib
 
 def tuplize_version(version: str) -> Version:
     return Version(*(int(piece) for piece in version.split(".")))

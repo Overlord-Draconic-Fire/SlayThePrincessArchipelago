@@ -17,7 +17,6 @@ init:
 init -10 python:
     import os
     import sys
-    import builtins
     from collections import deque
     
     # Paths to Add
@@ -250,7 +249,7 @@ init -10 python:
         count = archipelago.count_item(item_value)
         ap_debug(f"Player has {count} of {item_value} (needs {x})")
         if count < x:
-            store.last_region_failed_requirement = (x - count) + " " + item_value
+            store.last_region_failed_requirement = f"{x - count} {item_value}"
         return count >= x
 
     def hasRegionRequirements(region_value : str) -> bool:
@@ -259,8 +258,8 @@ init -10 python:
         The parameter must be a region value (e.g., Region.needle_hunted).
         """
         try:
-            builtins.last_region_checked = region_value
-            builtins.last_region_failed_requirement = None
+            store.last_region_checked = region_value
+            store.last_region_failed_requirement = None
 
             requirements = REGION_REQUIREMENTS.REGION_REQUIREMENTS.get(region_value)
             if not requirements:
@@ -274,7 +273,7 @@ init -10 python:
                     continue
 
                 if not archipelago.has_item(required_item):
-                    builtins.last_region_failed_requirement = required_item
+                    store.last_region_failed_requirement = required_item
                     return False
 
             return True
@@ -401,7 +400,7 @@ init -10 python:
 
 label chapter_requirements_failed:
     $ send_deathlink("[player_name] does not have the necessary items", False)
-    $ ap_debug(f"{builtins.last_region_checked}: missing {builtins.last_region_failed_requirement}")
+    $ ap_debug(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
     ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
     menu:
         ap "Your story cannot continue from here."
