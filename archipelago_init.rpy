@@ -182,16 +182,23 @@ init -10 python:
     def ap_info(message: str) -> None:
         ap_notify(message, "info")
 
-    def send_location(location_name : str) -> None:
+    def send_location(location_name : str, location2 : str = None, group : str = None) -> None:
         """Send an arbitrary location check."""
         if "Find" in location_name and not archipelago.get_chapter_rando() in [1, 3]:
             return
         elif "Reach" in location_name and not archipelago.get_chapter_rando() in [2, 3]:
             return
-        elif "Heart" in location_name and not archipelago.get_heart_rando():
+        elif "Heart" in location_name and archipelago.get_heart_rando() == 0:
+            return
+        elif group == "Mirror" and not archipelago.get_mirror_rando():
+            return
+        elif group == "Oblivion" and not archipelago.get_oblivion_rando():
             return
 
-        archipelago.send_location(location_name)
+        if location2 != None and archipelago.get_heart_rando() == 2:
+            archipelago.send_location(location2)
+        else:
+            archipelago.send_location(location_name)
 
     def hasThisBlade(blade_value : str) -> bool:
         """

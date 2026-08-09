@@ -927,7 +927,7 @@ label wild_side_narrator:
                 truth "But you don't get the chance to respond, nor will you ever. It's time to leave. Memory returns.\n"
             else:
                 truth "But you don't get the chance to respond. Something has taken her away, and it's left something else in her place.\n"
-            $ send_location(Location.wild_heart_scarred)
+            $ send_location(Location.wild_heart_scarred, Location.wild_heart)
             $ wild_end = "separate"
             $ princess_kept += 1
             $ princess_satisfy += 1
@@ -1020,7 +1020,7 @@ label wild_side_narrator:
                 truth "But you never see her die. It's time to leave. Memory returns.\n"
             else:
                 truth "But you never see her die. Something has taken her away, and it's left something else in her place.\n"
-            $ send_location(Location.wild_heart_scarred)
+            $ send_location(Location.wild_heart_scarred, Location.wild_heart)
             $ wild_end = "slay"
             $ princess_kept += 1
             $ princess_deny += 1
@@ -1235,7 +1235,7 @@ label wild_side_princess:
                         truth "But you never get the chance to answer her. You turn to see her gone behind you. Memory returns.\n"
                     else:
                         truth "But you never get the chance to answer her. You turn to see her gone behind you, replaced by something else.\n"
-                    $ send_location(Location.wild_heart_curious)
+                    $ send_location(Location.wild_heart_curious, Location.wild_heart)
                     $ current_princess = "wildnerves"
                     $ wild_end = "joined"
                     $ princess_free += 2

@@ -1902,7 +1902,7 @@ label dragon_opportunist_fight_hostile:
                         truthmid "Your peace does not last, nor can it ever. It's time to leave. Memory returns.\n"
                     else:
                         truthmid "Your peace does not last. Something has ripped her from you, and it's left something else in her place.\n"
-                    $ send_location(Location.dragon_heart_stencil)
+                    $ send_location(Location.dragon_heart_stencil, Location.dragon_heart)
                     $ dragon_end = "fusion"
                     $ achievement.grant("ACH_DRAGON_FUSE")
                     $ current_princess = "dragonfused"
@@ -2196,7 +2196,7 @@ label dragon_opportunist_fight_hostile:
                                         truthmid "Your peace does not last, nor can it ever. It's time to leave. Memory returns.\n"
                                     else:
                                         truthmid "Your peace does not last. Something has ripped her from you, and it's left something else in her place.\n"
-                                    $ send_location(Location.dragon_heart_main)
+                                    $ send_location(Location.dragon_heart_main, Location.dragon_heart)
                                     $ achievement.grant("ACH_DRAGON_FREE")
                                     $ dragon_end = "free"
                                     $ princess_free += 1
@@ -2746,7 +2746,7 @@ label dragon_opportunist_fight_soft:
                                 truthmid "But as you look over your shoulder, you do not find her, nor will you ever. It's time to leave. Memory returns.\n" id dragon_soft_leave_a1803000
                             else:
                                 truthmid "But as you look over your shoulder, you do not find her. Something has taken her away, and it's left something else in her place.\n" id dragon_soft_leave_8f86e920
-                            $ send_location(Location.dragon_heart_main)
+                            $ send_location(Location.dragon_heart_main, Location.dragon_heart)
                             $ dragon_end = "abandon"
                             $ current_princess = "dragonhand"
                             $ princess_kept += 1

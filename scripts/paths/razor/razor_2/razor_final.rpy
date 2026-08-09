@@ -360,7 +360,7 @@ label razor_final_basement:
             truth "You do not get to see each other die. Nor will you ever. It's time for you to leave. Memory returns.\n"
         else:
             truth "You do not get to see each other die. Something has taken her away, and it's left something else in her place.\n"
-        $ send_location(Location.razor_heart_iron)
+        $ send_location(Location.razor_heart_iron, Location.razor_heart)
         $ princess_kept += 1
         $ princess_satisfy += 1
         $ razor_end = "fight"
@@ -487,7 +487,7 @@ label razor_final_basement:
                             truth "Not another word is spoken. It's time for you to leave. Memory returns.\n"
                         else:
                             truth "Not another word is spoken. Something has taken her away, and it's left something else in her place.\n"
-                        $ send_location(Location.razor_heart_free)
+                        $ send_location(Location.razor_heart_free, Location.razor_heart)
                         $ razor_end = "peace"
                         $ current_princess = "razorheart"
                         $ princess_kept += 1
