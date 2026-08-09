@@ -379,7 +379,7 @@ init -10 python:
             ap_error(f"Error in ap_gallery_unlock_all_without_images(): {e}")
             return False
 
-    def ap_handle_received_item(item_name: str, sender: str = "", net_item = None) -> None:
+    def ap_handle_received_item(item_name: str) -> None:
         """Handle AP item reception hooks and unlock gallery items when received from the server."""
         try:
             route_name, index = _parse_ap_gallery_name(item_name)

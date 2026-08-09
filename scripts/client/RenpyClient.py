@@ -198,17 +198,10 @@ class RenpyContext(CommonContext):
         """Notify Ren'Py when this client actually receives an item."""
         try:
             item_name: str = self.item_names.lookup_in_slot(net_item.item, self.slot)
-            sender: str = self.player_names.get(net_item.player, str(net_item.player))
 
-            self._notify(f"Received: {item_name} ({sender})", "ap")
-
-            item_callback: typing.Optional[typing.Callable[[str, str, NetworkItem], None]] = getattr(
-                self,
-                "on_item_received_callback",
-                None,
-            )
+            item_callback = getattr(self, "on_item_received_callback", None)
             if item_callback is not None:
-                item_callback(item_name, sender, net_item)
+                item_callback(item_name)
         except Exception:
             logger.exception("item_received callback failed")
 
@@ -224,8 +217,28 @@ class RenpyContext(CommonContext):
                     self._notify(escape_notify_text(str(args["data"][0]["text"][10:])), "server")
                 elif args["type"] in ["CommandResult", "Join", "TagsChanged", "Tutorial"]:
                     self._notify(escape_notify_text(str(args["data"][0]["text"])), "ap")
+                elif args["type"] == "ItemSend":
+                    self.item_sent(args["data"])
         except Exception:
             logger.exception("cmd_received failed")
+
+    def item_sent(self, data: list) -> None:
+        result = []
+        for part in data:
+            part_type = part.get("type")
+
+            if part_type == "player_id":
+                player_id = int(part["text"])
+                result.append(self.player_names.get(player_id, str(player_id)))
+            elif part_type in ["item_id", "location_id"]:
+                object_id = int(part["text"])
+                player_id = part.get("player")
+                result.append(self.item_names.lookup_in_slot(object_id, player_id))
+            else:
+                result.append(part.get("text", ""))
+
+        message = "".join(result)
+        self._notify(str(message), "ap")
 
     async def want_deathlink(self) -> None:
         """Request DeathLink support from the server if the slot allows it."""
