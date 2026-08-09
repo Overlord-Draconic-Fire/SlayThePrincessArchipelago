@@ -637,6 +637,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
             logger.info('--------------------------------')
             version = args["version"]
             ctx.server_version = Version(*version)
+            ctx.seed_name = args["seed_name"]
 
             if "generator_version" in args:
                 ctx.generator_version = Version(*args["generator_version"])
@@ -760,7 +761,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
 
         # Load last notified index once per session (per slot)
         if start_index == 0 and not ctx._last_notified_loaded:
-            slot_key = ctx.auth or ctx.username or "default"
+            slot_key = f"{ctx.seed_name}:{ctx.auth}"
             stored = Utils.persistent_load().get("client", {}).get(f"last_notified_index::{slot_key}", 0)
             ctx.last_notified_index = int(stored)
             ctx._last_notified_loaded = True
@@ -774,8 +775,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
         elif start_index != len(ctx.items_received):
             sync_msg = [{'cmd': 'Sync'}]
             if ctx.locations_checked:
-                sync_msg.append({"cmd": "LocationChecks",
-                                "locations": list(ctx.locations_checked)})
+                sync_msg.append({"cmd": "LocationChecks", "locations": list(ctx.locations_checked)})
             await ctx.send_msgs(sync_msg)
             return
         if start_index == len(ctx.items_received):
@@ -792,7 +792,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
         # Persist the new high-water mark for notifications
         if ctx._last_notified_loaded:
             ctx.last_notified_index = len(ctx.items_received)
-            slot_key = ctx.auth or ctx.username or "default"
+            slot_key = f"{ctx.seed_name}:{ctx.auth}"
             Utils.persistent_store("client", f"last_notified_index::{slot_key}", ctx.last_notified_index)
             logger.info(f"[ReceivedItems] Saved last_notified_index={ctx.last_notified_index} for slot_key={slot_key}")
 
