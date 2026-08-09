@@ -113,6 +113,9 @@ label caught_late_join:
         jump caught_6
 
 label caught_1:
+    if archipelago.get_oblivion_rando():
+        $ send_location(Location.oblivion1)
+
     if loops_finished == 0:
         $ oblivion_when_met = 0
     if loops_finished == 1:
@@ -173,6 +176,8 @@ label caught_1:
                 jump restart_start
 
 label caught_2:
+    if archipelago.get_oblivion_rando():
+        $ send_location(Location.oblivion2)
 
     play audio "audio/final/assorted_BodiesEmerging_1.flac"
     show mound hands oblivion early onlayer inyourface at Position(ypos=1125)
@@ -188,6 +193,8 @@ label caught_2:
     jump restart_start
 
 label caught_3:
+    if archipelago.get_oblivion_rando():
+        $ send_location(Location.oblivion3)
 
     play audio "audio/final/assorted_BodiesEmerging_1.flac"
     show mound hands oblivion early onlayer inyourface at Position(ypos=1125)
@@ -209,6 +216,8 @@ label caught_3:
     jump restart_start
 
 label caught_4:
+    if archipelago.get_oblivion_rando():
+        $ send_location(Location.oblivion4)
 
     play audio "audio/final/assorted_BodiesEmerging_1.flac"
     show mound hands oblivion early onlayer inyourface at Position(ypos=1125)
@@ -223,6 +232,8 @@ label caught_4:
     jump restart_start
 
 label caught_5:
+    if archipelago.get_oblivion_rando():
+        $ send_location(Location.oblivion5)
 
     play audio "audio/final/assorted_BodiesEmerging_1.flac"
     show mound hands oblivion early onlayer inyourface at Position(ypos=1125)
@@ -237,6 +248,9 @@ label caught_5:
     jump restart_start
 
 label caught_6:
+    if archipelago.get_oblivion_rando():
+        $ send_location(Location.oblivion6)
+
     default caught_final_loop_count = 0
     $ loops_destroyed += 1
     play audio "audio/final/assorted_BodiesEmerging_1.flac"

@@ -165,6 +165,10 @@ class RenpyContext(CommonContext):
         """Read slot_data['mirror_rando'] as bool."""
         return self.get_slot_option_bool("mirror_rando", True)
 
+    def get_oblivion_rando(self) -> bool:
+        """Read slot_data['oblivion_rando'] as bool."""
+        return self.get_slot_option_bool("oblivion_rando", True)
+
     def get_memoriesanity(self) -> int:
         """Read slot_data['memoriesanity'] as int enum."""
         return self.get_slot_option_int("memoriesanity", 0)

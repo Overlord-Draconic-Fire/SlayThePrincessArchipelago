@@ -4,6 +4,14 @@ win = "Victory Condition"
 chap2 = "Reach Chapter 2"
 chap3 = "Reach Chapter 3"
 
+# Oblivion
+oblivion1 = "Denial"
+oblivion2 = "Anger"
+oblivion3 = "Bargaining"
+oblivion4 = "Depression"
+oblivion5 = "Acceptance"
+oblivion6 = "Oblivion"
+
 # The Long Quiet
 mirror1 = "The Body"
 mirror2 = "The Bloat"
