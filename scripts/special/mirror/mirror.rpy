@@ -51,7 +51,7 @@ label mirror_finale:
     with Dissolve(2.5)
     truth "But that isn't right. You can't be nothing. You refocus your gaze, and then you see it: a figure, faint and veiled in shadow, just beyond the reflection.\n"
 
-    if not hasThisBlade(Item.narrator):
+    if archipelago.get_narrator_rando() and not hasItem(Item.narrator):
         jump no_chose_left
 
     menu:

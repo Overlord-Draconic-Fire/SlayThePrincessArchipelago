@@ -223,6 +223,19 @@ init -10 python:
         
         return archipelago.get_pristine_blade_rando() == 0
 
+    def hasItem(item_value : str) -> bool:
+        """
+        Check whether the player has the specified item.
+        Accepts an item value like Item.narrator and returns True if the player has that item.
+        """
+
+        have = archipelago.has_item(item_value)
+        if have:
+            ap_debug(f"Player have {item_value}")
+        else:
+            ap_debug(f"Player does not have {item_value}")
+        return have
+
     def hasXItem(item_value : str, x : int) -> bool:
         """
         Check whether the player has at least x of the specified item.

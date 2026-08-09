@@ -145,6 +145,10 @@ class RenpyContext(CommonContext):
         """Read slot_data['gift_rando'] as bool."""
         return self.get_slot_option_bool("gift_rando", True)
 
+    def get_narrator_rando(self) -> bool:
+        """Read slot_data['narrator_rando'] as bool."""
+        return self.get_slot_option_bool("narrator_rando", True)
+
     def get_chapter_rando(self) -> bool:
         """Read slot_data['chapter_rando'] as bool."""
         return self.get_slot_option_bool("chapter_rando", True)
