@@ -1344,6 +1344,10 @@ label paranoid_pristine_apoth_menu:
                             broken "But... I love her.\n"
                             voice "audio/_pristine/voice/apotheosis/narrator/38.flac"
                             n "And she doesn't love you. She doesn't even know you exist. You are just a tiny part of an obstacle, and she is currently in the process of destroying said obstacle. So I suggest you snap out of it now while you still can.\n"
+                            
+                            if not hasThisBlade(Item.sword):
+                                jump no_chose_left
+
                             menu:
                                 extend ""
 

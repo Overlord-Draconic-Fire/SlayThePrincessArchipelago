@@ -106,12 +106,10 @@ class RenpyContext(CommonContext):
             return False
 
     def get_slot_option(self, key: str, default: typing.Any = None) -> typing.Any:
-        """Read one slot_data option by key."""
         data = getattr(self, "slot_data", {}) or {}
         return data.get(key, default)
 
     def get_slot_option_bool(self, key: str, default: bool = False) -> bool:
-        """Read a slot_data option and coerce it to bool."""
         value = self.get_slot_option(key, default)
         if isinstance(value, str):
             lowered = value.strip().lower()
@@ -122,7 +120,6 @@ class RenpyContext(CommonContext):
         return bool(value)
 
     def get_slot_option_int(self, key: str, default: int = 0) -> int:
-        """Read a slot_data option and coerce it to int."""
         value = self.get_slot_option(key, default)
         try:
             return int(value)
@@ -130,43 +127,36 @@ class RenpyContext(CommonContext):
             return default
 
     def get_deathlink(self) -> int:
-        """Read slot_data['death_link'] as int enum."""
         return self.get_slot_option_int("death_link", 0)
 
     def get_chapter_access(self) -> int:
-        """Read slot_data['chapter_access'] as an int enum."""
         return self.get_slot_option_int("chapter_access", 4)
 
     def get_pristine_blade_rando(self) -> int:
-        """Read slot_data['pristine_blade_rando'] as an int enum."""
         return self.get_slot_option_int("pristine_blade_rando", 2)
 
+    def get_pristine_sword_rando(self) -> bool:
+        return self.get_slot_option_bool("pristine_sword_rando", True)
+
     def get_gift_rando(self) -> bool:
-        """Read slot_data['gift_rando'] as bool."""
         return self.get_slot_option_bool("gift_rando", True)
 
     def get_narrator_rando(self) -> bool:
-        """Read slot_data['narrator_rando'] as bool."""
         return self.get_slot_option_bool("narrator_rando", True)
 
     def get_chapter_rando(self) -> int:
-        """Read slot_data['chapter_rando'] as int enum."""
         return self.get_slot_option_int("chapter_rando", 3)
 
     def get_heart_rando(self) -> int:
-        """Read slot_data['heart_rando'] as int enum."""
         return self.get_slot_option_int("heart_rando", 1)
 
     def get_mirror_rando(self) -> bool:
-        """Read slot_data['mirror_rando'] as bool."""
         return self.get_slot_option_bool("mirror_rando", True)
 
     def get_oblivion_rando(self) -> bool:
-        """Read slot_data['oblivion_rando'] as bool."""
         return self.get_slot_option_bool("oblivion_rando", True)
 
     def get_memoriesanity(self) -> int:
-        """Read slot_data['memoriesanity'] as int enum."""
         return self.get_slot_option_int("memoriesanity", 0)
 
     def _notify(self, message: str, level: str) -> None:

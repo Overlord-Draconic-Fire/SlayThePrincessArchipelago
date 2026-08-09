@@ -37,6 +37,8 @@ blade_grey = "Pristine Blade - The Grey"
 blade_happily = "Pristine Blade - The Happily Ever After"
 blade_goddess = "Pristine Blade - The End of Everything"
 
+sword = "The Pristine Sword"
+
 # Princesses
 adversary = "The Adversary (Princess)"
 tower = "The Tower (Princess)"

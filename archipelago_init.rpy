@@ -226,6 +226,9 @@ init -10 python:
         if archipelago.has_item(Item.blade):
             ap_debug(f"Player has global blade: {Item.blade}")
             return True
+
+        if blade_value == Item.sword:
+            return not archipelago.get_pristine_sword_rando()
         
         return archipelago.get_pristine_blade_rando() == 0
 
