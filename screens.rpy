@@ -2502,7 +2502,7 @@ init python:
                 asyncio.run(connect_and_listen())
             except Exception as e:
                 import traceback
-                ap_debug(f"Connection error: {e}")
+                ap_error(f"Connection error: {e}")
                 traceback.print_exc()
                 archipelago.set_client(None)
                 archipelago.connecting = False

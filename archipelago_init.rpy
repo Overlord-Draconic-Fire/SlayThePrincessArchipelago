@@ -330,8 +330,10 @@ init -10 python:
 
     def _parse_ap_gallery_name(name: str):
         try:
-            base, rest = name.rsplit(" (Gallery ", 1)
-            index = int(rest[:-1])  # remove ")"
+            base, index = name.rsplit(f" [", 1)
+            base = int(base[10:]) # remove "Gallery - "
+            index = int(index[:-1])  # remove "]"
+
             return base, index
         except Exception:
             return None, None

@@ -87,20 +87,13 @@ init -1 python:
 
         def unlock_item(self, index, checkAchievement = True, from_server = False):
             if not from_server:
-                try:
-                    memoriesanity_mode = archipelago.get_memoriesanity()
-                except Exception:
-                    ap_debug("Failed to get memoriesanity mode. Defaulting to 0.")
-                    memoriesanity_mode = 0
-
+                memoriesanity_mode = archipelago.get_memoriesanity()
                 if memoriesanity_mode != 0:
                     try:
-                        location_name = f"{self.routeName} (Gallery {index})"
-                        if location_name:
-                            send_location(location_name)
+                        send_location(f"Gallery - {self.routeName} [{index}]")
                     except Exception as e:
-                        ap_debug(f"Failed to send location for {self.routeName} index {index}.")
-                        ap_debug(f"Error: {e}")
+                        ap_error(f"Failed to send location for {self.routeName} index {index}.")
+                        ap_error(f"Error: {e}")
                         pass
 
                 if memoriesanity_mode == 2:
