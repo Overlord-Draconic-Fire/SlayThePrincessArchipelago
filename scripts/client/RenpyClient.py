@@ -220,10 +220,14 @@ class RenpyContext(CommonContext):
             if part_type == "player_id":
                 player_id = int(part["text"])
                 result.append(self.player_names.get(player_id, str(player_id)))
-            elif part_type in ["item_id", "location_id"]:
+            elif part_type == "item_id":
                 object_id = int(part["text"])
                 player_id = part.get("player")
                 result.append(self.item_names.lookup_in_slot(object_id, player_id))
+            elif part_type == "location_id":
+                object_id = int(part["text"])
+                player_id = part.get("player")
+                result.append(self.location_names.lookup_in_slot(object_id, player_id))
             else:
                 result.append(part.get("text", ""))
 
