@@ -83,7 +83,11 @@ label credits:
         $ renpy.show_screen("song", _layer="master")
         with fade
 
-    if final_ending != "good" and final_ending != "oblivion":
+    if final_ending == "annihilation" and archipelago.get_goal() == 2:
+        $ archipelago.send_goal()
+    elif final_ending == "oblivion" and archipelago.get_goal() == 1:
+        $ archipelago.send_goal()
+    elif final_ending not in ["good", "oblivion"] and archipelago.get_goal() == 0:
         $ archipelago.send_goal()
     
     if renpy.variant("pc"):

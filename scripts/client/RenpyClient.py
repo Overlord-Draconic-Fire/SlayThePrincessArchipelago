@@ -126,6 +126,9 @@ class RenpyContext(CommonContext):
         except (TypeError, ValueError):
             return default
 
+    def get_goal(self) -> int:
+        return self.get_slot_option_int("goal", 0)
+
     def get_deathlink(self) -> int:
         return self.get_slot_option_int("death_link", 0)
 
