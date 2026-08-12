@@ -1,6 +1,3 @@
-# Event
-credits_reached = "The End of Everything"
-
 filler = "A Filler item"
 mirror = "The Mirror"
 narrator = "The Narrator"

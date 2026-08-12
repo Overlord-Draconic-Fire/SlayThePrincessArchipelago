@@ -47,21 +47,14 @@ REGION_REQUIREMENTS = {
     # Chapter III - Clarity (needs all voices)
     Region.clarity: [Item.clarity, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
     
-    # Chapter III and IV - Razor variants (from Razor → Cheated)
+    # Chapter III and IV - Razor (needs all voices)
     Region.razor_chap3: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
-
-    # No use for these
-    Region.razor_no_way_broken: [Item.razor, Item.cheated, Item.contrarian, Item.broken],
-    Region.razor_no_way_paranoid: [Item.razor, Item.cheated, Item.contrarian, Item.paranoid],
-    Region.razor_race_broken: [Item.razor, Item.cheated, Item.hunted, Item.broken],
-    Region.razor_race_paranoid: [Item.razor, Item.cheated, Item.hunted, Item.paranoid],
-    Region.razor_race_stubborn: [Item.razor, Item.cheated, Item.hunted, Item.stubborn],
     
     # Chapter III - Den (from Beast → Hunted)
     Region.den_skeptic: [Item.den, Item.hunted, Item.skeptic],
     Region.den_stubborn: [Item.den, Item.hunted, Item.stubborn],
     
-    # Chapter III - Wild (all voices)
+    # Chapter III - Wild (from Beast → Hunted and Witch → Opportunist)
     Region.wild_beast_broken: [Item.wild, Item.hunted, Item.broken],
     Region.wild_beast_contrarian: [Item.wild, Item.hunted, Item.contrarian],
     Region.wild_beast_opportunist: [Item.wild, Item.hunted, Item.opportunist],
@@ -83,7 +76,7 @@ REGION_REQUIREMENTS = {
     Region.grey_drowned: [Item.grey, Item.skeptic, Item.cold],
     Region.grey_burned: [Item.grey, Item.smitten, Item.cold],
     
-    # Epilogue - Happily Ever After (from Damsel → Smitten)
+    # Epilogue - Happily Ever After
     Region.happily_skeptic: [Item.happily, Item.skeptic],
     Region.happily_opportunist: [Item.happily, Item.opportunist],
 

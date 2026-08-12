@@ -1,12 +1,4 @@
-win = "Goal Event Region"
-
-menu = "Menu"
-one = "Chapter I - The Hero and the Princess"
-chap2 = "Chapter II"
-chap3 = "Chapter III"
-
 adversary = "Chapter II - The Adversary"
-adversary_blade = "Chapter II - The Adversary [Blade Only]"
 tower = "Chapter II - The Tower"
 spectre = "Chapter II - The Spectre"
 nightmare = "Chapter II - The Nightmare"
@@ -14,7 +6,6 @@ razor = "Chapter II - The Razor"
 beast = "Chapter II - The Beast"
 witch = "Chapter II - The Witch"
 stranger = "Chapter II - The Stranger"
-stranger_blade = "Chapter II - The Stranger [Blade Only]"
 prisoner = "Chapter II - The Prisoner"
 damsel = "Chapter II - The Damsel"
 
