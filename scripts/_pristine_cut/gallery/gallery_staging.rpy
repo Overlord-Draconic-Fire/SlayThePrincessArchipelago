@@ -89,17 +89,14 @@ init -1 python:
             if not from_server:
                 memoriesanity_mode = archipelago.get_memoriesanity()
                 if memoriesanity_mode != 0:
-                    try:
-                        send_location(f"Gallery - {self.routeName} [{index}]")
-                    except Exception as e:
-                        ap_error(f"Failed to send location for {self.routeName} index {index}.")
-                        ap_error(f"Error: {e}")
-                        pass
-
+                    send_location(f"Gallery - {self.routeName} [{index}]")
                 if memoriesanity_mode == 2:
                     return
             with renpy.store.gallery_lock:
                 setattr(persistent, "gallery_" + str(self.key) + "_" + str(index), True)
+                lst = set(Utils.persistent_load().get("gallery", {}).get(archipelago.slot_key, []))
+                lst.add(f"Gallery - {self.routeName} [{index}]")
+                Utils.persistent_store("gallery", archipelago.slot_key, list(lst))
             if checkAchievement == True:
                 galleryAchievementChecker.checkAchievement()
 

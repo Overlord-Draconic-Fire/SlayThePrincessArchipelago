@@ -758,8 +758,7 @@ screen navigation():
 
             textbutton _("Load") action ShowMenu("load")
 
-            if persistent.gallery_unlocked:
-                textbutton "Memories" action [ShowMenu("gallery"), Play("musicgallery", "audio/_music/mound/Oblivion.flac"), PauseAudio("music", True), PauseAudio("music2", True),PauseAudio("music3", True),PauseAudio("music4", True),PauseAudio("music5", True),PauseAudio("sound", True),PauseAudio("secondary", True),PauseAudio("tertiary", True)]
+            textbutton "Memories" action [ShowMenu("gallery"), Play("musicgallery", "audio/_music/mound/Oblivion.flac"), PauseAudio("music", True), PauseAudio("music2", True),PauseAudio("music3", True),PauseAudio("music4", True),PauseAudio("music5", True),PauseAudio("sound", True),PauseAudio("secondary", True),PauseAudio("tertiary", True)]
 
             textbutton _("Preferences") action ShowMenu("preferences")
 
@@ -2154,8 +2153,7 @@ screen main_menu():
         #textbutton "Gallery" action [ShowMenu("gallery"), Show("specialdisableclick")]
 
         #textbutton "Memories" action [ShowMenu("gallery"), Play("music", "audio/_music/mound/Oblivion.flac")]
-        if persistent.gallery_unlocked:
-            textbutton _("Memories") action [ShowMenu("gallery"), Play("musicgallery", "audio/_music/mound/Oblivion.flac"), PauseAudio("music", True), PauseAudio("music2", True),PauseAudio("music3", True),PauseAudio("music4", True),PauseAudio("music5", True),PauseAudio("sound", True),PauseAudio("secondary", True),PauseAudio("tertiary", True)]
+        textbutton _("Memories") action [ShowMenu("gallery"), Play("musicgallery", "audio/_music/mound/Oblivion.flac"), PauseAudio("music", True), PauseAudio("music2", True),PauseAudio("music3", True),PauseAudio("music4", True),PauseAudio("music5", True),PauseAudio("sound", True),PauseAudio("secondary", True),PauseAudio("tertiary", True)]
 
         if persistent.gallery_unlocked:
             textbutton _("Reset Gallery") action [Confirm(_("Are you sure you want to clear your gallery progress? This action cannot be undone."), yes = Function(galleryInitializer.reset_galleries))]
@@ -2473,6 +2471,7 @@ init python:
                             ap_info("Connected")
                             archipelago.connecting = False
                             renpy.restart_interaction()
+                            check_for_memories()
                             break
                         await asyncio.sleep(0.05)
                     else:

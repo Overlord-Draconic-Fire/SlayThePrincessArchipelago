@@ -136,6 +136,7 @@ class CommonContext:
     """Name used in Connect packet"""
     seed_name: typing.Optional[str]
     """Seed name that will be validated on opening a socket if present"""
+    slot_key: typing.Optional[str]
 
     trying_to_connect: bool
 
@@ -638,6 +639,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
             version = args["version"]
             ctx.server_version = Version(*version)
             ctx.seed_name = args["seed_name"]
+            ctx.slot_key = f"{ctx.seed_name}:{ctx.auth}"
 
             if "generator_version" in args:
                 ctx.generator_version = Version(*args["generator_version"])
@@ -761,11 +763,10 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
 
         # Load last notified index once per session (per slot)
         if start_index == 0 and not ctx._last_notified_loaded:
-            slot_key = f"{ctx.seed_name}:{ctx.auth}"
-            stored = Utils.persistent_load().get("client", {}).get(f"last_notified_index::{slot_key}", 0)
+            stored = Utils.persistent_load().get("client", {}).get(f"last_notified_index::{ctx.slot_key}", 0)
             ctx.last_notified_index = int(stored)
             ctx._last_notified_loaded = True
-            logger.info(f"[ReceivedItems] Loaded last_notified_index={ctx.last_notified_index} for slot_key={slot_key}")
+            logger.info(f"[ReceivedItems] Loaded last_notified_index={ctx.last_notified_index} for slot_key={ctx.slot_key}")
 
         # Suppress user-facing notifications only for items already notified
         suppress_notify_threshold = ctx.last_notified_index
@@ -792,9 +793,8 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
         # Persist the new high-water mark for notifications
         if ctx._last_notified_loaded:
             ctx.last_notified_index = len(ctx.items_received)
-            slot_key = f"{ctx.seed_name}:{ctx.auth}"
-            Utils.persistent_store("client", f"last_notified_index::{slot_key}", ctx.last_notified_index)
-            logger.info(f"[ReceivedItems] Saved last_notified_index={ctx.last_notified_index} for slot_key={slot_key}")
+            Utils.persistent_store("client", f"last_notified_index::{ctx.slot_key}", ctx.last_notified_index)
+            logger.info(f"[ReceivedItems] Saved last_notified_index={ctx.last_notified_index} for slot_key={ctx.slot_key}")
 
     elif cmd == 'LocationInfo':
         for item in [NetworkItem(*item) for item in args['locations']]:

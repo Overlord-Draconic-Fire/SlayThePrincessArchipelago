@@ -10,10 +10,6 @@ init:
     # Archipelago characters
     define ap = Character("Archipelago", color = "#ffffff", what_color = "#ffffff", what_text_align=0.5, what_outlines=[ (3, "#000000") ], who_outlines= [ (3, "#000000") ], what_style = "voice_style", ctc="ctc_blink", ctc_position="nestled")
 
-#init 1 python:
-#    if archipelago.get_memoriesanity():
-#        ap_gallery_unlock_all_without_images()
-
 init -10 python:
     import os
     import sys
@@ -312,6 +308,28 @@ init -10 python:
         if renpy.display.interface is not None:
             renpy.display.interface.post_time_event()
 
+    def check_for_memories() -> None:
+        if archipelago.get_memoriesanity() == 0:
+            return
+        
+        route_groups = [
+            globals().get("routesParent", []),
+            globals().get("altRoutesParent", []),
+            globals().get("routesParentLower", []),
+        ]
+
+        for group in route_groups:
+            for route in group:
+                route.unlock_gallery()
+                for item in route.items:
+                    route.lock_item(item.itemNumber)
+
+        lst = Utils.persistent_load().get("gallery", {}).get(archipelago.slot_key, [])
+        for image in lst:
+            ap_handle_received_item(image)
+
+        renpy.save_persistent()
+
     def _build_gallery_route_map():
         route_map = {}
 
@@ -331,11 +349,13 @@ init -10 python:
     def _parse_ap_gallery_name(name: str):
         try:
             base, index = name.rsplit(f" [", 1)
-            base = int(base[10:]) # remove "Gallery - "
+            base = base[10:] # remove "Gallery - "
             index = int(index[:-1])  # remove "]"
-
             return base, index
-        except Exception:
+        except Exception as e:
+            ap_error(f"Error in _parse_ap_gallery_name(): {e}")
+            import traceback        
+            traceback.print_exc()
             return None, None
 
     def ap_gallery_unlock_all() -> bool:
@@ -360,33 +380,16 @@ init -10 python:
             return True
         except Exception as e:
             ap_error(f"Error in ap_gallery_unlock_all(): {e}")
-            return False
-
-    def ap_gallery_unlock_all_without_images() -> bool:
-        try:
-            route_groups = [
-                globals().get("routesParent", []),
-                globals().get("altRoutesParent", []),
-                globals().get("routesParentLower", []),
-            ]
-
-            for group in route_groups:
-                for route in group:
-                    route.unlock_gallery()
-                    for item in route.items:
-                        route.lock_item(item.itemNumber)
-
-            renpy.save_persistent()
-            ap_debug("Gallery updated: galleries unlocked, images locked.")
-            return True
-
-        except Exception as e:
-            ap_error(f"Error in ap_gallery_unlock_all_without_images(): {e}")
+            import traceback        
+            traceback.print_exc()
             return False
 
     def ap_handle_received_item(item_name: str) -> None:
         """Handle AP item reception hooks and unlock gallery items when received from the server."""
         try:
+            if "Gallery" not in item_name:
+                return
+
             route_name, index = _parse_ap_gallery_name(item_name)
             if not route_name:
                 return
@@ -409,6 +412,8 @@ init -10 python:
             renpy.save_persistent()
         except Exception as e:
             ap_error(f"Error in ap_handle_received_item({item_name}): {e}")
+            import traceback        
+            traceback.print_exc()
 
 label chapter_requirements_failed:
     $ send_deathlink("[player_name] does not have the necessary items", False)
