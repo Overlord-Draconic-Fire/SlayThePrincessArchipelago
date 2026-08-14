@@ -82,13 +82,14 @@ label credits:
         show text _("{=amatic}{color=#FFFFFF}{size=70}Your Song{/size}{/color}{/=amatic}") at Position(ypos=75)
         $ renpy.show_screen("song", _layer="master")
         with fade
-
-    if final_ending == "annihilation" and archipelago.get_goal() == 2:
-        $ archipelago.send_goal()
-    elif final_ending == "oblivion" and archipelago.get_goal() == 1:
-        $ archipelago.send_goal()
-    elif final_ending not in ["good", "oblivion"] and archipelago.get_goal() == 0:
-        $ archipelago.send_goal()
+    
+    if len(set(Utils.persistent_load().get("gallery", {}).get(archipelago.slot_key, []))) >= archipelago.get_memories_hunt():
+        if final_ending == "annihilation" and archipelago.get_goal() == 2:
+            $ archipelago.send_goal()
+        elif final_ending == "oblivion" and archipelago.get_goal() == 1:
+            $ archipelago.send_goal()
+        elif final_ending not in ["good", "oblivion"] and archipelago.get_goal() == 0:
+            $ archipelago.send_goal()
     
     if renpy.variant("pc"):
         truthsmall "Thank you so much for playing. As an expression of our gratitude, here's the track order for a special playlist just for you. If you'd like to take a screenshot, you can hide the UI by hitting 'h.'\n"
