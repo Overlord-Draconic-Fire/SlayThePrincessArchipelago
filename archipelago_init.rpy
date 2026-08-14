@@ -141,13 +141,22 @@ init -10 python:
                 with self.lock:
                     if self.client is None:
                         ap_error("Archipelago not initialized")
-                        return
+                        
+                        def dummy(*args, **kwargs):
+                            return None
+
+                        return dummy
 
                     return getattr(self.client, name)
             except Exception:
                 import traceback
                 ap_error(f"error whith the function {name}")
                 traceback.print_exc()
+
+                def dummy(*args, **kwargs):
+                    return None
+
+                return dummy
     
     # Global instance
     archipelago = ArchipelagoManager()
