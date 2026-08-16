@@ -14,6 +14,7 @@ cache/*
 audio/*
 gui/*
 images/*
+!images/archipelago
 saves/*
 staging/*
 tl/*

@@ -21,6 +21,9 @@ class RenpyContext(CommonContext):
     trying_to_connect: bool = False
     ap_console_messages: list[dict[str, str]] = []
 
+    def existe(self, inform_player=False) -> bool:
+        return self.slot is not None
+
     def has_item(self, item_name: str) -> bool:
         """Return True if the player owns at least one instance of the given item name."""
         item_lookup: typing.Mapping[int, str] = self.item_names[self.game]
@@ -152,6 +155,9 @@ class RenpyContext(CommonContext):
 
     def get_chapter_rando(self) -> int:
         return self.get_slot_option_int("chapter_rando", 3)
+
+    def get_save_slot_rando(self) -> int:
+        return self.get_slot_option_int("save_slot_rando", -1)
 
     def get_heart_rando(self) -> int:
         return self.get_slot_option_int("heart_rando", 1)

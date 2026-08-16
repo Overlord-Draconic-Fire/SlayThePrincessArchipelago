@@ -2109,7 +2109,7 @@ screen main_menu():
         add "menu static"
     #add "choices_backdrop_menu"
     #add "logo_menu_final"
-    add "logo_menu_pristine"
+    add "logo_menu_archipelago"
 
     vbox:
         style_prefix "main_menu"
@@ -2123,13 +2123,17 @@ screen main_menu():
 
 
     # add this where appropriate
-        if renpy.newest_slot != None:
+        #if renpy.newest_slot != None:
+            #textbutton _("Continue") action Continue() default_focus True
 
-            textbutton _("Continue") action Continue() default_focus True
+        $ interactable = bool(archipelago.existe(inform_player=False))
 
-        textbutton _("New Game") action Start() default_focus True
+        if not interactable:
+            text Text("Please connect\nto Archipelago", color="#ff3030")
 
-        textbutton _("Load Game") action ShowMenu("load") default_focus True
+        textbutton _("New Game") action Start() default_focus True sensitive interactable
+
+        textbutton _("Load Game") action ShowMenu("load") default_focus True sensitive interactable
 
         textbutton _("Preferences") action ShowMenu("preferences")
 
@@ -2153,10 +2157,10 @@ screen main_menu():
         #textbutton "Gallery" action [ShowMenu("gallery"), Show("specialdisableclick")]
 
         #textbutton "Memories" action [ShowMenu("gallery"), Play("music", "audio/_music/mound/Oblivion.flac")]
-        textbutton _("Memories") action [ShowMenu("gallery"), Play("musicgallery", "audio/_music/mound/Oblivion.flac"), PauseAudio("music", True), PauseAudio("music2", True),PauseAudio("music3", True),PauseAudio("music4", True),PauseAudio("music5", True),PauseAudio("sound", True),PauseAudio("secondary", True),PauseAudio("tertiary", True)]
+        textbutton _("Memories") action [ShowMenu("gallery"), Play("musicgallery", "audio/_music/mound/Oblivion.flac"), PauseAudio("music", True), PauseAudio("music2", True),PauseAudio("music3", True),PauseAudio("music4", True),PauseAudio("music5", True),PauseAudio("sound", True),PauseAudio("secondary", True),PauseAudio("tertiary", True)] sensitive interactable
 
-        if persistent.gallery_unlocked:
-            textbutton _("Reset Gallery") action [Confirm(_("Are you sure you want to clear your gallery progress? This action cannot be undone."), yes = Function(galleryInitializer.reset_galleries))]
+        #if persistent.gallery_unlocked:
+            #textbutton _("Reset Gallery") action [Confirm(_("Are you sure you want to clear your gallery progress? This action cannot be undone."), yes = Function(galleryInitializer.reset_galleries))]
 
         textbutton _("Subtitle Language") action ShowMenu("language_select_menu")
 
@@ -2972,6 +2976,14 @@ screen file_slots(title):
 
     default page_name_value = FilePageNameInputValue(pattern=_("Page {}"), auto=_("Automatic saves"), quick=_("Quick saves"))
 
+    $ actual_slot = 0
+    $ max_slot = archipelago.get_save_slot_rando()
+    if max_slot != -1:
+        $ slot_dispo = archipelago.count_item(Item.save)
+    else:
+        $ slot_dispo = 30
+        $ max_slot = 30
+
     use game_menu(title):
 
         fixed:
@@ -3002,23 +3014,51 @@ screen file_slots(title):
                 spacing gui.slot_spacing
 
                 for i in range(gui.file_slot_cols * gui.file_slot_rows):
-
+                    $ actual_slot = i + (int(persistent._file_page) - 1) * 6 + 1
                     $ slot = i + 1
+                    if actual_slot > max_slot:
+                        button:
+                            action None
+                            background None
+                            hover_background None
 
-                    button:
-                        action FileAction(slot)
+                            has vbox
 
-                        has vbox
+                            add "images/_gallery/gallery_locked_hover.png":
+                                xysize (config.thumbnail_width, config.thumbnail_height)
+                                fit "cover"
 
-                        add FileScreenshot(slot) xalign 0.5
+                            text "Unavailable":
+                                style "slot_time_text"
+                    elif actual_slot > slot_dispo:
+                        button:
+                            action None
+                            background None
+                            hover_background None
 
-                        text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
-                            style "slot_time_text"
+                            has vbox
 
-                        text FileSaveName(slot):
-                            style "slot_name_text"
+                            add "images/_gallery/gallery_locked_idle.png":
+                                xysize (config.thumbnail_width, config.thumbnail_height)
+                                fit "cover"
 
-                        key "save_delete" action FileDelete(slot)
+                            text "Locked":
+                                style "slot_time_text"
+                    else:
+                        button:
+                            action FileActionArchipelago(slot)
+
+                            has vbox
+
+                            add FileScreenshotArchipelago(slot) xalign 0.5
+
+                            text FileTimeArchipelago(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
+                                style "slot_time_text"
+
+                            text FileSaveNameArchipelago(slot):
+                                style "slot_name_text"
+
+                            key "save_delete" action FileDelete(slot)
 
             ## Buttons to access other pages.
             hbox:
@@ -3031,24 +3071,28 @@ screen file_slots(title):
 
                 textbutton _("<") action FilePagePrevious()
 
-                if config.has_autosave:
-                    textbutton _("{#auto_page}A") action FilePage("auto")
+                #if config.has_autosave:
+                    #textbutton _("{#auto_page}A") action FilePage("auto")
 
-                if config.has_quicksave:
-                    textbutton _("{#quick_page}Q") action FilePage("quick")
+                #if config.has_quicksave:
+                    #textbutton _("{#quick_page}Q") action FilePage("quick")
 
                 ## range(1, 10) gives the numbers from 1 to 9.
-                if renpy.variant("console"):
-                    for page in range(1, 9):
-                        textbutton "[page]" action FilePage(page)
-                else:
-                    for page in range(1, 10):
-                        textbutton "[page]" action FilePage(page)
+                #if renpy.variant("console"):
+                    #for page in range(1, 9):
+                        #textbutton "[page]" action FilePage(page)
+                #else:
+                    #for page in range(1, 10):
+                        #textbutton "[page]" action FilePage(page)
 
-                if renpy.variant("console"):
-                    textbutton _(">") action FilePageNext(max=8)
-                else:
-                    textbutton _(">") action FilePageNext()
+                for page in range(1, 6):
+                    textbutton "[page]" action FilePage(page)
+
+                #if renpy.variant("console"):
+                    #textbutton _(">") action FilePageNext(max=8)
+                #else:
+                    #textbutton _(">") action FilePageNext()
+                textbutton _(">") action FilePageNext(max=5)
 
 
 style page_label is gui_label

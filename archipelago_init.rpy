@@ -4,6 +4,8 @@ if True:
     define config.console = True
     define config.rollback_enabled = True
 
+default last_region_checked = None
+default last_region_failed_requirement = None
 default ap_console_command = ""
 
 init:
@@ -40,17 +42,9 @@ init -10 python:
     import BLADE_CHAPTER_MAP
     import REGION_REQUIREMENTS
 
-    store.last_region_checked = None  # Global variable tracking the last region checked
-    store.last_region_failed_requirement = None  # Global variable tracking the failed requirements in the last region checked
-    store.Location = Location
-    store.GalleryLocation = GalleryLocation
-    store.Item = Item
-    store.Region = Region
-    store.BLADE_CHAPTER_MAP = BLADE_CHAPTER_MAP
     store._deathlink_event = threading.Event()
     store._ap_text_queue = deque()
     store.gallery_lock = threading.Lock()
-    store.ap_console_command = ""
 
     class ConsoleArchipelago:
         ap_console_messages: list[dict[str, str]] = []
@@ -140,22 +134,20 @@ init -10 python:
             try:
                 with self.lock:
                     if self.client is None:
-                        ap_error("Archipelago not initialized")
-                        
-                        def dummy(*args, **kwargs):
+                        def dummy(*args, inform_player=True, **kwargs):
+                            if inform_player:
+                                ap_error("Archipelago not initialized")
                             return None
-
                         return dummy
 
                     return getattr(self.client, name)
             except Exception:
-                import traceback
-                ap_error(f"error whith the function {name}")
-                traceback.print_exc()
-
-                def dummy(*args, **kwargs):
+                def dummy(*args, inform_player=True, **kwargs):
+                    if inform_player:
+                        import traceback
+                        ap_error(f"error whith the function {name}")
+                        traceback.print_exc()
                     return None
-
                 return dummy
     
     # Global instance
