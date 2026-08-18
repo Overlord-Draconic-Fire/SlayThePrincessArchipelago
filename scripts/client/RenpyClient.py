@@ -3,6 +3,8 @@ from __future__ import annotations
 from asyncio import AbstractEventLoop
 import logging
 import typing
+import Utils
+import renpy
 
 from CommunClient import CommonContext, NetworkItem
 from NetUtils import ClientStatus
@@ -32,6 +34,14 @@ class RenpyContext(CommonContext):
             return False
         return any(net_item.item == item_id for net_item in self.items_received)
 
+    def has_location(self, location_name: str) -> bool:
+            """Return True if the player has sent this location to the server."""
+            location_lookup: typing.Mapping[int, str] = self.location_names[self.game]
+            location_id: int | None = next((location_id for location_id, resolved_name in location_lookup.items() if resolved_name == location_name), None)
+            if location_id is None:
+                return False
+            return location_id in self.checked_locations
+
     def count_item(self, item_name: str) -> int:
         """Count how many instances of an item name the player owns."""
         item_lookup: typing.Mapping[int, str] = self.item_names[self.game]
@@ -41,19 +51,77 @@ class RenpyContext(CommonContext):
         return sum(1 for net_item in self.items_received if net_item.item == item_id)
 
     def can_access_region(self, region_name: str) -> bool:
-        """Check if player can access a region based on owned princesses and voices."""
-        
-        from REGION_REQUIREMENTS import REGION_REQUIREMENTS
+        from REGION_REQUIREMENTS import REGION_REQUIREMENTS as RR
+        from TrackerSystem import REGION_TO_ENTRANCES as RE, get_bladeless_name, get_blade_name_for_region
 
-        required_items: list[str] | None = REGION_REQUIREMENTS.get(region_name)
-        if required_items is None:
-            logger.warning(f"Unknown region: {region_name}")
+        # Check if we already know the region_name
+        region_access = set(Utils.persistent_load().get(self.slot_key, {}).get("region_access", []))
+        if region_name in region_access:
+            return True
+
+        # Check REGION_REQUIREMENTS to know all necessary items
+        requirements = RR.get(region_name, None)
+        if requirements is not None:
+            if self.check_requirements(requirements) and self.can_pass_entrance(region_name):
+                self.inform_access_region(region_name)
+                return True
+            return False
+        
+        # Not in REGION_REQUIREMENTS, go check REGION_TO_ENTRANCES because it's a main chap 3 region
+        region_bladeless_name = get_bladeless_name(region_name)
+        if region_bladeless_name != region_name and not renpy.store.hasThisBlade(get_blade_name_for_region(region_name)):
+            return False  # On doit avoir la Blade
+
+        region_to_entrance = RE.get(region_bladeless_name, None)
+        if region_to_entrance is not None:
+            for sub_region in region_to_entrance:
+                if self.can_access_region(sub_region):
+                    self.inform_access_region(region_name)
+                    return True # Just need one accessible sub region
             return False
 
-        for item in required_items:
-            if not self.has_item(item):
+        # Error, Region unknow
+        self._notify(f"Region not found: {region_name}", "error")
+        return False
+
+    def check_requirements(self, requirements: list) -> bool:
+        for required_item in requirements:
+            if "Princess -" in required_item and self.get_chapter_access() in [0, 2]:
+                continue
+            if "Voice -" in required_item and self.get_chapter_access() in [0, 1]:
+                continue
+            if "Pristine" in required_item and renpy.store.hasThisBlade(required_item):
+                continue
+
+            if not self.has_item(required_item):
+                renpy.store.last_region_failed_requirement = required_item
                 return False
         return True
+
+    def can_pass_entrance(self, region_name: str):
+        from TrackerSystem import RANDO_ENTRANCE, ENTRANCE_REQUIREMENT, get_bladeless_name
+
+        new_entrance = RANDO_ENTRANCE.get(get_bladeless_name(region_name))
+        if new_entrance is None:
+            return True
+
+        return self.can_access_region(ENTRANCE_REQUIREMENT[new_entrance])
+
+    def inform_access_region(self, region_name: str) -> None:
+        region_access = set(Utils.persistent_load().get(self.slot_key, {}).get("region_access", []))
+        region_access.add(region_name)
+        Utils.persistent_store(self.slot_key, "region_access", list(region_access))
+
+    def can_access_function(self, function_name: str, number: int) -> bool:
+        """Check if player can access a function based on owned princesses and voices."""
+
+        function_access = Utils.persistent_load().get(self.slot_key, {}).get(function_name, 0)
+        return function_access >= number
+
+    def inform_access_function(self, function_name: str, number: int) -> None:
+        function_access = Utils.persistent_load().get(self.slot_key, {}).get(function_name, 0)
+        function_access = max(function_access, number)
+        Utils.persistent_store(self.slot_key, function_name, function_access)
 
     def send_location(self, location_name: str) -> bool:
         """Send a location check to Archipelago if it hasn't been checked yet."""
@@ -204,6 +272,8 @@ class RenpyContext(CommonContext):
             item_callback = getattr(self, "on_item_received_callback", None)
             if item_callback is not None:
                 item_callback(item_name)
+
+            renpy.store.galleryInitializer.refresh_all_location_access()
         except Exception:
             logger.exception("item_received callback failed")
 

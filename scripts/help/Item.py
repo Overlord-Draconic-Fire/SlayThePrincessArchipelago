@@ -11,7 +11,7 @@ blade2 = "Pristine Blade - Chapter 2"
 blade3 = "Pristine Blade - Chapter 3"
 blade4 = "Pristine Blade - End"
 
-blade_princess = "Pristine Blade - The Princess"
+blade_princess = "Pristine Blade - The Hero and the Princess"
 blade_adversary = "Pristine Blade - The Adversary"
 blade_tower = "Pristine Blade - The Tower"
 blade_spectre = "Pristine Blade - The Spectre"

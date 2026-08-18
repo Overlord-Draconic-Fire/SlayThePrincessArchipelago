@@ -36,7 +36,6 @@ init -10 python:
     import websockets
 
     import Location
-    import GalleryLocation
     import Item
     import Region
     import BLADE_CHAPTER_MAP
@@ -259,31 +258,14 @@ init -10 python:
             store.last_region_failed_requirement = f"{x - count} {item_value}"
         return count >= x
 
-    def hasRegionRequirements(region_value : str) -> bool:
+    def hasRegionRequirements(region_value : str) -> bool: #DEBUG TOUT REMPLACER PAR archipelago.can_access_region !
         """
         Check whether the player has all required items for a region.
         The parameter must be a region value (e.g., Region.needle_hunted).
         """
         try:
             store.last_region_checked = region_value
-            store.last_region_failed_requirement = None
-
-            requirements = REGION_REQUIREMENTS.REGION_REQUIREMENTS.get(region_value)
-            if not requirements:
-                ap_error(f"No requirements found for region: {region_value}")
-                return False
-
-            for required_item in requirements:
-                if not archipelago.get_chapter_access() in [1, 3] and "(Princess)" in required_item:
-                    continue
-                if not archipelago.get_chapter_access() in [2, 3] and "(Voice)" in required_item:
-                    continue
-
-                if not archipelago.has_item(required_item):
-                    store.last_region_failed_requirement = required_item
-                    return False
-
-            return True
+            return archipelago.can_access_region(region_value)
         except Exception as e:
             ap_error(f"Error in hasRegionRequirements({region_value}): {e}")
             return False

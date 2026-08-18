@@ -8,6 +8,8 @@ import Region
 
 # Mapping of region names to required items [princess, voice(s)]
 REGION_REQUIREMENTS = {
+    Region.one: [],
+
     # Chapter II regions - princess + corresponding voice
     Region.adversary: [Item.adversary, Item.stubborn],
     Region.tower: [Item.tower, Item.broken],
@@ -33,6 +35,7 @@ REGION_REQUIREMENTS = {
     # Chapter III - Apotheosis (from Tower → Broken)
     Region.apotheosis_contrarian: [Item.apotheosis, Item.broken, Item.contrarian],
     Region.apotheosis_paranoid: [Item.apotheosis, Item.broken, Item.paranoid],
+    Region.apotheosis_paranoid_sword: [Item.apotheosis, Item.broken, Item.paranoid, Item.blade_apotheosis, Item.sword],
     
     # Chapter III - Dragon (from Spectre → Cold)
     Region.dragon_kind: [Item.dragon, Item.cold, Item.opportunist],
@@ -49,7 +52,11 @@ REGION_REQUIREMENTS = {
     
     # Chapter III and IV - Razor (needs all voices)
     Region.razor_chap3: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
-    
+    Region.razor_no_way: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
+    Region.razor_chap4: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
+    Region.razor_empty: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten],
+    Region.razor_destruction: [Item.razor, Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten, Item.blade_razor],
+
     # Chapter III - Den (from Beast → Hunted)
     Region.den_skeptic: [Item.den, Item.hunted, Item.skeptic],
     Region.den_stubborn: [Item.den, Item.hunted, Item.stubborn],
@@ -81,5 +88,19 @@ REGION_REQUIREMENTS = {
     Region.happily_opportunist: [Item.happily, Item.opportunist],
 
     # The Long Quiet - The Shifting Mound
+    Region.space_between: [],
+    Region.oblivion: [],
     Region.goddess: [Item.goddess],
+    Region.stranger_goddess: [Item.stranger, Item.contrarian, Item.blade_stranger, Item.goddess],
+    Region.new_world: [Item.goddess],
 }
+
+for region, requirements in list(REGION_REQUIREMENTS.items()):
+    from TrackerSystem import get_blade_name_for_region
+
+    blade_region = f"{region} [Blade Only]"
+
+    if blade_region in vars(Region).values():
+        new_requirements = list(requirements)
+        new_requirements.append(get_blade_name_for_region(region))
+        REGION_REQUIREMENTS[blade_region] = new_requirements

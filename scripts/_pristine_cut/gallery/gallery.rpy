@@ -58,7 +58,7 @@ screen gallery():
                 if altRoutesParent[i].get_flag():
                     imagebutton:
                         auto str(altRoutesParent[i].routeImageSource) +"%s.png"
-                        action [ShowMenu("this_gallery", altRoutesParent[i]), Hide("gallery"), Play("musicgallery", str(altRoutesParent[i].routeTrack))]
+                        action [Function(altRoutesParent[i].refresh_location_access), ShowMenu("this_gallery", altRoutesParent[i]), Hide("gallery"), Play("musicgallery", str(altRoutesParent[i].routeTrack))]
                         hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                         tooltip str(altRoutesParent[i].routeName)
 
@@ -89,7 +89,7 @@ screen gallery():
                 if routesParent[i].get_flag():
                     imagebutton:
                         auto str(routesParent[i].routeImageSource) +"%s.png"
-                        action [Show("this_gallery", dissolve, routesParent[i]), Hide("gallery"), Play("musicgallery", str(routesParent[i].routeTrack))]
+                        action [Function(routesParent[i].refresh_location_access), Show("this_gallery", dissolve, routesParent[i]), Hide("gallery"), Play("musicgallery", str(routesParent[i].routeTrack))]
                         hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                         tooltip str(routesParent[i].routeHintUnlocked)
 
@@ -123,7 +123,7 @@ screen gallery():
                 if routesParentLower[i].get_flag():
                     imagebutton:
                         auto str(routesParentLower[i].routeImageSource) +"%s.png"
-                        action [Show("this_gallery", dissolve, routesParentLower[i]), Hide("gallery"), Play("musicgallery", str(routesParentLower[i].routeTrack))]
+                        action [Function(routesParentLower[i].refresh_location_access), Show("this_gallery", dissolve, routesParentLower[i]), Hide("gallery"), Play("musicgallery", str(routesParentLower[i].routeTrack))]
                         hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                         tooltip str(routesParentLower[i].routeHintUnlocked)
 
@@ -189,20 +189,24 @@ screen this_gallery(galleryParent):
         spacing 50
 
         for i in range(0, len(galleryParent.items)):
-
+            $ can_location = False
+            $ text_gallery = f"Gallery - {galleryParent.routeName} [{i + 1}]"
+            $ has_location = archipelago.has_location(text_gallery)
+            if not has_location:
+                $ can_location = galleryParent.get_location_access(archipelago, text_gallery)
             if galleryParent.items[i].get_flag():
                 imagebutton:
-                    idle galleryParent.items[i].thumb
+                    idle (Transform(galleryParent.items[i].image,size=(250,150)) if has_location else (galleryParent.items[i].thumb if can_location else galleryParent.items[i].hoveredthumb))
                     hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
-                    hover galleryParent.items[i].hoveredthumb
+                    #hover galleryParent.items[i].hoveredthumb
                     action [Show("gallery_large", dissolve, galleryParent.items[i], galleryParent), Hide("this_gallery")]
                     tooltip str(galleryParent.items[i].hint)
             else:
                 imagebutton:
                     #idle galleryParent.items[i].thumbLocked
                     hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
-                    idle "gallery_locked_idle"
-                    hover "gallery_locked_hover"
+                    idle ("gallery_big_lock" if has_location else ("gallery_locked_idle" if can_location else "gallery_locked_hover"))
+                    #hover "gallery_locked_hover"
                     action NullAction()
                     tooltip str(galleryParent.items[i].hint)
 

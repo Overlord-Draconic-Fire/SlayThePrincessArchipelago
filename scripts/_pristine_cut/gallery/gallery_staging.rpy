@@ -67,6 +67,7 @@ init -1 python:
                 self.routeTrack = "audio/_gallery/"+ str(key) + ".flac"
                 self.items = []
                 self.hints = []
+                self.location_cache = {}
 
         def get_flag(self):
             with renpy.store.gallery_lock:
@@ -94,9 +95,9 @@ init -1 python:
                     return
             with renpy.store.gallery_lock:
                 setattr(persistent, "gallery_" + str(self.key) + "_" + str(index), True)
-                lst = set(Utils.persistent_load().get("gallery", {}).get(archipelago.slot_key, []))
+                lst = set(Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", []))
                 lst.add(f"Gallery - {self.routeName} [{index}]")
-                Utils.persistent_store("gallery", archipelago.slot_key, list(lst))
+                Utils.persistent_store(archipelago.slot_key, "gallery", list(lst))
             if checkAchievement == True:
                 galleryAchievementChecker.checkAchievement()
 
@@ -111,6 +112,15 @@ init -1 python:
         def lock_item(self, index):
             with renpy.store.gallery_lock:
                 setattr(persistent, "gallery_" + str(self.key)+ "_" + str(index), False)
+
+        def get_location_access(self, archipelago, text_gallery):
+            if text_gallery not in self.location_cache:
+                from TrackerSystem import gallery_checker
+                self.location_cache[text_gallery] = gallery_checker(archipelago, text_gallery)
+            return self.location_cache[text_gallery]
+            
+        def refresh_location_access(self):
+            self.location_cache.clear()
 
     class GalleryItem:
         def __init__(self, parentKey, itemNumber):
@@ -218,6 +228,14 @@ init -1 python:
 #################Gallery Hints
 
     class GalleryInitializer:
+        def refresh_all_location_access(self):
+            for i in range(0,len(routesParent)):
+                routesParent[i].refresh_location_access()
+            for i in range(0,len(altRoutesParent)):
+                altRoutesParent[i].refresh_location_access()
+            for i in range(0,len(routesParentLower)):
+                routesParentLower[i].refresh_location_access()
+
         def set_galleries(self):
             for i in range(0,len(routesParent)):
                 routesParent[i].add_images()

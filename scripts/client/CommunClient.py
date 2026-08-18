@@ -136,7 +136,7 @@ class CommonContext:
     """Name used in Connect packet"""
     seed_name: typing.Optional[str]
     """Seed name that will be validated on opening a socket if present"""
-    slot_key: typing.Optional[str]
+    slot_key: str
 
     trying_to_connect: bool
 
@@ -763,7 +763,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
 
         # Load last notified index once per session (per slot)
         if start_index == 0 and not ctx._last_notified_loaded:
-            stored = Utils.persistent_load().get("client", {}).get(f"last_notified_index::{ctx.slot_key}", 0)
+            stored = Utils.persistent_load().get(ctx.slot_key, {}).get("last_notified_index", 0)
             ctx.last_notified_index = int(stored)
             ctx._last_notified_loaded = True
             logger.info(f"[ReceivedItems] Loaded last_notified_index={ctx.last_notified_index} for slot_key={ctx.slot_key}")
@@ -793,7 +793,7 @@ async def process_server_cmd(ctx: CommonContext, args: dict):
         # Persist the new high-water mark for notifications
         if ctx._last_notified_loaded:
             ctx.last_notified_index = len(ctx.items_received)
-            Utils.persistent_store("client", f"last_notified_index::{ctx.slot_key}", ctx.last_notified_index)
+            Utils.persistent_store(ctx.slot_key, f"last_notified_index", ctx.last_notified_index)
             logger.info(f"[ReceivedItems] Saved last_notified_index={ctx.last_notified_index} for slot_key={ctx.slot_key}")
 
     elif cmd == 'LocationInfo':
