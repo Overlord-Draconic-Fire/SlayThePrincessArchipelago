@@ -68,6 +68,10 @@ init -1 python:
                 self.items = []
                 self.hints = []
                 self.location_cache = {}
+                self.images_cache = {"hand": "hand", "blade": "blade", "sword": "sword"}
+                self.voices = []
+                self.left_images = []
+                self.right_images = {}
 
         def get_flag(self):
             with renpy.store.gallery_lock:
@@ -122,6 +126,29 @@ init -1 python:
         def refresh_location_access(self):
             self.location_cache.clear()
 
+            if self.routeName == "The End of Everything":
+                if first_mound == "stranger":
+                    self.images_cache["blade"] = "blade_stranger"
+                else:
+                    self.images_cache["blade"] = "blade"
+
+            self.left_images = []
+            if self.routeName != "The Spaces Between":
+                if hasThisBlade("Pristine Blade - " + self.routeName):
+                    self.left_images.append(self.images_cache.get("blade"))
+                else:
+                    self.left_images.append(self.images_cache.get("hand"))
+
+                if self.routeName == "The Apotheosis" and hasThisBlade(Item.sword):
+                    self.left_images.append(self.images_cache.get("sword"))
+
+            for voice in self.voices:
+                name_image = voice.removeprefix("Voice - The ").lower()
+                if hasVoice(voice):
+                    self.right_images[name_image] = 1
+                else:
+                    self.right_images[name_image] = 0.1
+
     class GalleryItem:
         def __init__(self, parentKey, itemNumber):
             self.image = "images/_gallery/_" + str(parentKey)+ "/big/"+ str(parentKey)+"_"+str(itemNumber)+".jpg"
@@ -157,72 +184,97 @@ init -1 python:
 
 #1st row
     gallery_adversary = GalleryParent(20, "adversary", _("The Adversary"), _("The Adversary — The song we write in our blood."), _("Meet your equal in combat."))
+    gallery_adversary.voices = [Item.stubborn]
     routesParent.append(gallery_adversary)
 
     gallery_tower = GalleryParent(13, "tower", _("The Tower"), _("The Tower — Doubt forces the hand of fealty."), _("Die, pathetically, to an abrasive prisoner."))
+    gallery_tower.voices = [Item.broken]
     routesParent.append(gallery_tower)
 
     gallery_spectre = GalleryParent(18, "spectre", _("The Spectre"), _("The Spectre — The remains of violence free from hesitation."), _("Slay her without a moment's hesitation."))
+    gallery_spectre.voices = [Item.cold]
     routesParent.append(gallery_spectre)
 
     gallery_nightmare = GalleryParent(19, "nightmare", _("The Nightmare"), _("The Nightmare — Fear locked away in the basement of your mind."), _("Lock your fears away."))
+    gallery_nightmare.voices = [Item.paranoid]
     routesParent.append(gallery_nightmare)
 
     gallery_razor = GalleryParent(20, "razor", _("The Razor"), _("The Razor — To look too closely is to redraw the lines."), _("She isn't armed... is she?"))
+    gallery_razor.images_cache["hand"] = "hand_razor"
+    gallery_razor.voices = [Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten]
     routesParent.append(gallery_razor)
 
     gallery_beast = GalleryParent(17, "beast", _("The Beast"), _("The Beast — Softness cornered turns to viciousness."), _("Fall to a feral captive."))
+    gallery_beast.voices = [Item.hunted]
     routesParent.append(gallery_beast)
 
     gallery_witch = GalleryParent(20, "witch", _("The Witch"), _("The Witch — Offering one hand, while concealing the other."), _("Betray her, before she can betray you."))
+    gallery_witch.voices = [Item.opportunist]
     routesParent.append(gallery_witch)
 
     gallery_stranger = GalleryParent(12, "stranger", _("The Stranger"), _("The Stranger — A peek behind the curtains, likely far too soon."), _("You can't know someone you've never met."))
+    gallery_stranger.images_cache["blade"] = "blade_stranger"
+    gallery_stranger.voices = [Item.contrarian]
     routesParent.append(gallery_stranger)
 
     gallery_prisoner = GalleryParent(17, "prisoner", _("The Prisoner"), _("The Prisoner — Doubt breaks one shackle while forcing another."), _("Free an abrasive prisoner."))
+    gallery_prisoner.voices = [Item.cold]
     routesParent.append(gallery_prisoner)
 
     gallery_damsel = GalleryParent(20, "damsel", _("The Damsel"), _("The Damsel — Unquestioning commitment to the other."), _("Free a gentle captive."))
+    gallery_damsel.voices = [Item.smitten]
     routesParent.append(gallery_damsel)
 
 
 #2nd row
 
     gallery_needle = GalleryParent(20, "needle", _("The Eye of the Needle"), _("The Eye of the Needle — For those who dwell in caves, meaning lies beyond the shadows dancing on the walls."), _("You need more space. A narrow cave is no place to fight, and it's no place to stay forever."))
+    gallery_needle.voices = [Item.stubborn, Item.hunted, Item.skeptic]
     routesParentLower.append(gallery_needle)
 
     gallery_fury = GalleryParent(20, "fury", _("The Fury"), _("The Fury — An angel felled is a demon scorned."),  _("Angels and Demons are cut from the same cloth, and it's best not to deny a proud being."))
+    gallery_fury.voices = [Item.stubborn, Item.broken, Item.cold, Item.cheated, Item.hunted, Item.contrarian, Item.smitten]
     routesParentLower.append(gallery_fury)
 
     gallery_apotheosis = GalleryParent(20, "apotheosis", _("The Apotheosis"), _("The Apotheosis — To struggle and fail against the divine is to welcome it into your heart."), _("One might resist the divine, but it is very hard to kill a god. There is no shame in failing."))
+    gallery_apotheosis.voices = [Item.broken, Item.paranoid, Item.contrarian]
     routesParentLower.append(gallery_apotheosis)
 
     gallery_dragon = GalleryParent(20, "dragon", _("The Princess and the Dragon"), _("The Princess and the Dragon — To excise another is to excise one's self."), _("Sometimes, when you cut something out of you, a piece of you leaves with it."))
+    gallery_dragon.images_cache["hand"] = "hand_dragon"
+    gallery_dragon.voices = [Item.cold, Item.opportunist]
     routesParentLower.append(gallery_dragon)
 
     gallery_wraith = GalleryParent(11, "wraith", _("The Wraith"), _("The Wraith — A broken doll, a spirit slain."), _("Kill your worst dreams, or be killed by the ghost of your past."))
+    gallery_wraith.voices = [Item.cold, Item.paranoid, Item.cheated, Item.opportunist]
     routesParentLower.append(gallery_wraith)
 
     gallery_clarity = GalleryParent(14, "clarity", _("The Moment of Clarity"), _("The Moment of Clarity — Bear witness to one's darkest fears."), _("Better to linger with your nightmares than to let them run wild."))
+    gallery_clarity.voices = [Item.stubborn, Item.broken, Item.cold, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian, Item.skeptic, Item.smitten]
     routesParentLower.append(gallery_clarity)
 
     gallery_den = GalleryParent(20, "den", _("The Den"), _("The Den — A creature's lair."), _("There are other ways to die to nature than to let it swallow you whole."))
+    gallery_den.voices = [Item.stubborn, Item.hunted, Item.skeptic]
     routesParentLower.append(gallery_den)
 
     gallery_wild = GalleryParent(12, "wild", _("The Wild"), _("The Wild — Bodies fused. Where does one thing begin and another end?"), _("Become one with the Princess, in a very literal sense. May involve, but does not necessitate, being eaten."))
+    gallery_wild.voices = [Item.stubborn, Item.broken, Item.paranoid, Item.cheated, Item.hunted, Item.opportunist, Item.contrarian]
     routesParentLower.append(gallery_wild)
 
     gallery_thorn = GalleryParent(19, "thorn", _("The Thorn"), _("The Thorn — Redemption in the thicket of distrust."), _("Sometimes the only way to break a vicious cycle is to put your heart on the line."))
+    gallery_thorn.voices = [Item.cheated, Item.opportunist, Item.smitten]
     routesParentLower.append(gallery_thorn)
 
     gallery_cage = GalleryParent(20, "cage", _("The Cage"), _("The Cage — A vicious cycle framed in chain."), _("When you've seen the worst sights the prison of the world can offer, you can always choose to walk away empty-handed."))
+    gallery_cage.voices = [Item.broken, Item.paranoid, Item.cheated, Item.skeptic]
     routesParentLower.append(gallery_cage)
 
     gallery_grey = GalleryParent(20, "grey", _("The Grey"), _("The Grey — Feelings buried like knives in hearts."), _("There are many reasons spirits may linger. The flames of passion. The flood of words left unspoken."))
+    gallery_grey.voices = [Item.cold, Item.skeptic, Item.smitten]
     routesParentLower.append(gallery_grey)
 
     gallery_happy = GalleryParent(20, "happy", _("Happily Ever After"), _("Happily Ever After — Everything you didn't know you wanted."), _("You don't need the world for your happy ending."))
+    gallery_happy.voices = [Item.opportunist, Item.skeptic]
     routesParentLower.append(gallery_happy)
 
 #################Gallery Hints

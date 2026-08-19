@@ -206,7 +206,6 @@ init -10 python:
         """
         # Check specific blade
         if archipelago.has_item(blade_value):
-            ap_debug(f"Player has specific blade: {blade_value}")
             return True
         
         # Check chapter-specific blade
@@ -215,18 +214,23 @@ init -10 python:
             chapter_blade = f"blade{chapter}"
             chapter_item = getattr(Item, chapter_blade)
             if archipelago.has_item(chapter_item):
-                ap_debug(f"Player has chapter blade: {chapter_item}")
                 return True
         
         # Check global blade
         if archipelago.has_item(Item.blade):
-            ap_debug(f"Player has global blade: {Item.blade}")
             return True
 
         if blade_value == Item.sword:
             return not archipelago.get_pristine_sword_rando()
         
         return archipelago.get_pristine_blade_rando() == 0
+
+    def hasVoice(voice_value : str) -> bool:
+        """
+        Check whether the player has the specified voice.
+        """
+
+        return archipelago.get_chapter_access() in [0, 1] or archipelago.has_item(voice_value)
 
     def hasItem(item_value : str) -> bool:
         """
@@ -307,7 +311,7 @@ init -10 python:
                 for item in route.items:
                     route.lock_item(item.itemNumber)
 
-        lst = Utils.persistent_load().get("gallery", {}).get(archipelago.slot_key, [])
+        lst = Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", [])
         for image in lst:
             ap_handle_received_item(image)
 

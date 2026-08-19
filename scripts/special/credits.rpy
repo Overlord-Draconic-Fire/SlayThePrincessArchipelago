@@ -83,13 +83,16 @@ label credits:
         $ renpy.show_screen("song", _layer="master")
         with fade
     
-    if len(set(Utils.persistent_load().get("gallery", {}).get(archipelago.slot_key, []))) >= archipelago.get_memories_hunt():
+    $ nb_actual = len(set(Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", [])))
+    if nb_actual >= archipelago.get_memories_hunt():
         if final_ending == "annihilation" and archipelago.get_goal() == 2:
             $ archipelago.send_goal()
         elif final_ending == "oblivion" and archipelago.get_goal() == 1:
             $ archipelago.send_goal()
         elif final_ending not in ["good", "oblivion"] and archipelago.get_goal() == 0:
             $ archipelago.send_goal()
+    else:
+        $ archipelago._notify(f"Not enough memories to win: {nb_actual}/{archipelago.get_memories_hunt()}", "debug")
     
     if renpy.variant("pc"):
         truthsmall "Thank you so much for playing. As an expression of our gratitude, here's the track order for a special playlist just for you. If you'd like to take a screenshot, you can hide the UI by hitting 'h.'\n"

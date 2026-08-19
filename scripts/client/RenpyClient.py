@@ -283,13 +283,17 @@ class RenpyContext(CommonContext):
 
         try:
             if args["cmd"] == "PrintJSON":
-                if args["type"] == "Chat":
+                type_arg = args.get("type")
+                if type_arg is None:
+                    self._notify("NO TYPE ARGS IN PRINTJSON !!!", "error")
+                    self._notify(escape_notify_text(str(args)), "error")
+                elif type_arg == "Chat":
                     self._notify(escape_notify_text(str(args["data"][0]["text"])), "player")
-                elif args["type"] == "ServerChat":
+                elif type_arg == "ServerChat":
                     self._notify(escape_notify_text(str(args["data"][0]["text"][10:])), "server")
-                elif args["type"] in ["CommandResult", "Join", "TagsChanged", "Tutorial"]:
+                elif type_arg in ["CommandResult", "Join", "TagsChanged", "Tutorial"]:
                     self._notify(escape_notify_text(str(args["data"][0]["text"])), "ap")
-                elif args["type"] == "ItemSend":
+                elif type_arg == "ItemSend":
                     self.item_sent(args["data"])
         except Exception:
             logger.exception("cmd_received failed")
