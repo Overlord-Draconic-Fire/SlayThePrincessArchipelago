@@ -1,6 +1,6 @@
 filler = "A Filler item"
 mirror = "The Mirror"
-gift = "A Gift"
+invitation = "An Invitation"
 narrator = "The Narrator"
 save = "A Save Slot"
 

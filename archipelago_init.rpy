@@ -190,6 +190,8 @@ init -10 python:
             return
         elif group == "Oblivion" and not archipelago.get_oblivion_rando():
             return
+        elif group == "Gift" and not archipelago.get_gift_rando() in [1, 3]:
+            return
 
         if location2 != None and archipelago.get_heart_rando() == 2:
             archipelago.send_location(location2)
@@ -251,7 +253,7 @@ init -10 python:
         Accepts an item value like Item.heart and returns True if the player has at least x of that item.
         """
         store.last_region_checked = None
-        if item_value == Item.gift:
+        if item_value == Item.invitation:
             store.last_region_checked = Region.space_between
 
         store.last_region_failed_requirement = None

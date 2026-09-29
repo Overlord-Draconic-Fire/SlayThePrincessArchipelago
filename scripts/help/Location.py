@@ -10,12 +10,19 @@ oblivion4 = "Depression"
 oblivion5 = "Acceptance"
 oblivion6 = "Oblivion"
 
-# The Long Quiet
+# The Mirror
 mirror1 = "The Body"
 mirror2 = "The Bloat"
 mirror3 = "The Decay"
 mirror4 = "The Remains"
 mirror5 = "The Long Quiet"
+
+# Gifts
+gift1 = "Bring 1 Gift"
+gift2 = "Bring 2 Gifts"
+gift3 = "Bring 3 Gifts"
+gift4 = "Bring 4 Gifts"
+gift5 = "Bring 5 Gifts"
 
 # Princesses
 adversary = "Find The Adversary"

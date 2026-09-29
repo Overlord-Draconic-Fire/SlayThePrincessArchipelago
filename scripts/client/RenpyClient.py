@@ -198,46 +198,46 @@ class RenpyContext(CommonContext):
             return default
 
     def get_goal(self) -> int:
-        return self.get_slot_option_int("goal", 0)
+        return self.get_slot_option_int("goal")
 
     def get_memories_hunt(self) -> int:
-        return self.get_slot_option_int("memories_hunt", 0)
+        return self.get_slot_option_int("memories_hunt")
 
     def get_deathlink(self) -> int:
-        return self.get_slot_option_int("death_link", 0)
+        return self.get_slot_option_int("death_link")
 
     def get_chapter_access(self) -> int:
-        return self.get_slot_option_int("chapter_access", 4)
+        return self.get_slot_option_int("chapter_access")
 
     def get_pristine_blade_rando(self) -> int:
-        return self.get_slot_option_int("pristine_blade_rando", 2)
+        return self.get_slot_option_int("pristine_blade_rando")
 
     def get_pristine_sword_rando(self) -> bool:
-        return self.get_slot_option_bool("pristine_sword_rando", True)
-
-    def get_gift_rando(self) -> bool:
-        return self.get_slot_option_bool("gift_rando", True)
+        return self.get_slot_option_bool("pristine_sword_rando")
 
     def get_narrator_rando(self) -> bool:
-        return self.get_slot_option_bool("narrator_rando", True)
-
-    def get_chapter_rando(self) -> int:
-        return self.get_slot_option_int("chapter_rando", 3)
+        return self.get_slot_option_bool("narrator_rando")
 
     def get_save_slot_rando(self) -> int:
-        return self.get_slot_option_int("save_slot_rando", -1)
-
-    def get_heart_rando(self) -> int:
-        return self.get_slot_option_int("heart_rando", 1)
-
-    def get_mirror_rando(self) -> bool:
-        return self.get_slot_option_bool("mirror_rando", True)
-
-    def get_oblivion_rando(self) -> bool:
-        return self.get_slot_option_bool("oblivion_rando", True)
+            return self.get_slot_option_int("save_slot_rando", -1)
+    
+    def get_gift_rando(self) -> int:
+            return self.get_slot_option_int("gift_rando")
 
     def get_memoriesanity(self) -> int:
-        return self.get_slot_option_int("memoriesanity", 0)
+            return self.get_slot_option_int("memoriesanity")
+
+    def get_chapter_rando(self) -> int:
+        return self.get_slot_option_int("chapter_rando")
+
+    def get_heart_rando(self) -> int:
+        return self.get_slot_option_int("heart_rando")
+
+    def get_mirror_rando(self) -> bool:
+        return self.get_slot_option_bool("mirror_rando")
+
+    def get_oblivion_rando(self) -> bool:
+        return self.get_slot_option_bool("oblivion_rando")
 
     def _notify(self, message: str, level: str) -> None:
         """Thread-safe bridge to on_text_callback (ap_notify)."""
@@ -285,8 +285,7 @@ class RenpyContext(CommonContext):
             if args["cmd"] == "PrintJSON":
                 type_arg = args.get("type")
                 if type_arg is None:
-                    self._notify("NO TYPE ARGS IN PRINTJSON !!!", "error")
-                    self._notify(escape_notify_text(str(args)), "error")
+                    self._notify(escape_notify_text(str(args["data"][0]["text"])), "server")
                 elif type_arg == "Chat":
                     self._notify(escape_notify_text(str(args["data"][0]["text"])), "player")
                 elif type_arg == "ServerChat":

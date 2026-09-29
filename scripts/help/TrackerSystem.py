@@ -64,7 +64,6 @@ OBLIVION_REGIONS = {
     Region.nightmare,
     Region.beast,
     Region.witch,
-    Region.stranger,
     Region.prisoner,
     Region.damsel,
     Region.needle,
@@ -361,7 +360,7 @@ def fill_region_tokens():
 fill_region_tokens() #DEBUG Devra attendre connexion server + entrance rando info avant de se faire
 
 def max_reset(archipelago, regions: set[str], want: int, skip_minus_one: bool = False) -> bool:
-    max_count = (archipelago.count_item(Item.gift) + int(skip_minus_one)) if archipelago.get_gift_rando else 5
+    max_count = (archipelago.count_item(Item.invitation) + int(skip_minus_one)) if archipelago.get_gift_rando in [1, 3] else 5
     if max_count < want and regions != OBLIVION_REGIONS:
         return False
 
@@ -377,8 +376,6 @@ def max_reset(archipelago, regions: set[str], want: int, skip_minus_one: bool = 
 
     usable_chap2 = {get_bladeless_name(r) for r in chap2_regions if r in accessible_region}
     if len(usable_chap2) >= want:
-        if regions == OBLIVION_REGIONS and want == 1 and usable_chap2 == {Region.stranger}:
-            return False
         return True
 
     usable_chap3 = 0

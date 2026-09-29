@@ -1458,8 +1458,9 @@ label mirror_shard:
                     $ opportunist_met = True
                     $ trait_opportunist = False
 
-                if archipelago.get_gift_rando() and not hasXItem(Item.gift, 5):
+                if archipelago.get_gift_rando() in [1, 3] and not hasXItem(Item.invitation, 5):
                     jump chapter_requirements_failed
+                $ send_location(Location.gift5, group="Gift")
 
                 play audio "audio/one_shot/footsteps_hike_short.flac"
                 $ quick_menu = False

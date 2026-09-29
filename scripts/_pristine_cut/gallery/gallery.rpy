@@ -61,7 +61,7 @@ screen gallery():
                     $ has_item = not archipelago.get_narrator_rando() or archipelago.has_item("The Narrator")
                     $ can_access = altRoutesParent[i].get_location_access(archipelago, f"Gallery - The Spaces Between [1]")
                 elif i == 2:
-                    $ has_item = not archipelago.get_chapter_access() in [0, 2] or archipelago.has_item("Princess - The Shifting Mound")
+                    $ has_item = archipelago.get_chapter_access() in [0, 2] or archipelago.has_item("Princess - The Shifting Mound")
                     $ can_access = altRoutesParent[i].get_location_access(archipelago, f"Gallery - The End of Everything [1]")
                 if has_item:
                     imagebutton:
@@ -96,17 +96,24 @@ screen gallery():
             for i in range(0, len(routesParent)):
                 $ has_item = archipelago.get_chapter_access() in [0, 2] or archipelago.has_item("Princess - " + routesParent[i].routeName)
                 $ can_access = archipelago.can_access_region("Chapter II - " + routesParent[i].routeName)
+                $ has_location = archipelago.has_location("Find " + routesParent[i].routeName)
                 if has_item:
                     imagebutton:
                         #auto str(routesParent[i].routeImageSource) +"%s.png"
-                        idle str(routesParent[i].routeImageSource) + ("idle.png" if can_access else "hover.png")
+                        idle Transform(
+                            str(routesParent[i].routeImageSource) + ("idle.png" if can_access else "hover.png"),
+                            alpha=0.5 if has_location else 1.0
+                        )
                         action [Function(routesParent[i].refresh_location_access), Show("this_gallery", dissolve, routesParent[i]), Hide("gallery"), Play("musicgallery", str(routesParent[i].routeTrack))]
                         hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                         tooltip str(routesParent[i].routeHintUnlocked)
 
                 else:
                     imagebutton:
-                        idle str(routesParent[i].routeImageSource) + ("insensitive.png" if can_access else "insensitive_hover.png")
+                        idle Transform(
+                            str(routesParent[i].routeImageSource) + ("insensitive.png" if can_access else "insensitive_hover.png"),
+                            alpha=0.5 if has_location else 1.0
+                        )
                         #hover str(routesParent[i].routeImageSource)+"insensitive_hover.png"
                         hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                         action [Function(routesParent[i].refresh_location_access), Show("this_gallery", dissolve, routesParent[i]), Hide("gallery"), Play("musicgallery", str(routesParent[i].routeTrack))]
@@ -137,17 +144,24 @@ screen gallery():
                 elif routesParentLower[i].routeName == "Happily Ever After":
                     $ text_chapter = "Epilogue - "
                 $ can_access = archipelago.can_access_region(text_chapter + routesParentLower[i].routeName)
+                $ has_location = archipelago.has_location("Find " + routesParentLower[i].routeName)
                 if has_item:
                     imagebutton:
                         #auto str(routesParentLower[i].routeImageSource) +"%s.png"
-                        idle str(routesParentLower[i].routeImageSource) + ("idle.png" if can_access else "hover.png")
+                        idle Transform(
+                            str(routesParentLower[i].routeImageSource) + ("idle.png" if can_access else "hover.png"),
+                            alpha=0.5 if has_location else 1.0
+                        )
                         action [Function(routesParentLower[i].refresh_location_access), Show("this_gallery", dissolve, routesParentLower[i]), Hide("gallery"), Play("musicgallery", str(routesParentLower[i].routeTrack))]
                         hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                         tooltip str(routesParentLower[i].routeHintUnlocked)
 
                 else:
                     imagebutton:
-                        idle str(routesParentLower[i].routeImageSource) + ("insensitive.png" if can_access else "insensitive_hover.png")
+                        idle Transform(
+                            str(routesParentLower[i].routeImageSource) + ("insensitive.png" if can_access else "insensitive_hover.png"),
+                            alpha=0.5 if has_location else 1.0
+                        )
                         #hover str(routesParentLower[i].routeImageSource)+"insensitive_hover.png"
                         hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                         action [Function(routesParentLower[i].refresh_location_access), Show("this_gallery", dissolve, routesParentLower[i]), Hide("gallery"), Play("musicgallery", str(routesParentLower[i].routeTrack))]
@@ -254,7 +268,7 @@ screen this_gallery(galleryParent):
         yspacing 20
 
         for img, alpha_voice in galleryParent.right_images.items():
-            add img:
+            add (img[:-1] if galleryParent.routeName == "The End of Everything" else img):
                 xsize 100
                 ysize 100
                 alpha alpha_voice

@@ -125,14 +125,40 @@ init -1 python:
             
         def refresh_location_access(self):
             self.location_cache.clear()
+            self.left_images = []
+            self.right_images = {}
 
             if self.routeName == "The End of Everything":
                 if first_mound == "stranger":
                     self.images_cache["blade"] = "blade_stranger"
                 else:
                     self.images_cache["blade"] = "blade"
+                
+                if archipelago.get_gift_rando():
+                    from TrackerSystem import max_reachable_vessels
 
-            self.left_images = []
+                    nb_invitation = archipelago.count_item(Item.invitation)
+                    for i in range(1, 6):
+                        can_location = max_reachable_vessels(archipelago, i)
+                        has_already_check = 1
+                        if nb_invitation >= i:
+                            if can_location:
+                                image_name = f"zfinale_idle"
+                                location_name = [Location.gift1, Location.gift2, Location.gift3, Location.gift4, Location.gift5][i-1]
+                                has_already_check = 0.2 if archipelago.has_location(location_name) else 1
+                            else:
+                                image_name = f"zfinale_hover"
+                        else:
+                            if can_location:
+                                image_name = f"zfinale_insensitive"
+                            else:
+                                image_name = f"zfinale_insensitive_hover"
+
+                        self.right_images[f"{image_name}{i}"] = has_already_check
+                else:
+                    for i in range(1, 6):
+                        self.right_images[f"zfinale_idle{i}"] = 0.2
+
             if self.routeName != "The Spaces Between":
                 if hasThisBlade("Pristine Blade - " + self.routeName):
                     self.left_images.append(self.images_cache.get("blade"))
@@ -147,7 +173,7 @@ init -1 python:
                 if hasVoice(voice):
                     self.right_images[name_image] = 1
                 else:
-                    self.right_images[name_image] = 0.1
+                    self.right_images[name_image] = 0.2
 
     class GalleryItem:
         def __init__(self, parentKey, itemNumber):
