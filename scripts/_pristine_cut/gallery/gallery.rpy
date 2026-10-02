@@ -43,7 +43,11 @@ screen gallery():
         yalign 0.10
         spacing 5
 
-        text _("Memories") xalign 0.5 size 90
+        $ nb_actual = len(set(Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", [])))
+        if archipelago.get_memories_hunt() > 0:
+            text _(f"Memories ({nb_actual}/{archipelago.get_memories_hunt()})") xalign 0.5 size 90
+        else:
+            text _("Memories") xalign 0.5 size 90
         text " "
 
         text _("Beginnings and Endings") xalign 0.5 size 50

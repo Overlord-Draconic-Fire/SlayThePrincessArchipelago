@@ -85,9 +85,9 @@ label credits:
     
     $ nb_actual = len(set(Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", [])))
     if nb_actual >= archipelago.get_memories_hunt():
-        if final_ending == "annihilation" and archipelago.get_goal() == 2:
+        if final_ending == "annihilation" and archipelago.get_goal() == 1:
             $ archipelago.send_goal()
-        elif final_ending == "oblivion" and archipelago.get_goal() == 1:
+        elif final_ending == "oblivion" and archipelago.get_goal() == 2:
             $ archipelago.send_goal()
         elif final_ending not in ["good", "oblivion"] and archipelago.get_goal() == 0:
             $ archipelago.send_goal()
