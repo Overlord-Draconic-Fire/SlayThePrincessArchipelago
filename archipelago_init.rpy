@@ -314,8 +314,9 @@ init -10 python:
                     route.lock_item(item.itemNumber)
 
         lst = Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", [])
+        route_map = _build_gallery_route_map()
         for image in lst:
-            ap_handle_received_item(image)
+            ap_light_handle_received_item(image, route_map)
 
         renpy.save_persistent()
 
@@ -395,12 +396,34 @@ init -10 python:
                 ap_error(f"Invalid index {index} for {route_name}")
                 return
 
-            route.unlock_gallery()
             route.unlock_item(index, checkAchievement=True, from_server=True)
 
             renpy.save_persistent()
         except Exception as e:
             ap_error(f"Error in ap_handle_received_item({item_name}): {e}")
+            import traceback        
+            traceback.print_exc()
+
+    def ap_light_handle_received_item(item_name: str, route_map) -> None:
+        """Handle AP item reception hooks and unlock gallery items when received from the server."""
+        try:
+            route_name, index = _parse_ap_gallery_name(item_name)
+            if not route_name:
+                return
+
+            route = route_map.get(route_name)
+            if route is None:
+                ap_error(f"Unknown gallery route: {route_name}")
+                return
+
+            # sécurité index
+            if index < 1 or index > len(route.items):
+                ap_error(f"Invalid index {index} for {route_name}")
+                return
+
+            route.unlock_item(index, checkAchievement=True, from_server=True)
+        except Exception as e:
+            ap_error(f"Error in ap_light_handle_received_item({item_name}): {e}")
             import traceback        
             traceback.print_exc()
 
