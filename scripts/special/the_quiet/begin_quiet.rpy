@@ -81,7 +81,7 @@ label begin_quiet:
                         jump chapter_requirements_failed
                     if archipelago.get_gift_rando() in [1, 3] and not hasXItem(Item.invitation, loops_finished+1):
                         jump chapter_requirements_failed
-                    $ send_location([Location.gift1, Location.gift1, Location.gift1, Location.gift1][loops_finished], group="Gift")
+                    $ send_location([Location.gift1, Location.gift2, Location.gift3, Location.gift4][loops_finished], group="Gift")
 
                     $ quick_menu = False
                     play audio "audio/one_shot/footsteps_hike_short.flac"
