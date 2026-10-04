@@ -308,10 +308,7 @@ init -10 python:
         if renpy.display.interface is not None:
             renpy.display.interface.post_time_event()
 
-    def check_for_memories() -> None:
-        if archipelago.get_memoriesanity() == 0:
-            return
-        
+    def unlock_gallery() -> None:
         route_groups = [
             globals().get("routesParent", []),
             globals().get("altRoutesParent", []),
@@ -321,15 +318,6 @@ init -10 python:
         for group in route_groups:
             for route in group:
                 route.unlock_gallery()
-                for item in route.items:
-                    route.lock_item(item.itemNumber)
-
-        lst = Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", [])
-        route_map = _build_gallery_route_map()
-        for image in lst:
-            ap_light_handle_received_item(image, route_map)
-
-        renpy.save_persistent()
 
     def _build_gallery_route_map():
         route_map = {}
@@ -359,32 +347,6 @@ init -10 python:
             traceback.print_exc()
             return None, None
 
-    def ap_gallery_unlock_all() -> bool:
-        try:
-            route_groups = [
-                globals().get("routesParent", []),
-                globals().get("altRoutesParent", []),
-                globals().get("routesParentLower", []),
-            ]
-
-            for group in route_groups:
-                for route in group:
-                    route.unlock_gallery()
-                    for item in route.items:
-                        route.unlock_item(item.itemNumber, checkAchievement=False, from_server=True)
-
-            if "galleryAchievementChecker" in globals():
-                galleryAchievementChecker.checkAchievement()
-
-            renpy.save_persistent()
-            ap_debug("Gallery updated: full unlock applied.")
-            return True
-        except Exception as e:
-            ap_error(f"Error in ap_gallery_unlock_all(): {e}")
-            import traceback        
-            traceback.print_exc()
-            return False
-
     def ap_handle_received_item(item_name: str) -> None:
         """Handle AP item reception hooks and unlock gallery items when received from the server."""
         try:
@@ -408,33 +370,8 @@ init -10 python:
                 return
 
             route.unlock_item(index, checkAchievement=True, from_server=True)
-
-            renpy.save_persistent()
         except Exception as e:
             ap_error(f"Error in ap_handle_received_item({item_name}): {e}")
-            import traceback        
-            traceback.print_exc()
-
-    def ap_light_handle_received_item(item_name: str, route_map) -> None:
-        """Handle AP item reception hooks and unlock gallery items when received from the server."""
-        try:
-            route_name, index = _parse_ap_gallery_name(item_name)
-            if not route_name:
-                return
-
-            route = route_map.get(route_name)
-            if route is None:
-                ap_error(f"Unknown gallery route: {route_name}")
-                return
-
-            # sécurité index
-            if index < 1 or index > len(route.items):
-                ap_error(f"Invalid index {index} for {route_name}")
-                return
-
-            route.unlock_item(index, checkAchievement=True, from_server=True)
-        except Exception as e:
-            ap_error(f"Error in ap_light_handle_received_item({item_name}): {e}")
             import traceback        
             traceback.print_exc()
 

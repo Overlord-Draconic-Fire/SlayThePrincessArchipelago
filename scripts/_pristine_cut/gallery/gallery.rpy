@@ -58,7 +58,6 @@ screen gallery():
             ypos 50
 
             for i in range(0, len(altRoutesParent)):
-
                 $ has_item = True
                 $ can_access = True
                 if i == 1:
@@ -240,7 +239,7 @@ screen this_gallery(galleryParent):
             $ has_location = archipelago.has_location(text_gallery)
             if not has_location:
                 $ can_location = galleryParent.get_location_access(archipelago, text_gallery)
-            if galleryParent.items[i].get_flag():
+            if text_gallery in Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", []):
                 imagebutton:
                     idle (Transform(galleryParent.items[i].image,size=(250,150)) if has_location else (galleryParent.items[i].thumb if can_location else galleryParent.items[i].hoveredthumb))
                     hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]

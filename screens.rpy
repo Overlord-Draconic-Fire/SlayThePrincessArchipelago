@@ -2475,7 +2475,7 @@ init python:
                             ap_info("Connected")
                             archipelago.connecting = False
                             renpy.restart_interaction()
-                            check_for_memories()
+                            unlock_gallery()
                             break
                         await asyncio.sleep(0.05)
                     else:
