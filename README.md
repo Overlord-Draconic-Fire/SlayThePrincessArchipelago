@@ -110,7 +110,7 @@ To remove the mod:
 
 ---
 
-### Debug Menu
+## Debug Menu
 
 The mod includes access to several Ren'Py debug features:
 
@@ -122,3 +122,11 @@ The mod includes access to several Ren'Py debug features:
 
 * **Shift + D** → Opens the developer menu
   Use at your own risk. No responsibility is taken for issues caused by its usage.
+
+---
+
+## AI Disclosure
+
+Generative AI was consulted and used during the development of this project, mainly to assist with coding tasks that were either highly repetitive or spread across a large number of different files.
+No graphical assets were created using generative AI.
+As the project has progressed, my use of AI has steadily decreased, as I have increasingly written and maintained the code myself.
