@@ -380,6 +380,7 @@ label adversary_2_interior:
                 jump adversary_2_interior_menu
 
             "{i}• [[Approach the mirror.]{/i}":
+                $ send_location(Location.mirror_needle, group="MirrorChap")
                 if adversary_2_blade_taken == False:
                     if trait_hunted:
                         voice "audio/voices/ch3/eye/hunted/17.flac"

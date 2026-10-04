@@ -386,6 +386,7 @@ label adversary_1_cabin_arrival:
 
                     "{i}• [[Approach the mirror.]{/i}" if adversary_1_cabin_mirror_approached == False:
                         label adversary_cabin_1_mirror_join:
+                            $ send_location(Location.mirror_adversary, group="MirrorChap")
                             $ current_run_mirror_touched = True
                             play audio "audio/one_shot/footsteps_stone.flac"
                             hide farback onlayer farback

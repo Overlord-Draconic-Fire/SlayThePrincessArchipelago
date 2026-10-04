@@ -233,8 +233,8 @@ class RenpyContext(CommonContext):
     def get_heart_rando(self) -> int:
         return self.get_slot_option_int("heart_rando")
 
-    def get_mirror_rando(self) -> bool:
-        return self.get_slot_option_bool("mirror_rando")
+    def get_mirror_rando(self) -> int:
+        return self.get_slot_option_int("mirror_rando")
 
     def get_oblivion_rando(self) -> bool:
         return self.get_slot_option_bool("oblivion_rando")

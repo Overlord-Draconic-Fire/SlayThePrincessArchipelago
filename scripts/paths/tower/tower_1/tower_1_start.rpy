@@ -400,6 +400,7 @@ label tower_1_cabin_arrival:
 
                     "{i}• [[Approach the mirror.]{/i}" if tower_1_cabin_mirror_approached == False:
                         label tower_cabin_1_mirror_join:
+                            $ send_location(Location.mirror_tower, group="MirrorChap")
                             play audio "audio/one_shot/footsteps_creaky.flac"
                             hide farback onlayer farback
                             hide bg onlayer back

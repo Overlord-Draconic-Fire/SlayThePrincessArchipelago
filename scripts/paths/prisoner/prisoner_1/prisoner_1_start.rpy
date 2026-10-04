@@ -377,6 +377,7 @@ label prisoner_1_cabin_arrival:
 
                     "{i}• [[Approach the mirror.]{/i}" if prisoner_1_cabin_mirror_approached == False:
                         label prisoner_cabin_1_mirror_join:
+                            $ send_location(Location.mirror_prisoner, group="MirrorChap")
                             $ prisoner_1_cabin_mirror_approached = True
                             play audio "audio/one_shot/footsteps_creaky.flac"
                             hide farback onlayer farback

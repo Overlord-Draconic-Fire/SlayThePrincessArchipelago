@@ -624,6 +624,7 @@ label grey_cabin:
                 jump grey_cabin_mirror
 
             "{i}• [[Approach the mirror.]{/i}":
+                $ send_location(Location.mirror_grey, group="MirrorChap")
                 voice "audio/voices/ch3/grey/narrator/41.flac"
                 play audio "audio/one_shot/footsteps_creaky.flac"
                 hide farback onlayer farback

@@ -608,6 +608,7 @@ label fury_cabin_interior:
                 jump fury_cabin_interior_menu
 
             "{i}• [[Approach the mirror.]{/i}":
+                $ send_location(Location.mirror_fury, group="MirrorChap")
                 play audio "audio/one_shot/footsteps_stone.flac"
                 hide farback onlayer farback
                 hide bg onlayer back

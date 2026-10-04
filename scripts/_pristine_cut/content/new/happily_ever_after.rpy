@@ -189,6 +189,7 @@ label happy_down_menu:
 
 
         "{i}• [[Approach the mirror.]{/i}":
+            $ send_location(Location.mirror_happily, group="MirrorChap")
             $ quick_menu = False
             play audio "audio/one_shot/footsteps_stone.flac"
             if happy_down_mirror_explore:

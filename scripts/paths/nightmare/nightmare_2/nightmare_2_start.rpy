@@ -401,6 +401,7 @@ label nightmare_2_cabin_arrive:
                 jump nightmare_2_cabin_arrive_menu
 
             "{i}• [[Approach the mirror.]{/i}":
+                $ send_location(Location.mirror_clarity, group="MirrorChap")
                 $ gallery_clarity.unlock_item(3)
                 $ renpy.save_persistent()
                 $ quick_menu = False

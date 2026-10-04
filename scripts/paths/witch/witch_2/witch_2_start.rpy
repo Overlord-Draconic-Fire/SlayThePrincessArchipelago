@@ -401,6 +401,7 @@ label witch_2_cabin:
                 jump witch_2_cabin_menu
 
             "{i}• [[Approach the mirror.]{/i}":
+                $ send_location(Location.mirror_thorn, group="MirrorChap")
                 $ quick_menu = False
                 voice "audio/voices/ch3/thorn/narrator/29.flac"
                 play audio "audio/one_shot/footsteps_hike_short.flac"

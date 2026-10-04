@@ -212,6 +212,7 @@ label razor_2_cabin_menu:
         extend ""
 
         "{i}• [[Approach the mirror.]{/i}":
+            $ send_location(Location.mirror_razor, group="MirrorChap")
             $ current_run_mirror_comment = True
             voice "audio/voices/ch3/razor/start/narrator/18.flac"
             play audio "audio/final/__metal_step.flac"

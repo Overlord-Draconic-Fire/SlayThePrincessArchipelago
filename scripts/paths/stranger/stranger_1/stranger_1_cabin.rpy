@@ -118,6 +118,7 @@ label cabin_interior_2_stranger_menu:
 
                 "{i}• [[Approach the mirror.]{/i}" if stranger_1_cabin_mirror_approached == False:
                     label stranger_cabin_1_mirror_join:
+                        $ send_location(Location.mirror_stranger, group="MirrorChap")
                         $ stranger_1_cabin_mirror_approached = True
                         play audio "audio/one_shot/footsteps_creaky.flac"
                         hide farback onlayer farback

@@ -384,6 +384,7 @@ label nightmare_1_cabin_arrival:
 
                     "{i}• [[Approach the mirror.]{/i}" if nightmare_1_cabin_mirror_approached == False:
                         label nightmare_cabin_1_mirror_join:
+                            $ send_location(Location.mirror_nightmare, group="MirrorChap")
                             play audio "audio/one_shot/footsteps_creaky.flac"
                             hide farback onlayer farback
                             hide bg onlayer back

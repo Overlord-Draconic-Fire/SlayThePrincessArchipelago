@@ -490,23 +490,23 @@ label mirror_sort:
     hide chain onlayer back
 
     if loops_finished == 0:
-        $ send_location(Location.mirror1, group="Mirror")
+        $ send_location(Location.mirror1, group="MirrorSB")
         jump mirror_1_join
 
     elif loops_finished == 1:
-        $ send_location(Location.mirror2, group="Mirror")
+        $ send_location(Location.mirror2, group="MirrorSB")
         jump mirror_2_join
 
     elif loops_finished == 2:
-        $ send_location(Location.mirror3, group="Mirror")
+        $ send_location(Location.mirror3, group="MirrorSB")
         jump mirror_3_join
 
     elif loops_finished == 3:
-        $ send_location(Location.mirror4, group="Mirror")
+        $ send_location(Location.mirror4, group="MirrorSB")
         jump mirror_4_join
 
     else:
-        $ send_location(Location.mirror5, group="Mirror")
+        $ send_location(Location.mirror5, group="MirrorSB")
         jump mirror_finale
 
 

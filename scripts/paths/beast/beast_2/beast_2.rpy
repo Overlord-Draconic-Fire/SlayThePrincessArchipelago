@@ -371,6 +371,7 @@ label beast_2_interior:
                 jump beast_2_cabin_menu
 
             "{i}• [[Approach the mirror.]{/i}":
+                $ send_location(Location.mirror_den, group="MirrorChap")
                 if beast_2_blade_taken == False:
                     if trait_skeptic:
                         voice "audio/voices/ch3/den/skeptic/24.flac"

@@ -368,6 +368,7 @@ label razor_1_cabin_arrival:
 
                     "{i}• [[Approach the mirror.]{/i}" if razor_1_cabin_mirror_approached == False:
                         label razor_cabin_1_mirror_join:
+                            $ send_location(Location.mirror_razor, group="MirrorChap")
                             $ razor_1_cabin_mirror_approached = True
                             play audio "audio/one_shot/footsteps_creaky.flac"
                             hide farback onlayer farback

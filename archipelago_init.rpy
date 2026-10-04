@@ -186,7 +186,9 @@ init -10 python:
             return
         elif "Heart" in location_name and archipelago.get_heart_rando() == 0:
             return
-        elif group == "Mirror" and not archipelago.get_mirror_rando():
+        elif group == "MirrorSB" and not archipelago.get_mirror_rando() in [1, 3]:
+            return
+        elif group == "MirrorChap" and not archipelago.get_mirror_rando() in [2, 3]:
             return
         elif group == "Oblivion" and not archipelago.get_oblivion_rando():
             return

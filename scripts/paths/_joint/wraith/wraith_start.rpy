@@ -529,6 +529,7 @@ label wraith_cabin_int_menu:
             jump wraith_cabin_int_menu
 
         "{i}• [[Approach the mirror.]{/i}":
+            $ send_location(Location.mirror_wraith, group="MirrorChap")
             voice "audio/voices/ch3/wraith/narrator/40.flac"
             play audio "audio/one_shot/footsteps_creaky.flac"
             show farback wraith cabin onlayer farback at small_zoom

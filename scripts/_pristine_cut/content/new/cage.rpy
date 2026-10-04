@@ -605,6 +605,7 @@ label cage_cabin:
         extend ""
 
         "{i}• [[Approach the mirror.]{/i}":
+            $ send_location(Location.mirror_cage, group="MirrorChap")
             jump cage_stairs_start
 
 
