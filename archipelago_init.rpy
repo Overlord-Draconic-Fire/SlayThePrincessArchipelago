@@ -8,10 +8,6 @@ default last_region_checked = None
 default last_region_failed_requirement = None
 default ap_console_command = ""
 
-init:
-    # Archipelago characters
-    define ap = Character("Archipelago", color = "#ffffff", what_color = "#ffffff", what_text_align=0.5, what_outlines=[ (3, "#000000") ], who_outlines= [ (3, "#000000") ], what_style = "voice_style", ctc="ctc_blink", ctc_position="nestled")
-
 init -10 python:
     import os
     import sys
@@ -108,6 +104,11 @@ init -10 python:
         except Exception as exc:
             ap_console_append_message(f"Send failed: {exc}", "error")
 
+    def voice_character(voice_name, **kwargs):
+        location_name = voice_name.replace("of the", "Introduction - The")
+        kwargs["callback"] = lambda event, **callback_kwargs: voice_callback(location_name, event, **callback_kwargs)
+        return Character(**kwargs)
+
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:
         def __init__(self):
@@ -178,6 +179,12 @@ init -10 python:
     def ap_info(message: str) -> None:
         ap_notify(message, "info")
 
+    def voice_callback(location_name, event, **kwargs):
+        if event != "show":
+            return
+
+        send_location(location_name, group="Voice")
+
     def send_location(location_name : str, location2 : str = None, group : str = None) -> None:
         """Send an arbitrary location check."""
         if "Find" in location_name and not archipelago.get_chapter_rando() in [1, 3]:
@@ -185,6 +192,8 @@ init -10 python:
         elif "Reach" in location_name and not archipelago.get_chapter_rando() in [2, 3]:
             return
         elif "Heart" in location_name and archipelago.get_heart_rando() == 0:
+            return
+        elif group == "Voice" and archipelago.get_voice_rando() == 0:
             return
         elif group == "MirrorSB" and not archipelago.get_mirror_rando() in [1, 3]:
             return
@@ -465,5 +474,5 @@ label no_chose_left:
     return
 
 label deathlink:
-    ap "Another soul has fallen. Fate demands you do the same."
+    ap "Another soul has fallen. Fate demands that you do the same."
     $ renpy.full_restart()

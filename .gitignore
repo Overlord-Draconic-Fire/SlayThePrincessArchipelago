@@ -17,6 +17,7 @@ images/*
 !images/archipelago
 saves/*
 staging/*
+!staging/voice_rendering
 tl/*
 *.txt
 /.idea

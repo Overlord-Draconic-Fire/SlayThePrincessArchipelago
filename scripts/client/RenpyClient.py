@@ -137,9 +137,8 @@ class RenpyContext(CommonContext):
             self._notify(f"Unknown location: '{location_name}'", "error")
             return False
 
-        # Check if already sent to server (from any previous session or this one)
+        # Check if already sent to server
         if location_id in self.checked_locations:
-            self._notify(f"Location already sent: '{location_name}' ({location_id})", "debug")
             return False
 
         # Send the location check on the background event loop
@@ -229,6 +228,9 @@ class RenpyContext(CommonContext):
 
     def get_chapter_rando(self) -> int:
         return self.get_slot_option_int("chapter_rando")
+
+    def get_voice_rando(self) -> bool:
+        return self.get_slot_option_bool("voice_rando")
 
     def get_heart_rando(self) -> int:
         return self.get_slot_option_int("heart_rando")
