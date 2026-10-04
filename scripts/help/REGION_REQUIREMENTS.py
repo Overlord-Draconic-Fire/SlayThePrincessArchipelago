@@ -30,7 +30,7 @@ REGION_REQUIREMENTS = {
     Region.fury_cold: [Item.fury, Item.stubborn, Item.cold],
     Region.fury_contrarian: [Item.fury, Item.stubborn, Item.contrarian],
     Region.fury_broken: [Item.fury, Item.stubborn, Item.broken],
-    Region.fury_tower: [Item.fury, Item.broken, Item.stubborn],  # From Tower → Broken
+    Region.fury_tower: [Item.fury, Item.broken, Item.stubborn, Item.cold, Item.smitten, Item.hunted, Item.cheated],  # From Tower → Broken
     
     # Chapter III - Apotheosis (from Tower → Broken)
     Region.apotheosis_contrarian: [Item.apotheosis, Item.broken, Item.contrarian],
