@@ -416,7 +416,7 @@ GALLERY_REQUIREMENTS = {
     wild[9]: [Region.wild_blade, max_reachable_vessels, 1],
     wild[10]: [Region.wild_blade, max_reachable_vessels, 1],
     wild[11]: [Region.wild, max_reachable_vessels, 5],
-    wild[12]: [Region.wild, max_reachable_vessels, 5],
+    wild[12]: [Region.wild_blade, max_reachable_vessels, 5],
 
     thorn[1]: [Region.thorn, None],
     thorn[2]: [Region.thorn, None],
