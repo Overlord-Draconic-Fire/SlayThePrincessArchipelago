@@ -22,10 +22,7 @@ class RenpyContext(CommonContext):
 
     trying_to_connect: bool = False
     ap_console_messages: list[dict[str, str]] = []
-
-    def existe(self, inform_player=False) -> bool:
-        return self.slot is not None
-
+    
     def has_item(self, item_name: str) -> bool:
         """Return True if the player owns at least one instance of the given item name."""
         item_lookup: typing.Mapping[int, str] = self.item_names[self.game]
@@ -141,14 +138,20 @@ class RenpyContext(CommonContext):
         if location_id in self.checked_locations:
             return False
 
-        # Send the location check on the background event loop
-        if not self.loop or self.loop.is_closed():
+        self.locations_checked.add(location_id)
+
+        loop = self.loop
+        if loop is None or loop.is_closed():
             self._notify(f"Cannot send location: inactive event loop ({location_name})", "error")
+            return False
+
+        if self.autoreconnect_task is not None:
+            self._notify(f"Location queued for server: '{location_name}' ({location_id})", "debug")
             return False
 
         import asyncio
         try:
-            asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), self.loop)
+            asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), loop)
             self._notify(f"Location sent: '{location_name}' ({location_id})", "debug")
             return True
         except Exception:

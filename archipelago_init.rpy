@@ -112,6 +112,7 @@ init -10 python:
     class ConnectionState(enum.Enum):
         DISCONNECTED = enum.auto()
         CONNECTING = enum.auto()
+        AUTOCONNECTING = enum.auto()
         CONNECTED = enum.auto()
         DISCONNECTING = enum.auto()
 
@@ -131,6 +132,11 @@ init -10 python:
         def stopping(self) -> bool:
             with self.lock:
                 return self.state == ConnectionState.DISCONNECTING
+
+        @property
+        def autoconnecting(self) -> bool:
+            with self.lock:
+                return self.state == ConnectionState.AUTOCONNECTING
 
         def set_state(self, state: ConnectionState) -> None:
             with self.lock:
@@ -194,6 +200,10 @@ init -10 python:
         print(full_message)
 
     def ap_notify(message: str, level: str = "level missing") -> None:
+        if level == "AUTO":
+            archipelago.set_state(ConnectionState.AUTOCONNECTING)
+            return
+
         msg_str = str(message)
         level_key = str(level).lower().strip()
 

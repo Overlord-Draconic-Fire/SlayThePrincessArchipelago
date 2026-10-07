@@ -636,6 +636,7 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
     finally:
         await ctx.connection_closed()
         if ctx.server_address and ctx.username and not ctx.disconnected_intentionally:
+            ctx._notify("AutoConnect Notification", "AUTO")
             ctx._notify(f"Automatically reconnecting in {ctx.current_reconnect_delay} seconds", "debug")
             logger.warning(f"... automatically reconnecting in {ctx.current_reconnect_delay} seconds")
             if ctx.autoreconnect_task is None:

@@ -2126,7 +2126,7 @@ screen main_menu():
         #if renpy.newest_slot != None:
             #textbutton _("Continue") action Continue() default_focus True
 
-        $ interactable = bool(archipelago.existe(inform_player=False))
+        $ interactable = ap_is_connected_or_autoconnecting()
 
         if not interactable:
             text Text("Please connect\nto Archipelago", color="#ff3030")
@@ -2362,17 +2362,17 @@ screen main_menu():
                 sensitive can_change_connection
                 action SetScreenVariable("ap_show_password", not ap_show_password)
 
-            textbutton ("Waiting to connect..." if archipelago.connecting else "Disconnecting..." if archipelago.stopping else "Disconnect" if ap_is_connected() else "Connect"):
-                sensitive archipelago.state in (ConnectionState.DISCONNECTED, ConnectionState.CONNECTED) 
-                action If(ap_is_connected(), Function(ap_disconnect), Function(ap_connect))
+            textbutton ("Waiting to connect..." if archipelago.connecting else "Disconnecting..." if archipelago.stopping else "Stop Autoconnection" if archipelago.autoconnecting else "Disconnect" if ap_is_connected_or_autoconnecting() else "Connect"):
+                sensitive archipelago.state in (ConnectionState.DISCONNECTED, ConnectionState.CONNECTED, ConnectionState.AUTOCONNECTING) 
+                action If(ap_is_connected_or_autoconnecting(), Function(ap_disconnect), Function(ap_connect))
 
 default server_url = "archipelago.gg:"
 default slot_name = ""
 default password = ""
 
 init python:
-    def ap_is_connected() -> bool:
-        return archipelago.state == ConnectionState.CONNECTED
+    def ap_is_connected_or_autoconnecting() -> bool:
+        return archipelago.state in (ConnectionState.CONNECTED, ConnectionState.AUTOCONNECTING)
 
     def ap_is_not_disconnected() -> bool:
         return archipelago.state != ConnectionState.DISCONNECTED
