@@ -236,7 +236,12 @@ class CommonContext:
     async def connection_closed(self):
         if self.server and self.server.socket is not None:
             await self.server.socket.close()
-        self.reset_server_state()
+        if self.disconnected_intentionally:
+            self.reset_server_state()
+        else:
+            self.server = None
+            self.server_task = None
+            self.trying_to_connect = False
 
     def reset_server_state(self):
         self.auth = None
@@ -255,7 +260,7 @@ class CommonContext:
             if not allow_autoreconnect:
                 self.disconnected_intentionally = True
                 if self.cancel_autoreconnect():
-                    logger.info("Cancelled auto-reconnect.")
+                    logger.warning("Cancelled auto-reconnect.")
             if self.server and self.server.socket:
                 await self.server.socket.close()
             if self.server_task is not None:
@@ -354,7 +359,7 @@ class CommonContext:
         return print_json_packet.get("type", "") in ["Join","Part"]
 
     def on_print(self, args: dict):
-        logger.info(args["text"])
+        logger.warning(args["text"])
         if self.on_text_callback:
             try:
                 self.on_text_callback(args["text"])
@@ -530,6 +535,35 @@ class CommonContext:
         logger.exception(msg, exc_info=exc_info, extra={'compact_gui': True})
         self.trying_to_connect = False
 
+        callback: typing.Any | None = getattr(self, "on_text_callback", None)
+        if callback:
+            self._notify(msg, "error")
+
+    def _notify(self, message: str, level: str) -> None:
+        """Thread-safe bridge to on_text_callback (ap_notify)."""
+        logger.info(message)
+        
+        callback: typing.Any | None = getattr(self, "on_text_callback", None)
+        if not callback:
+            return
+
+        try:
+            import asyncio
+            # If we're already on the stored loop, call directly; otherwise, schedule thread-safely.
+            try:
+                running_loop: AbstractEventLoop = asyncio.get_running_loop()
+            except RuntimeError:
+                running_loop = None
+
+            if self.loop and running_loop and running_loop is self.loop:
+                callback(message, level)
+            elif self.loop and self.loop.is_running():
+                self.loop.call_soon_threadsafe(callback, message, level)
+            else:
+                callback(message, level)
+        except Exception:
+            logger.exception("_notify failed")
+
 async def keep_alive(ctx: CommonContext, seconds_between_checks=100):
     """some ISPs/network configurations drop TCP connections if no payload is sent (ignore TCP-keep-alive)
     so we send a payload to prevent drop and if we were dropped anyway this will cause an auto-reconnect."""
@@ -565,10 +599,7 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
     if server_url.password:
         ctx.password = urllib.parse.unquote(server_url.password)
 
-    def reconnect_hint() -> str:
-        return ", type /connect to reconnect" if ctx.server_address else ""
-
-    logger.info(f'Connecting to Archipelago server at {address}')
+    logger.warning(f'Connecting to Archipelago server at {address}')
     try:
         port = server_url.port or 38281  # raises ValueError if invalid
         socket = await websockets.connect(address, port=port, ping_timeout=None, ping_interval=None,
@@ -578,14 +609,14 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
         if ctx.ui is not None:
             ctx.ui.update_address_bar(server_url.netloc)
         ctx.server = Endpoint(socket)
-        logger.info('Connected')
+        logger.warning('Connected')
         ctx.server_address = address
         ctx.current_reconnect_delay = ctx.starting_reconnect_delay
         ctx.disconnected_intentionally = False
         async for data in ctx.server.socket:
             for msg in decode(data):
                 await process_server_cmd(ctx, msg)
-        logger.warning(f"Disconnected from multiworld server{reconnect_hint()}")
+        logger.warning(f"Disconnected from multiworld server")
 
     except websockets.InvalidMessage:
         # probably encrypted or not an AP server; avoid crashing
@@ -593,21 +624,20 @@ async def server_loop(ctx: CommonContext, address: typing.Optional[str] = None) 
             # try wss
             await server_loop(ctx, "ws" + address[1:])
         else:
-            ctx.handle_connection_loss(f"Lost connection to the multiworld server due to InvalidMessage"
-                                    f"{reconnect_hint()}")
+            ctx.handle_connection_loss("Lost connection to the multiworld server due to InvalidMessage")
     except ConnectionRefusedError:
-        ctx.handle_connection_loss("Connection refused by the server. "
-                                "May not be running Archipelago on that address or port.")
+        ctx.handle_connection_loss("Connection refused by the server. May not be running Archipelago on that address or port.")
     except websockets.InvalidURI:
         ctx.handle_connection_loss("Failed to connect to the multiworld server (invalid URI)")
     except OSError:
         ctx.handle_connection_loss("Failed to connect to the multiworld server")
     except Exception:
-        ctx.handle_connection_loss(f"Lost connection to the multiworld server{reconnect_hint()}")
+        ctx.handle_connection_loss("Lost connection to the multiworld server")
     finally:
         await ctx.connection_closed()
         if ctx.server_address and ctx.username and not ctx.disconnected_intentionally:
-            logger.info(f"... automatically reconnecting in {ctx.current_reconnect_delay} seconds")
+            ctx._notify(f"Automatically reconnecting in {ctx.current_reconnect_delay} seconds", "debug")
+            logger.warning(f"... automatically reconnecting in {ctx.current_reconnect_delay} seconds")
             if ctx.autoreconnect_task is None:
                 ctx.autoreconnect_task = asyncio.create_task(server_autoreconnect(ctx), name="server auto reconnect")
         ctx.current_reconnect_delay *= 2

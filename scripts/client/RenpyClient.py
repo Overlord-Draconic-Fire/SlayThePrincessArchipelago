@@ -241,31 +241,6 @@ class RenpyContext(CommonContext):
     def get_oblivion_rando(self) -> bool:
         return self.get_slot_option_bool("oblivion_rando")
 
-    def _notify(self, message: str, level: str) -> None:
-        """Thread-safe bridge to on_text_callback (ap_notify)."""
-        logger.info(message)
-        
-        callback: typing.Any | None = getattr(self, "on_text_callback", None)
-        if not callback:
-            return
-
-        try:
-            import asyncio
-            # If we're already on the stored loop, call directly; otherwise, schedule thread-safely.
-            try:
-                running_loop: AbstractEventLoop = asyncio.get_running_loop()
-            except RuntimeError:
-                running_loop = None
-
-            if self.loop and running_loop and running_loop is self.loop:
-                callback(message, level)
-            elif self.loop and self.loop.is_running():
-                self.loop.call_soon_threadsafe(callback, message, level)
-            else:
-                callback(message, level)
-        except Exception:
-            logger.exception("_notify failed")
-
     def item_received(self, net_item: NetworkItem) -> None:
         """Notify Ren'Py when this client actually receives an item."""
         try:

@@ -26,9 +26,9 @@ init -10 python:
             sys.path.insert(0, path)
     
     # Import modules
+    import enum
     import Utils
     import threading
-    import asyncio
     import websockets
 
     import Location
@@ -109,38 +109,70 @@ init -10 python:
         kwargs["callback"] = lambda event, **callback_kwargs: voice_callback(location_name, event, **callback_kwargs)
         return Character(**kwargs)
 
+    class ConnectionState(enum.Enum):
+        DISCONNECTED = enum.auto()
+        CONNECTING = enum.auto()
+        CONNECTED = enum.auto()
+        DISCONNECTING = enum.auto()
+
     # Store client and lock in a shared container for thread-safe access
     class ArchipelagoManager:
         def __init__(self):
-            self.client = None
+            self._client = None
             self.lock = threading.Lock()
-            self.connecting = False
-            self.stopping = False
+            self.state = ConnectionState.DISCONNECTED
+
+        @property
+        def connecting(self) -> bool:
+            with self.lock:
+                return self.state == ConnectionState.CONNECTING
+
+        @property
+        def stopping(self) -> bool:
+            with self.lock:
+                return self.state == ConnectionState.DISCONNECTING
+
+        def set_state(self, state: ConnectionState) -> None:
+            with self.lock:
+                self.state = state
+            ap_notify_renpy()
 
         def set_client(self, client: RenpyContext) -> None:
             """Thread-safe update of archipelago client."""
             with self.lock:
-                self.client = client
-                if client:
-                    try:
-                        client.on_item_received_callback = ap_handle_received_item
-                        renpy.restart_interaction()
-                    except Exception:
-                        import traceback
-                        ap_error("error with on_item_received_callback")
-                        traceback.print_exc()
+                self._client = client
+
+        def get_client(self) -> Optional[RenpyContext]:
+            with self.lock:
+                return self._client
+
+        def is_current_client(self, client: RenpyContext) -> bool:
+            with self.lock:
+                return self._client is client
+
+        def clear_client(self, client: RenpyContext) -> bool:
+            """Clear the client only if it is still the active client."""
+            with self.lock:
+                if self._client is not client:
+                    return False
+
+                self._client = None
+
+            self.set_state(ConnectionState.DISCONNECTED)
+            return True
+        
         
         def __getattr__(self, name):
             try:
                 with self.lock:
-                    if self.client is None:
+                    if self._client is None:
                         def dummy(*args, inform_player=True, **kwargs):
                             if inform_player:
                                 ap_error("Archipelago not initialized")
                             return None
                         return dummy
 
-                    return getattr(self.client, name)
+                    return getattr(self._client, name)
             except Exception:
                 def dummy(*args, inform_player=True, **kwargs):
                     if inform_player:
@@ -169,6 +201,13 @@ init -10 python:
 
         if threading.current_thread() is not threading.main_thread() and renpy.display.interface is not None:
             renpy.display.interface.post_time_event()
+
+    def ap_notify_renpy() -> None:
+        if threading.current_thread() is not threading.main_thread():
+            if renpy.display.interface is not None:
+                renpy.display.interface.post_time_event()
+        else:
+            renpy.restart_interaction()
 
     def ap_debug(message: str) -> None:
         ap_notify(message, "debug")

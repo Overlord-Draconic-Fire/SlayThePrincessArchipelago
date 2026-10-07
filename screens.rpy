@@ -2293,11 +2293,12 @@ screen main_menu():
 
             # Title
             label _("Archipelago connection")
+            $ can_change_connection = not ap_is_not_disconnected()
 
             hbox:
                 xfill True
 
-                if ap_edit_field == "server_url" and not ap_is_connection_locked():
+                if ap_edit_field == "server_url" and can_change_connection:
                     input:
                         value VariableInputValue("server_url")
                         length 128
@@ -2306,7 +2307,7 @@ screen main_menu():
 
                 textbutton "Edit":
                     xalign 1.0
-                    sensitive not ap_is_connection_locked()
+                    sensitive can_change_connection
                     action If(
                         ap_edit_field == "server_url",
                         SetScreenVariable("ap_edit_field", None),
@@ -2316,7 +2317,7 @@ screen main_menu():
             hbox:
                 xfill True
 
-                if ap_edit_field == "slot_name" and not ap_is_connection_locked():
+                if ap_edit_field == "slot_name" and can_change_connection:
                     input:
                         value VariableInputValue("slot_name")
                         length 64
@@ -2325,7 +2326,7 @@ screen main_menu():
 
                 textbutton "Edit":
                     xalign 1.0
-                    sensitive not ap_is_connection_locked()
+                    sensitive can_change_connection
                     action If(
                         ap_edit_field == "slot_name",
                         SetScreenVariable("ap_edit_field", None),
@@ -2335,7 +2336,7 @@ screen main_menu():
             hbox:
                 xfill True
 
-                if ap_edit_field == "password" and not ap_is_connection_locked():
+                if ap_edit_field == "password" and can_change_connection:
                     input:
                         value VariableInputValue("password")
                         length 64
@@ -2350,7 +2351,7 @@ screen main_menu():
 
                 textbutton "Edit":
                     xalign 1.0
-                    sensitive not ap_is_connection_locked()
+                    sensitive can_change_connection
                     action If(
                         ap_edit_field == "password",
                         SetScreenVariable("ap_edit_field", None),
@@ -2358,11 +2359,11 @@ screen main_menu():
                     )
 
             textbutton ("Hide password" if ap_show_password else "Show password"):
-                sensitive not ap_is_connection_locked()
+                sensitive can_change_connection
                 action SetScreenVariable("ap_show_password", not ap_show_password)
 
-            textbutton ("Waiting to connect..." if archipelago.connecting else ("Disconnect" if ap_is_connected() else "Connect")):
-                sensitive not archipelago.connecting 
+            textbutton ("Waiting to connect..." if archipelago.connecting else "Disconnecting..." if archipelago.stopping else "Disconnect" if ap_is_connected() else "Connect"):
+                sensitive archipelago.state in (ConnectionState.DISCONNECTED, ConnectionState.CONNECTED) 
                 action If(ap_is_connected(), Function(ap_disconnect), Function(ap_connect))
 
 default server_url = "archipelago.gg:"
@@ -2371,54 +2372,45 @@ default password = ""
 
 init python:
     def ap_is_connected() -> bool:
-        """Return True when the AP websocket is currently open."""
-        try:
-            if not archipelago.client:
-                return False
+        return archipelago.state == ConnectionState.CONNECTED
 
-            # After successful auth, slot is assigned and connection is usable.
-            if getattr(archipelago.client, "slot", None) is not None:
-                return True
-
-            server = getattr(archipelago.client, "server", None)
-            sock = getattr(server, "socket", None)
-            if not sock:
-                return False
-
-            return not bool(getattr(sock, "closed", True))
-        except Exception:
-            return False
-
-    def ap_is_connection_locked() -> bool:
-        """Return True while the AP client is connecting or already connected."""
-        return archipelago.client is not None or archipelago.connecting
+    def ap_is_not_disconnected() -> bool:
+        return archipelago.state != ConnectionState.DISCONNECTED
 
     def ap_disconnect() -> None:
-        """Disconnect AP client from the UI thread."""
-        if not archipelago.client:
-            ap_error("archipelago not initialized")
+        client = archipelago.get_client()
+        if not client:
+            ap_error("Archipelago not initialized")
             return
 
-        loop = getattr(archipelago.client, "loop", None)
-        if not loop or loop.is_closed():
-            archipelago.set_client(None)
-            ap_debug("AP client cleaned up.")
+        if archipelago.stopping:
             return
 
-        async def _disconnect_and_stop(ctx):
-            await ctx.disconnect(allow_autoreconnect=False)
-            ctx.exit_event.set()
+        loop = getattr(client, "loop", None)
+        if loop is None or loop.is_closed():
+            archipelago.clear_client(None)
+            return
+
+        archipelago.set_state(ConnectionState.DISCONNECTING)
+
+        async def disconnect_client() -> None:
+            try:
+                await client.disconnect(allow_autoreconnect=False)
+                ap_info("Disconnected")
+            except Exception as e:
+                import traceback
+                ap_error(f"Disconnection error: {e}")
+                traceback.print_exc()
+            finally:
+                client.exit_event.set()
 
         try:
             import asyncio
-            future = asyncio.run_coroutine_threadsafe(_disconnect_and_stop(archipelago.client), loop)
-            future.result(timeout=5)
-
-            archipelago.set_client(None)
-            ap_info("Disconnected")
+            asyncio.run_coroutine_threadsafe(disconnect_client(), loop)
         except Exception as e:
             import traceback
-            ap_error(f"Disconnection error: {e}")
+
+            ap_error(f"Failed to schedule disconnection: {e}")
             traceback.print_exc()
 
     def load_persistent_client_fields():
@@ -2439,79 +2431,90 @@ init python:
             renpy.log(f"[ERROR] Failed to load persistent client data: {e}")
 
     def ap_connect():
-        if ap_is_connection_locked():
+        if ap_is_not_disconnected():
             ap_info("AP connection already in progress.")
             return
         new_connect_websocket(server_url, slot_name, password)
 
     def new_connect_websocket(url, name, mdp):
-        archipelago.connecting = True
-        def run_connection():
-            async def connect_and_listen():
-                archipelago.client = None
+        if ap_is_not_disconnected():
+            ap_info("AP connection already in progress.")
+            return
+
+        archipelago.set_state(ConnectionState.CONNECTING)
+
+        def run_connection() -> None:
+            import asyncio
+            async def connect_and_listen() -> None:
+                client = None
+                shutdown_required = False
+                ap_info("Starting connection...")
+
                 try:
-                    ap_info("Starting connection...")
                     import RenpyClient
-                    archipelago.client = RenpyClient.create_renpy_client(
+                    client = RenpyClient.create_renpy_client(
                         url, name, mdp,
                         on_text=ap_notify,
                         on_kill=instante_kill,
                     )
-                    # Capture the running loop so other threads can schedule work safely
-                    archipelago.client.loop = asyncio.get_running_loop()
-                    archipelago.set_client(archipelago.client)
-                    await archipelago.client.connect(url)
 
-                    # wait until AP sends the real Connected packet (slot assigned)
+                    # Capture the running loop so other threads can schedule work safely
+                    client.on_item_received_callback = ap_handle_received_item
+                    client.loop = asyncio.get_running_loop()
+
+                    archipelago.set_client(client)
+                    shutdown_required = True
+
+                    await client.connect(url)
+
                     for _ in range(100):
-                        if not getattr(archipelago.client, "trying_to_connect", False):
-                            ap_info("Failed to connect to server")
-                            archipelago.set_client(None)
-                            archipelago.connecting = False
-                            renpy.restart_interaction()
+                        if not client.trying_to_connect:
+                            ap_error("Failed to connect to server")
                             return
-                        if getattr(archipelago.client, "slot", None) is not None:
-                            await archipelago.want_deathlink()
+
+                        if client.slot is not None:
+                            await client.want_deathlink()
                             ap_info("Connected")
-                            archipelago.connecting = False
-                            renpy.restart_interaction()
+                            archipelago.set_state(ConnectionState.CONNECTED)
                             unlock_gallery()
                             break
+
                         await asyncio.sleep(0.05)
                     else:
-                        ap_info("Connect Failed")
-                        archipelago.set_client(None)
-                        archipelago.connecting = False
-                        renpy.restart_interaction()
+                        ap_error("Connection timeout: slot not assigned after 5 seconds")
+                        await client.disconnect(allow_autoreconnect=False)
+                        client.exit_event.set()
                         return
 
-                    # Check if slot was assigned; if not, timeout
-                    if getattr(archipelago.client, "slot", None) is None:
-                        ap_info("Connection timeout: slot not assigned after 10 seconds")
-                        await archipelago.client.disconnect(allow_autoreconnect=False)
-                        archipelago.set_client(None)
-                        archipelago.connecting = False
-                        renpy.restart_interaction()
-                        return
+                    await client.message_loop()
+                except Exception as e:
+                    import traceback
+                    ap_error(f"Connection error: {e}")
+                    traceback.print_exc()
 
-                    await archipelago.client.message_loop()
-                    await archipelago.client.shutdown()
+                    if client is not None:
+                        client.exit_event.set()
+
                 finally:
-                    if archipelago.client:
-                        archipelago.set_client(None)
-                    archipelago.connecting = False
-                    renpy.restart_interaction()
+                    if client is not None and shutdown_required:
+                        try:
+                            await client.shutdown()
+                        except Exception as e:
+                            import traceback
+
+                            ap_error(f"Client shutdown error: {e}")
+                            traceback.print_exc()
+
+                        archipelago.clear_client(client)
+
             try:
                 asyncio.run(connect_and_listen())
             except Exception as e:
                 import traceback
-                ap_error(f"Connection error: {e}")
+                ap_error(f"Connection thread error: {e}")
                 traceback.print_exc()
-                archipelago.set_client(None)
-                archipelago.connecting = False
         
-        t = threading.Thread(target=run_connection)
-        t.daemon = True
+        t = threading.Thread(target=run_connection, name="ArchipelagoConnection", daemon=True)
         t.start()
 
 style main_menu_frame is empty
