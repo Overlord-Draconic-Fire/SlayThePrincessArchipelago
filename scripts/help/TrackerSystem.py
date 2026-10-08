@@ -62,6 +62,7 @@ OBLIVION_REGIONS = {
     Region.tower,
     Region.spectre,
     Region.nightmare,
+    Region.razor,
     Region.beast,
     Region.witch,
     Region.prisoner,
