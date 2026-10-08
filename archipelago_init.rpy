@@ -107,7 +107,7 @@ init -10 python:
     def voice_character(voice_name, **kwargs):
         location_name = voice_name.replace("of the", "Introduction - The")
         kwargs["callback"] = lambda event, **callback_kwargs: voice_callback(location_name, event, **callback_kwargs)
-        return Character(**kwargs)
+        return Character(voice_name, **kwargs)
 
     class ConnectionState(enum.Enum):
         DISCONNECTED = enum.auto()
