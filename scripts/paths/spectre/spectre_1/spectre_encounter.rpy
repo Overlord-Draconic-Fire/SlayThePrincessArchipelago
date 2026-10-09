@@ -1859,6 +1859,7 @@ label spectre_kill_player:
                             $ default_mouse = "default"
                             if spectre_paranoid_override:
                                 $ trait_paranoid = True
+                                $ wraith_bonus_voice = "paranoid"
                             else:
                                 $ trait_cheated = True
                             jump wraith_start
@@ -1900,6 +1901,7 @@ label spectre_kill_player:
                     $ default_mouse = "default"
                     if spectre_paranoid_override:
                         $ trait_paranoid = True
+                        $ wraith_bonus_voice = "paranoid"
                     else:
                         $ trait_cheated = True
                     jump wraith_start
