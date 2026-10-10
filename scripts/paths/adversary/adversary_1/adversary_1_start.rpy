@@ -457,6 +457,7 @@ label adversary_1_cabin_arrival:
                 jump adversary_cabin_1_mirror_join
 
             "{i}• (Explore) [[Take the blade.]{/i}" if adversary_1_cabin_blade_taken == False and hasThisBlade(Item.blade_adversary):
+                $ send_location(Location.blade_adversary, "Blade")
                 $ adversary_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

@@ -71,6 +71,7 @@ label cage_start:
         # player killed self
         $ trait_paranoid = True
 
+    $ send_location(Location.blade_cage, "Blade")
     $ gallery_cage.unlock_item(1)
     $ renpy.save_persistent()
     $ blade_held = True

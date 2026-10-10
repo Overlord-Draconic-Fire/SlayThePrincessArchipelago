@@ -1070,6 +1070,7 @@ label grey_damsel:
                 show cg grey d blade rush final onlayer front at Position(ypos=1125)
                 with Dissolve(2.0)
                 n "But the metal is already blisteringly hot. Your hand sizzles as it melts on contact. You can't so much as pull away, your nerves seizing up as they're fried, the bones of your hand fusing in place around the weapon.\n"
+                $ send_location(Location.blade_grey, "Blade")
                 voice "audio/voices/ch3/grey/narrator/71.flac"
                 play audio "audio/final/Beast_AcidFleshMelt_2.flac"
                 hide flames onlayer back

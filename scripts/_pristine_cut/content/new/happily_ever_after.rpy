@@ -1858,6 +1858,7 @@ label happy_climax:
                         show cg happy slay grab onlayer front at Position(ypos=1125)
                         with dissolve
                         n "She offers no resistance as your fingers wrap around the blade dangling from her neck.\n"
+                    $ send_location(Location.blade_happily, "Blade")
                     voice "audio/_pristine/voice/happy/narrator/131.flac"
                     play audio "audio/_pristine/sfx/Fury Body Horror_3.flac"
                     $ default_mouse = "blood"

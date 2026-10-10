@@ -2257,6 +2257,7 @@ label dragon_opportunist_fight_soft:
     truthmid "You can feel the sharp sting of cold metal sliding deep into your chest, but you can feel something else, too.\n"
     truthmid "Fear as your legs wobble, and then as—\n"
     # perspective switches
+    $ send_location(Location.blade_dragon, "Blade")
     $ blade_held = True
     $ default_mouse = "blood"
     play music "audio/_music/ch1/The World-Ender Loop.flac" loop

@@ -235,6 +235,9 @@ class RenpyContext(CommonContext):
     def get_voice_rando(self) -> bool:
         return self.get_slot_option_bool("voice_rando")
 
+    def get_location_blade_rando(self) -> bool:
+        return self.get_slot_option_bool("location_blade_rando")
+
     def get_heart_rando(self) -> int:
         return self.get_slot_option_int("heart_rando")
 

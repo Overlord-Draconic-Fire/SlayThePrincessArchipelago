@@ -745,6 +745,7 @@ label wild_side_narrator:
     $ gallery_wild.unlock_item(3)
     $ renpy.save_persistent()
     voice "audio/voices/ch3/wild/narrator/34.flac"
+    $ send_location(Location.blade_wild, "Blade")
     $ blade_held = True
     $ default_mouse = "blade"
     play audio "audio/one_shot/knife_pickup.flac"

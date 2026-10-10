@@ -121,6 +121,7 @@ label razor_2_start:
     show screen disableclick(0.5)
     voice "audio/voices/ch3/razor/start/cheated/4.flac"
     cheated "We take it.\n"
+    $ send_location(Location.blade_razor, "Blade")
     $ blade_held = True
     $ default_mouse = "blade"
     play audio "audio/one_shot/knife_pickup.flac"

@@ -146,6 +146,7 @@ label felina_cabin_start:
                 jump felina_cabin_menu_start
 
             "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and final_offer == False and hasThisBlade(Item.blade_goddess):
+                $ send_location(Location.blade_goddess, "Blade")
                 $ blade_held = True
                 $ default_mouse = "blade"
                 play audio "audio/one_shot/knife_pickup.flac"

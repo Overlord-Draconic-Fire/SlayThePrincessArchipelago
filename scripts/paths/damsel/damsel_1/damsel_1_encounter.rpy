@@ -1287,6 +1287,7 @@ label damsel_leave:
                     voice "audio/voices/ch2/beast/_encounter/hero/31.flac"
                     hero "Wait... what?!\n"
                     jump damsel_leave_jump_join
+                $ send_location(Location.blade_damsel, "Blade")
                 $ blade_held = True
                 $ default_mouse = "blade"
                 play audio "audio/one_shot/knife_pickup.flac"

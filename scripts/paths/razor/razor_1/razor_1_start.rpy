@@ -439,6 +439,7 @@ label razor_1_cabin_arrival:
                 jump razor_cabin_1_mirror_join
 
             "{i}• (Explore) [[Take the blade.]{/i}" if razor_1_cabin_blade_taken == False and hasThisBlade(Item.blade_razor):
+                $ send_location(Location.blade_razor, "Blade")
                 $ razor_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

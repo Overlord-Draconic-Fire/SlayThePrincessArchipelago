@@ -38,6 +38,32 @@ mirror_cage = "Mirror in The Cage"
 mirror_grey = "Mirror in The Grey"
 mirror_happily = "Mirror in Happily Ever After"
 
+# The Blade
+blade_princess = "Take the Blade in The Hero and the Princess"
+blade_goddess = "Take the Blade in The End of Everything"
+
+blade_adversary = "Take the Blade in The Adversary"
+blade_tower = "Take the Blade in The Tower"
+blade_spectre = "Take the Blade in The Spectre"
+blade_nightmare = "Take the Blade in The Nightmare"
+blade_razor = "Take the Blade in The Razor"
+blade_beast = "Take the Blade in The Beast"
+blade_witch = "Take the Blade in The Witch"
+blade_stranger = "Take the Blade in The Stranger"
+blade_prisoner = "Take the Blade in The Prisoner"
+blade_damsel = "Take the Blade in The Damsel"
+
+blade_needle = "Take the Blade in The Eye of the Needle"
+blade_fury = "Take the Blade in The Fury"
+blade_apotheosis = "Take the Blade in The Apotheosis"
+blade_dragon = "Take the Blade in The Princess and the Dragon"
+blade_den = "Take the Blade in The Den"
+blade_wild = "Take the Blade in The Wild"
+blade_thorn = "Take the Blade in The Thorn"
+blade_cage = "Take the Blade in The Cage"
+blade_grey = "Take the Blade in The Grey"
+blade_happily = "Take the Blade in Happily Ever After"
+
 # Gifts
 gift1 = "Bring 1 Gift"
 gift2 = "Bring 2 Gifts"

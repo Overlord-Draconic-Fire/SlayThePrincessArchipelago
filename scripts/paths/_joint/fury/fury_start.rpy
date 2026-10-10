@@ -523,6 +523,7 @@ label fury_cabin_interior:
                     jump fury_cabin_interior_menu
 
             "{i}• (Explore) [[Take the blade.]{/i}" if fury_blade_taken == False and hasThisBlade(Item.blade_fury):
+                $ send_location(Location.blade_fury, "Blade")
                 $ fury_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

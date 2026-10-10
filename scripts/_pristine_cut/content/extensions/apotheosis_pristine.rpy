@@ -72,6 +72,7 @@ label contrarian_pristine_apoth_menu:
             jump contrarian_pristine_apoth_menu
 
         "{i}• [[Take the blade.]{/i}" if hasThisBlade(Item.blade_apotheosis):
+            $ send_location(Location.blade_apotheosis, "Blade")
             voice "audio/_pristine/voice/apotheosis/narrator/5.flac"
             $ blade_held = True
             $ default_mouse = "thumb"
@@ -1103,6 +1104,7 @@ label paranoid_pristine_apoth_menu:
         extend ""
 
         "{i}• [[Take the blade.]{/i}" if hasThisBlade(Item.blade_apotheosis):
+            $ send_location(Location.blade_apotheosis, "Blade")
             voice "audio/voices/ch3/apotheosis/hero/11.flac"
             #voice "audio/_pristine/voice/apotheosis/hero/29.flac"
             hero "Yeah. Screw all of this. I'm with you. A real god wouldn't need us as part of her plan.\n"

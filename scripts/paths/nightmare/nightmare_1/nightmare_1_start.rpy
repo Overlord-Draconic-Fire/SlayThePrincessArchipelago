@@ -463,6 +463,7 @@ label nightmare_1_cabin_arrival:
                 jump nightmare_cabin_1_mirror_join
 
             "{i}• (Explore) [[Take the blade.]{/i}" if nightmare_1_cabin_blade_taken == False and hasThisBlade(Item.blade_nightmare):
+                $ send_location(Location.blade_nightmare, "Blade")
                 $ nightmare_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

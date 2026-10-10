@@ -441,6 +441,7 @@ label damsel_1_cabin_arrival:
                 jump damsel_cabin_1_mirror_join
 
             "{i}• (Explore) [[Take the blade.]{/i}" if damsel_1_cabin_blade_taken == False and hasThisBlade(Item.blade_damsel):
+                $ send_location(Location.blade_damsel, "Blade")
                 $ damsel_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"

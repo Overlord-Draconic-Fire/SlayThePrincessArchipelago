@@ -1532,6 +1532,7 @@ label spectre_free_start:
             extend ""
 
             "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and hasThisBlade(Item.blade_spectre):
+                $ send_location(Location.blade_spectre, "Blade")
                 voice "audio/voices/ch2/spectre/_encounter/narrator/87.flac"
                 $ blade_held = True
                 $ default_mouse = "blade"

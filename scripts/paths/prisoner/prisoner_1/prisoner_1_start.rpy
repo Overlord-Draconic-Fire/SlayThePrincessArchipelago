@@ -450,6 +450,7 @@ label prisoner_1_cabin_arrival:
                 jump prisoner_cabin_1_mirror_join
 
             "{i}• (Explore) [[Take the blade.]{/i}" if prisoner_1_cabin_blade_taken == False and hasThisBlade(Item.blade_prisoner):
+                $ send_location(Location.blade_prisoner, "Blade")
                 $ prisoner_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"
@@ -496,6 +497,7 @@ label prisoner_1_cabin_arrival:
                                 $ prisoner_knife_take_force_explore = True
                                 voice "audio/voices/ch2/prisoner/skeptic/s5.flac"
                                 skeptic "Normally, yeah. But not about this. Call it a reflex. We take the knife as we go.\n"
+                                $ send_location(Location.blade_prisoner, "Blade")
                                 $ prisoner_1_cabin_blade_taken = True
                                 $ blade_held = True
                                 $ default_mouse = "blade"
@@ -514,6 +516,7 @@ label prisoner_1_cabin_arrival:
 
                             "{i}• [[Take the blade.]{/i}" if prisoner_knife_take_force_explore == False and hasThisBlade(Item.blade_prisoner):
                                 label prisoner_knife_take_force_join:
+                                    $ send_location(Location.blade_prisoner, "Blade")
                                     $ prisoner_1_cabin_blade_taken = True
                                     $ blade_held = True
                                     $ default_mouse = "blade"

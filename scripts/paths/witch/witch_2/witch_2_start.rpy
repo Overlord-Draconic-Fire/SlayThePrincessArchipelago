@@ -813,6 +813,7 @@ label witch_2_basement_menu:
                         with Dissolve(1.0)
                         n "You reach towards her bloodied hands, laying your palm on her trembling fingers.\n"
                     play audio "audio/one_shot/knife_tighten.flac"
+                    $ send_location(Location.blade_thorn, "Blade")
                     $ blade_held = True
                     $ default_mouse = "blood"
                     voice "audio/voices/ch3/thorn/narrator/49.flac"

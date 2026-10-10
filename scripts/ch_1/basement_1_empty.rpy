@@ -795,6 +795,7 @@ label basement_1_empty_rescue:
             extend ""
 
             "{i}• [[Save the Princess.]{/i}" if damsel_encountered == False or witch_encountered == False:
+                $ send_location(Location.blade_princess, "Blade")
                 $ blade_held = True
                 $ default_mouse = "blade"
                 voice "audio/voices/ch1/empty/narrator/empty_n_59.flac"
@@ -1241,6 +1242,7 @@ label basement_1_empty_rescue:
                                 jump basement_1_empty_rescue_controlled_start
 
             "{i}• [[Slay the Princess.]{/i}" if ((basement_1_empty_save_lie_explore or basement_1_empty_save_explore == False) and (beast_encountered == False or witch_encountered == False or nightmare_encountered == False)) and hasThisBlade(Item.blade_princess):
+                $ send_location(Location.blade_princess, "Blade")
                 default beast_1_both_arms = False
                 $ basement_1_empty_wounded = True
                 $ beast_1_both_arms = True
@@ -1461,6 +1463,7 @@ label basement_1_empty_rescue:
 
 
 label basement_1_empty_retrieve_knife:
+    $ send_location(Location.blade_princess, "Blade")
     $ basement_1_empty_wounded = True
     $ basement_1_empty_arm_loss_known = True
     voice "audio/voices/ch1/empty/narrator/empty_n_114.flac"

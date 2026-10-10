@@ -362,6 +362,7 @@ label adversary_2_interior:
 
 
             "{i}• (Explore) [[Take the blade.]{/i}" if adversary_2_blade_taken == False and hasThisBlade(Item.blade_needle):
+                $ send_location(Location.blade_needle, "Blade")
                 $ adversary_2_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"
@@ -976,6 +977,7 @@ label adversary_2_basement_loose:
             extend ""
 
             "{i}• [[Take the blade.]{/i}" if blade_held == False and hasThisBlade(Item.blade_needle):
+                $ send_location(Location.blade_needle, "Blade")
                 if trait_hunted:
                     $ blade_held = True
                     $ default_mouse = "blade"

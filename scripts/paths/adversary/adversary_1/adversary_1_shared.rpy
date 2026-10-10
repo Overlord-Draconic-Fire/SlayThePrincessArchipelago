@@ -1183,6 +1183,7 @@ label adversary_1_upstairs:
             extend ""
 
             "{i}• [[Take the blade.]{/i}" if blade_held == False and hasThisBlade(Item.blade_adversary):
+                $ send_location(Location.blade_adversary, "Blade")
                 $ blade_held = True
                 $ default_mouse = "blade"
                 play audio "audio/one_shot/knife_pickup.flac"
@@ -2014,6 +2015,7 @@ label adversary_1_retrieve_knife:
                 jump adversary_1_retrieve_knife_menu
 
             "{i}• [[Take the blade from the altar.]{/i}" if blade_held == False and hasThisBlade(Item.blade_adversary):
+                $ send_location(Location.blade_adversary, "Blade")
                 default adversary_1_retrieve_knife_already = False
                 $ adversary_1_retrieve_knife_already = True
                 $ blade_held = True

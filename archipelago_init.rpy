@@ -244,6 +244,8 @@ init -10 python:
             return
         elif group == "Voice" and archipelago.get_voice_rando() == 0:
             return
+        elif group == "Blade" and archipelago.get_location_blade_rando() == 0:
+            return
         elif group == "MirrorSB" and not archipelago.get_mirror_rando() in [1, 3]:
             return
         elif group == "MirrorChap" and not archipelago.get_mirror_rando() in [2, 3]:

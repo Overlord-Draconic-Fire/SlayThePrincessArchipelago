@@ -2130,6 +2130,7 @@ label cabin_interrior_1:
             extend ""
 
             "{i}• (Explore) [[Take the blade.]{/i}" if blade_held == False and ch1_can_knife and hasThisBlade(Item.blade_princess):
+                $ send_location(Location.blade_princess, "Blade")
                 $ blade_taken_1 = True
                 $ blade_held = True
                 $ default_mouse = "blade"

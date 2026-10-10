@@ -183,6 +183,7 @@ label cabin_interior_2_stranger_menu:
             jump stranger_cabin_1_mirror_join
 
         "{i}• (Explore) [[Take the blade.]{/i}" if stranger_1_cabin_blade_taken == False and hasThisBlade(Item.blade_stranger):
+            $ send_location(Location.blade_stranger, "Blade")
             $ stranger_1_cabin_blade_taken = True
             $ blade_held = True
             $ default_mouse = "blade"
@@ -1359,6 +1360,7 @@ label stranger_basement_menu:
 
 
 label stranger_ending:
+    $ send_location(Location.blade_stranger, "Blade")
     voice "audio/voices/ch2/stranger/_encounter/narrator/57.flac"
     n "Wait... that's not right.\n"
     voice "audio/voices/ch2/stranger/_encounter/contrarian/30.flac"

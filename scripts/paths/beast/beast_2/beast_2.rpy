@@ -353,6 +353,7 @@ label beast_2_interior:
             extend ""
 
             "{i}• (Explore) [[Take the blade.]{/i}" if beast_2_blade_taken == False and hasThisBlade(Item.blade_den):
+                $ send_location(Location.blade_den, "Blade")
                 $ beast_2_blade_taken = True
                 voice "audio/voices/ch3/den/hunted/10.flac"
                 hunted "Yes. Take the steel claw.\n"

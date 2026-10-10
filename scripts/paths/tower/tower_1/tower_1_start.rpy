@@ -466,6 +466,7 @@ label tower_1_cabin_arrival:
                 jump tower_cabin_1_mirror_join
 
             "{i}• (Explore) [[Take the blade.]{/i}" if tower_1_cabin_blade_taken == False and hasThisBlade(Item.blade_tower):
+                $ send_location(Location.blade_tower, "Blade")
                 $ tower_resist_count += 1
                 $ tower_1_cabin_blade_taken = True
                 $ blade_held = True

@@ -421,6 +421,7 @@ label spectre_1_cabin_arrival:
                 jump spectre_cabin_1_mirror_join
 
             "{i}• (Explore) [[Take the blade.]{/i}" if spectre_1_cabin_blade_taken == False and hasThisBlade(Item.blade_spectre):
+                $ send_location(Location.blade_spectre, "Blade")
                 $ spectre_1_cabin_blade_taken = True
                 $ blade_held = True
                 $ default_mouse = "blade"
