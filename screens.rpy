@@ -575,8 +575,6 @@ screen choice(items):
                                     unhovered SetVariable("hovered_choice", -1)
     else:
         viewport yadjustment yadj:
-            #draggable True
-            #draggable "touch"
             mousewheel True
             scrollbars "vertical"
             xalign 0.0
@@ -585,13 +583,22 @@ screen choice(items):
             xpos 1480
             ypos 25
             vbox:
-                for idx, i in enumerate(items):
+                default forced_choices = None
+                if forced_choices is None:
+                    $ forced_choices = force_trap_choice(items)
+
+                default displayed_items = None
+                if displayed_items is None:
+                    $ displayed_items = contrarian_prepare_choices(items)
+
+                for idx, i in enumerate(displayed_items):
+                    $ is_forced = len(forced_choices) > 0
+                    $ is_allowed = not is_forced or idx in forced_choices
+
                     if idx == 0:
-                        textbutton i.caption action [i.action, Function(narrator.add_history, kind="adv", who=__(""), what=__(i.caption))] default_focus True keyboard_focus True
-                            #hovered SetVariable("captured", renpy.focus_coordinates())
+                        textbutton i[0] action [i[1], Function(narrator.add_history, kind="adv", who=__(""), what=__(i[0]))] sensitive is_allowed default_focus True keyboard_focus True
                     else:
-                        textbutton i.caption action [i.action, Function(narrator.add_history, kind="adv", who=__(""), what=__(i.caption))] keyboard_focus True
-                            #hovered SetVariable("captured", renpy.focus_coordinates())
+                        textbutton i[0] action [i[1], Function(narrator.add_history, kind="adv", who=__(""), what=__(i[0]))] sensitive is_allowed keyboard_focus True
 
 
 #screen focus_screen(name):

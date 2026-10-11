@@ -7,6 +7,14 @@ if True:
 default last_region_checked = None
 default last_region_failed_requirement = None
 default ap_console_command = ""
+default contrarian_choices_remaining = 0
+default trap_queue = []
+default stubborn_texts = ["[[Slay the Princess", "[[Take the blade", "[[Retrieve the blade", "[[Destroy her", "[[Hurl the blade at her eye",
+"[[Make her suffer with you", "[[Fight back", "[[Turn back", "[[Attack her", "[[Drop her", "[[Finish the job", "[[Round three", "[[Go out fighting", 
+"[[Rush for the blade", "[[Unlodge the blade", "[[Pick up the blade", "[[Keep pushing", "[[Keep pushing", "[[Keep pushing", "[[Grab the Princess"]
+default smitten_texts = ["[[Save the Princess", "[[Drop the blade", "[[Give her", "[[Throw the blade", "[[Toss your weapon", "[[Offer her your hand",
+"[[Embrace your new goddess", "[[Suffer", "[[Submit", "[[Cut her free", "[[Do it. Toss the blade", "[[Warn her", "[[Resist", "[[Sit with them", "[[Fight back",
+"[[Rescue the Princess", "[[You're not doing that", "[[Sit with her", "[[Break her chains", "[[Kiss her", "[[Examine the chains"]
 
 init -10 python:
     import os
@@ -34,8 +42,6 @@ init -10 python:
     import Location
     import Item
     import Region
-    import BLADE_CHAPTER_MAP
-    import REGION_REQUIREMENTS
 
     store._deathlink_event = threading.Event()
     store._ap_text_queue = deque()
@@ -45,22 +51,40 @@ init -10 python:
         ap_console_messages: list[dict[str, str]] = []
     console = ConsoleArchipelago()
 
-    def _ap_process_pending_deathlink() -> bool:
-        if store._deathlink_event.is_set():
-            store._deathlink_event.clear()
-            renpy.call_in_new_context("deathlink")
-        return False
-
     def _ap_process_pending_text() -> bool:
         while store._ap_text_queue:
             msg_str, level_key = store._ap_text_queue.popleft()
             _ap_notify_mainthread(msg_str, level_key)
         return False
 
-    if _ap_process_pending_deathlink not in renpy.config.periodic_callbacks:
-        renpy.config.periodic_callbacks.append(_ap_process_pending_deathlink)
+    def _ap_process_pending_deathlink() -> bool:
+        if store._deathlink_event.is_set():
+            store._deathlink_event.clear()
+            renpy.call_in_new_context("deathlink")
+        return False
+
+    _trap_labels = {
+        Item.heroTrap: "trap_hero",
+        Item.huntedTrap: "trap_hunted",
+        Item.paranoidTrap: "trap_paranoid",
+    }
+    _trap_events = {item: threading.Event() for item in _trap_labels}
+
+    def _ap_process_pending_traps() -> bool:
+        for item, event in _trap_events.items():
+            if event.is_set():
+                event.clear()
+                renpy.call_in_new_context(_trap_labels[item])
+                return False
+
+        return False
+
     if _ap_process_pending_text not in renpy.config.periodic_callbacks:
         renpy.config.periodic_callbacks.append(_ap_process_pending_text)
+    if _ap_process_pending_deathlink not in renpy.config.periodic_callbacks:
+        renpy.config.periodic_callbacks.append(_ap_process_pending_deathlink)
+    if _ap_process_pending_traps not in renpy.config.periodic_callbacks:
+        renpy.config.periodic_callbacks.append(_ap_process_pending_traps)
 
     def ap_console_force_bottom():
         store.ap_console_scroll_bottom = False
@@ -273,6 +297,7 @@ init -10 python:
             return True
         
         # Check chapter-specific blade
+        import BLADE_CHAPTER_MAP
         if blade_value in BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP:
             chapter = BLADE_CHAPTER_MAP.BLADE_CHAPTER_MAP[blade_value]
             chapter_blade = f"blade{chapter}"
@@ -399,9 +424,11 @@ init -10 python:
             return None, None
 
     def ap_handle_received_item(item_name: str) -> None:
-        """Handle AP item reception hooks and unlock gallery items when received from the server."""
+        """Handle AP item reception hooks, unlock gallery items or play trap when received from the server."""
         try:
             if "Gallery" not in item_name:
+                if "Trap of The" in item_name:
+                    ap_handle_trap(item_name)
                 return
 
             route_name, index = _parse_ap_gallery_name(item_name)
@@ -426,41 +453,76 @@ init -10 python:
             import traceback        
             traceback.print_exc()
 
-label chapter_requirements_failed:
-    $ send_deathlink("[player_name] does not have the necessary items", False)
-    $ ap_debug(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
-    ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
-    menu:
-        ap "Your story cannot continue from here."
+    def ap_handle_trap(item_name: str) -> None:
+        ap_debug(item_name)
+        if item_name == Item.contrarianTrap:
+            store.contrarian_choices_remaining += 3
+        elif item_name == Item.stubbornTrap:
+            store.trap_queue.append("stubborn")
+        elif item_name == Item.smittenTrap:
+            store.trap_queue.append("smitten")
+        elif item_name in _trap_events:
+            _trap_events[item_name].set()
+        if renpy.display.interface is not None:
+            renpy.display.interface.post_time_event()
 
-        "{i}• [[Return to the main menu.]]{/i}":
-            $ renpy.full_restart()
-    return
+    def force_trap_choice(items):
+        stubborn_indices = []
+        smitten_indices = []
 
-label no_chose_left:
-    $ send_deathlink("[player_name] cannot make a choice.", False)
-    $ ap_debug("No choices left")
-    $ config.menu_include_disabled = True
-    menu:
-        ap "Your story cannot continue from here."
+        for index, item in enumerate(items):
+            caption = item.caption.lower()
 
-        "{i}• [[Maybe something was forgotten.]{/i}" if False:
-            pass
+            if any(text.lower() in caption for text in store.stubborn_texts):
+                stubborn_indices.append(index)
 
-        "{i}• [[Maybe somewhere else awaits first.]{/i}" if False:
-            pass
+            if any(text.lower() in caption for text in store.smitten_texts):
+                smitten_indices.append(index)
 
-        "{i}• [[Maybe this is not the right time.]{/i}" if False:
-            pass
+        for trap_index, trap in enumerate(store.trap_queue):
+            if trap == "stubborn" and stubborn_indices:
+                store.trap_queue.pop(trap_index)
+                return stubborn_indices
 
-        "{i}• [[Return when fate allows it.]{/i}" if False:
-            pass
+            if trap == "smitten" and smitten_indices:
+                store.trap_queue.pop(trap_index)
+                return smitten_indices
 
-        "{i}• [[Return to the main menu.]]{/i}":
-            $ config.menu_include_disabled = False
-            $ renpy.full_restart()
-    return
+        return []
 
-label deathlink:
-    ap "Another soul has fallen. Fate demands that you do the same."
-    $ renpy.full_restart()
+    def contrarian_prepare_choices(items):
+        displayed_items = [
+            [item.caption, item.action]
+            for item in items
+        ]
+
+        if store.contrarian_choices_remaining <= 0:
+            return displayed_items
+
+        actionable_indices = [
+            index
+            for index, item in enumerate(displayed_items)
+            if item[1] is not None
+        ]
+
+
+        if len(actionable_indices) < 2:
+            return displayed_items
+
+        ap_debug("Contrarian Trap applied")
+
+        shuffled_actions = [
+            displayed_items[index][1]
+            for index in actionable_indices
+        ]
+
+        import random
+        random.shuffle(shuffled_actions)
+
+        for index, action in zip(actionable_indices, shuffled_actions):
+            displayed_items[index][1] = action
+
+        store.contrarian_choices_remaining -= 1
+        ap_debug(f"Contrarian Trap remaining {store.contrarian_choices_remaining}")
+
+        return displayed_items
