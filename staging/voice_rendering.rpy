@@ -11,6 +11,9 @@ init:
 
     $ renpy.music.register_channel(name = "musicgallery", mixer = "music", loop = True)
 
+    $ renpy.music.register_channel(name = "voice3", mixer = "voice", loop = False)
+    $ renpy.music.register_channel(name = "broken_sobbing", mixer="sfx", loop=True)
+
     default persistent.ctc = True
     default persistent.subtitles = True
 

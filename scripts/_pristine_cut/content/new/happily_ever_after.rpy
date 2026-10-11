@@ -19,6 +19,7 @@ label happy_start:
 
     play sound "audio/_pristine/sfx/Happy Nice Castle AMB_2_loop.flac" loop fadein 1.0
     scene chapter happy with fade
+    $ broken_stop_sobbing()
     $ send_location(Location.chap3)
     $ send_location(Location.happily)
 

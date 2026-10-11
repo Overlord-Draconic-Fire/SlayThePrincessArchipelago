@@ -25,6 +25,7 @@ label witch_2_start:
     $ quick_menu = False
     play sound "audio/looping/uncomfortable ambiance.ogg" loop fadein 1.0
     scene chapter thorn with fade
+    $ broken_stop_sobbing()
     $ send_location(Location.chap3)
     $ send_location(Location.thorn)
     

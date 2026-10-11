@@ -11,6 +11,7 @@ label wild_start:
     $ quick_menu = False
     $ config.menu_include_disabled = False
 
+    $ broken_stop_sobbing()
     $ send_location(Location.chap3)
     $ send_location(Location.wild)
     default wild_source = ""

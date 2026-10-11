@@ -10,6 +10,7 @@ label razor_2_start:
     $ quick_menu = False
     $ config.menu_include_disabled = False
     play sound "audio/looping/uncomfortable ambiance.ogg" loop fadein 1.0
+    $ broken_stop_sobbing()
     $ send_location(Location.chap3)
 
     if not hasRegionRequirements(Region.razor_chap3):

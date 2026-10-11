@@ -455,7 +455,9 @@ init -10 python:
 
     def ap_handle_trap(item_name: str) -> None:
         ap_debug(item_name)
-        if item_name == Item.contrarianTrap:
+        if item_name == Item.brokenTrap:
+            broken_start_sobbing()
+        elif item_name == Item.contrarianTrap:
             store.contrarian_choices_remaining += 3
         elif item_name == Item.stubbornTrap:
             store.trap_queue.append("stubborn")
@@ -526,3 +528,9 @@ init -10 python:
         ap_debug(f"Contrarian Trap remaining {store.contrarian_choices_remaining}")
 
         return displayed_items
+
+    def broken_start_sobbing():
+        renpy.music.play("audio/voices/ch3/fury/broken/fury_broken_sob.flac", channel="broken_sobbing", loop=True)
+
+    def broken_stop_sobbing():
+        renpy.music.stop(channel="broken_sobbing", fadeout=1.0)

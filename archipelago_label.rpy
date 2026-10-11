@@ -85,15 +85,15 @@ label trap_paranoid:
     $ config.allow_skipping = False
     show screen block_interaction
 
-    play voice2 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_slow.flac"
+    play voice3 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_slow.flac"
     show nightmare 2 1 onlayer front at Position(ypos=1125)
     $ renpy.pause(10.4, hard=True, modal=False)
 
-    play voice2 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_1.flac"
+    play voice3 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_1.flac"
     show nightmare 2 2 onlayer front at Position(ypos=1125)
     $ renpy.pause(7.0, hard=True, modal=False)
 
-    play voice2 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_mucho.flac"
+    play voice3 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_mucho.flac"
     show nightmare 2 3 onlayer front at Position(ypos=1125)
     $ renpy.pause(8.8, hard=True, modal=False)
 
@@ -117,9 +117,8 @@ label trap_hero:
     play music "audio/looping/party.ogg" loop
     show end good onlayer front at Position(ypos=1125)
     show text _("{color=000000}Good Ending! =:) YOU DID IT!!! you saved EVERYONE!{/color}") onlayer front at Position(ypos=950)
-    play voice2 "audio/voices/ch2/prisoner/_basement/narrator/112.flac"
+    play voice3 "audio/voices/ch2/prisoner/_basement/narrator/112.flac"
     $ _say_minimum_until = time.time() + 5.0
     n "That's great! Congratulations. You've earned it.\n"
     $ config.allow_skipping = True
-    stop voice2
     return

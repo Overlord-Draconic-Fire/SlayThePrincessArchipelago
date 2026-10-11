@@ -322,6 +322,7 @@ label spectre_pristine_start:
     $ gallery_dragon.unlock_item(2)
     $ gallery_dragon.unlock_gallery()
     $ renpy.save_persistent()
+    $ broken_stop_sobbing()
     $ send_location(Location.chap3)
     $ send_location(Location.dragon)
 

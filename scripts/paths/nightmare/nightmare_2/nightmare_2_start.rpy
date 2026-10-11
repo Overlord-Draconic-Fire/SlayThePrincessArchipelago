@@ -29,6 +29,7 @@ label nightmare_2_start:
     play secondary "audio/looping/uncomfortable ambiance.ogg" loop fadein 1.0
     scene chapter clarity1
     with fade
+    $ broken_stop_sobbing()
     $ send_location(Location.chap3)
     $ send_location(Location.clarity)
 

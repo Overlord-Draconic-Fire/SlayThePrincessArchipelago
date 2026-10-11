@@ -1,4 +1,5 @@
 label start_2:
+    $ broken_stop_sobbing()
     $ send_location(Location.chap2)
     stop music
     stop sound

@@ -19,6 +19,7 @@ label grey_start:
 
     play sound "audio/looping/uncomfortable ambiance heightened.ogg" loop fadein 1.0
     scene chapter grey with fade
+    $ broken_stop_sobbing()
     $ send_location(Location.chap3)
     $ send_location(Location.grey)
 
