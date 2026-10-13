@@ -11,10 +11,37 @@ default contrarian_choices_remaining = 0
 default trap_queue = []
 default stubborn_texts = ["[[Slay the Princess", "[[Take the blade", "[[Retrieve the blade", "[[Destroy her", "[[Hurl the blade at her eye",
 "[[Make her suffer with you", "[[Fight back", "[[Turn back", "[[Attack her", "[[Drop her", "[[Finish the job", "[[Round three", "[[Go out fighting", 
-"[[Rush for the blade", "[[Unlodge the blade", "[[Pick up the blade", "[[Keep pushing", "[[Keep pushing", "[[Keep pushing", "[[Grab the Princess"]
+"[[Rush for the blade", "[[Unlodge the blade", "[[Pick up the blade", "[[Keep pushing", "[[Grab the Princess"]
 default smitten_texts = ["[[Save the Princess", "[[Drop the blade", "[[Give her", "[[Throw the blade", "[[Toss your weapon", "[[Offer her your hand",
 "[[Embrace your new goddess", "[[Suffer", "[[Submit", "[[Cut her free", "[[Do it. Toss the blade", "[[Warn her", "[[Resist", "[[Sit with them", "[[Fight back",
 "[[Rescue the Princess", "[[You're not doing that", "[[Sit with her", "[[Break her chains", "[[Kiss her", "[[Examine the chains"]
+default opportunist_stairs = [
+    ('front', 'basement', 'stairs'), ('basement', 'stairs', 'closed'), ('basement', 'stairs', 'open'),
+
+    ('bg', 'adversary', 'stairs'),
+    ('bg', 'tower', 'stairs'),
+    ('bg', 'spectre', 'stairs'), ('bg', 'spectre', 'possessed', 'stairs'),
+    ('steps', 'nightmare', 'stairs'), ('stairs', 'nightmare', 'forever'), ('stairs', 'nightmare', 'following'), ('stairs', 'basement', 'nightmare'),
+    ('bg', 'razor', 'stairs'), ('bg', 'stairs', 'razor', '2'),
+    ('bg', 'beast', 'stairs'),
+    ('bg', 'witch', 'stairs'), ('bg', 'witch', 'stairs', 'up'), ('bg', 'witch', 'stairs', 'up', 'flee'),
+
+    ('bg', 'stairs', 'stranger'), ('fore', 'stairs,' 'stranger'),
+    ('path', 'stranger', 'neutral', '1'), ('path', 'stranger', 'neutral', '2'), ('path', 'stranger', 'neutral', '3'), ('path', 'stranger', 'neutral', '4'),
+    ('path', 'stranger', 'gentle', '1'), ('path', 'stranger', 'gentle', '2'), ('path', 'stranger', 'gentle', '3'), ('path', 'stranger', 'gentle', '4'),
+    ('path', 'stranger', 'harsh', '1'), ('path', 'stranger', 'harsh', '2'), ('path', 'stranger', 'harsh', '3'), ('path', 'stranger', 'harsh', '4')
+
+    ('bg', 'prisoner', 'stairs'),
+    ('bg', 'damsel', 'stairs'), ('bg', 'damsel', 'leave', 'stairs'),
+
+    ('bg', 'cg', 'needle', 'cliff')
+    ('bg', 'stairs', 'fury'),
+    ('bg', 'thorn', 'stairs'), ('bg', 'thorn', 'stairs', 'blocked'), ('bg', 'thorn', 'stairs', 'give'), ('bg', 'thorn', 'stairs', 'ascend'),
+    ('bg', 'grey', 'p', 'stairs'), ('bg', 'grey', 'p', 'stairs', 'up'),
+    ('bg', 'grey', 'd', 'stairs'), ('bg', 'grey', 'd', 'stairs', 'up'), ('cg', 'grey', 'd', 'stairs', 'rush'),
+    ('bg', 'happy', 'stairs')
+    ('bg', 'stranger', 'stairs', 'end')
+]
 
 init -10 python:
     import os
@@ -459,6 +486,8 @@ init -10 python:
             broken_start_sobbing()
         elif item_name == Item.contrarianTrap:
             store.contrarian_choices_remaining += 3
+        elif item_name == Item.opportunistTrap:
+            die_if_in_stairs()
         elif item_name == Item.stubbornTrap:
             store.trap_queue.append("stubborn")
         elif item_name == Item.smittenTrap:
@@ -534,3 +563,16 @@ init -10 python:
 
     def broken_stop_sobbing():
         renpy.music.stop(channel="broken_sobbing", fadeout=1.0)
+
+    def die_if_in_stairs()
+        layers = renpy.config.layers
+        for layer in layers:
+            for complete_name in store.opportunist_stairs:
+                tag = complete_name[0]
+                attributes = renpy.get_attributes(tag, layer=layer)
+                if attributes:
+                    construct_name = tuple([tag] + list(attributes))
+
+                    if complete_name == construct_name:
+                        store._deathlink_event.set()
+                        return
