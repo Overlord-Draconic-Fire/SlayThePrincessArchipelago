@@ -2438,6 +2438,9 @@ init python:
             renpy.log(f"[ERROR] Failed to load persistent client data: {e}")
 
     def ap_connect():
+        if not str(persistent._file_page).isdigit() or not 1 <= int(persistent._file_page) <= 5:
+            persistent._file_page = 1
+
         if ap_is_not_disconnected():
             ap_info("AP connection already in progress.")
             return
