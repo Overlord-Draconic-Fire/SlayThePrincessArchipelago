@@ -29,17 +29,17 @@ default opportunist_stairs = [
     ('bg', 'stairs', 'stranger'), ('fore', 'stairs,' 'stranger'),
     ('path', 'stranger', 'neutral', '1'), ('path', 'stranger', 'neutral', '2'), ('path', 'stranger', 'neutral', '3'), ('path', 'stranger', 'neutral', '4'),
     ('path', 'stranger', 'gentle', '1'), ('path', 'stranger', 'gentle', '2'), ('path', 'stranger', 'gentle', '3'), ('path', 'stranger', 'gentle', '4'),
-    ('path', 'stranger', 'harsh', '1'), ('path', 'stranger', 'harsh', '2'), ('path', 'stranger', 'harsh', '3'), ('path', 'stranger', 'harsh', '4')
+    ('path', 'stranger', 'harsh', '1'), ('path', 'stranger', 'harsh', '2'), ('path', 'stranger', 'harsh', '3'), ('path', 'stranger', 'harsh', '4'),
 
     ('bg', 'prisoner', 'stairs'),
     ('bg', 'damsel', 'stairs'), ('bg', 'damsel', 'leave', 'stairs'),
 
-    ('bg', 'cg', 'needle', 'cliff')
+    ('bg', 'cg', 'needle', 'cliff'),
     ('bg', 'stairs', 'fury'),
     ('bg', 'thorn', 'stairs'), ('bg', 'thorn', 'stairs', 'blocked'), ('bg', 'thorn', 'stairs', 'give'), ('bg', 'thorn', 'stairs', 'ascend'),
     ('bg', 'grey', 'p', 'stairs'), ('bg', 'grey', 'p', 'stairs', 'up'),
     ('bg', 'grey', 'd', 'stairs'), ('bg', 'grey', 'd', 'stairs', 'up'), ('cg', 'grey', 'd', 'stairs', 'rush'),
-    ('bg', 'happy', 'stairs')
+    ('bg', 'happy', 'stairs'),
     ('bg', 'stranger', 'stairs', 'end')
 ]
 
@@ -564,7 +564,7 @@ init -10 python:
     def broken_stop_sobbing():
         renpy.music.stop(channel="broken_sobbing", fadeout=1.0)
 
-    def die_if_in_stairs()
+    def die_if_in_stairs():
         layers = renpy.config.layers
         for layer in layers:
             for complete_name in store.opportunist_stairs:
