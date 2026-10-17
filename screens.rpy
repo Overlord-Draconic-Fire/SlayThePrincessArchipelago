@@ -3146,7 +3146,7 @@ style slot_button_text:
 ## themselves.
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#preferences
-
+default current_time = 0.0
 screen preferences():
 
     tag menu
@@ -3228,8 +3228,9 @@ screen preferences():
                     vbox:
                         style_prefix "radio"
                         label _("Auto-Advance Text")
-                        textbutton _("On") action SetVariable("preferences.afm_enable", True) text_style "kelmscott"
-                        textbutton _("Off") action SetVariable("preferences.afm_enable", False) text_style "kelmscott"
+                        timer 1.0 repeat True action SetVariable("current_time", time.monotonic())
+                        textbutton _("On" if current_time >= store.narrator_skip_block_until else f"On {int(store.narrator_skip_block_until - current_time + 1)}s") action SetVariable("preferences.afm_enable", True) sensitive not force_auto_advance text_style "kelmscott" text_insensitive_color "#808080"
+                        textbutton _("Off") action SetVariable("preferences.afm_enable", False) sensitive not force_auto_advance text_style "kelmscott" text_insensitive_color "#808080"
 
 
 

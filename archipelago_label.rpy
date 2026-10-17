@@ -102,23 +102,13 @@ label trap_paranoid:
     $ config.allow_skipping = True
     return
 
-init python:
-    import time
-
-    _say_minimum_until = 0.0
-
-    def allow_say_dismiss():
-        return time.time() >= _say_minimum_until
-
-    config.say_allow_dismiss = allow_say_dismiss
-
 label trap_hero:
     $ config.allow_skipping = False
     play music "audio/looping/party.ogg" loop
     show end good onlayer front at Position(ypos=1125)
     show text _("{color=000000}Good Ending! =:) YOU DID IT!!! you saved EVERYONE!{/color}") onlayer front at Position(ypos=950)
     play voice3 "audio/voices/ch2/prisoner/_basement/narrator/112.flac"
-    $ _say_minimum_until = time.time() + 5.0
+    $ hero_skip_block_until = time.monotonic() + 5.0
     n "That's great! Congratulations. You've earned it.\n"
     $ config.allow_skipping = True
     return

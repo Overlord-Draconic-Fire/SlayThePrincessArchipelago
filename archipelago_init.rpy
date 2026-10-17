@@ -7,13 +7,17 @@ if True:
 default last_region_checked = None
 default last_region_failed_requirement = None
 default ap_console_command = ""
+
+default narrator_skip_block_until = 0
+default hero_skip_block_until = 0
+default force_auto_advance = False
 default contrarian_choices_remaining = 0
 default trap_queue = []
 default stubborn_texts = ["[[Slay the Princess", "[[Take the blade", "[[Retrieve the blade", "[[Destroy her", "[[Hurl the blade at her eye",
 "[[Make her suffer with you", "[[Fight back", "[[Turn back", "[[Attack her", "[[Drop her", "[[Finish the job", "[[Round three", "[[Go out fighting", 
 "[[Rush for the blade", "[[Unlodge the blade", "[[Pick up the blade", "[[Keep pushing", "[[Grab the Princess"]
 default smitten_texts = ["[[Save the Princess", "[[Drop the blade", "[[Give her", "[[Throw the blade", "[[Toss your weapon", "[[Offer her your hand",
-"[[Embrace your new goddess", "[[Suffer", "[[Submit", "[[Cut her free", "[[Do it. Toss the blade", "[[Warn her", "[[Resist", "[[Sit with them", "[[Fight back",
+"[[Embrace your new goddess", "[[Suffer", "[[Submit", "[[Cut her free", "[[Do it. Toss the blade", "[[Warn her", "[[Resist", "[[Sit with them",
 "[[Rescue the Princess", "[[You're not doing that", "[[Sit with her", "[[Break her chains", "[[Kiss her", "[[Examine the chains"]
 default opportunist_stairs = [
     ('front', 'basement', 'stairs'), ('basement', 'stairs', 'closed'), ('basement', 'stairs', 'open'),
@@ -61,6 +65,7 @@ init -10 python:
             sys.path.insert(0, path)
     
     # Import modules
+    import time
     import enum
     import Utils
     import threading
@@ -159,6 +164,18 @@ init -10 python:
         location_name = voice_name.replace("of the", "Introduction - The")
         kwargs["callback"] = lambda event, **callback_kwargs: voice_callback(location_name, event, **callback_kwargs)
         return Character(voice_name, **kwargs)
+
+    def allow_dialogue_dismiss():
+        current_time = time.monotonic()
+
+        if current_time < store.narrator_skip_block_until:
+            return False
+
+        if current_time < store.hero_skip_block_until:
+            return False
+
+        return True
+    config.say_allow_dismiss = allow_dialogue_dismiss
 
     class ConnectionState(enum.Enum):
         DISCONNECTED = enum.auto()
@@ -482,7 +499,9 @@ init -10 python:
 
     def ap_handle_trap(item_name: str) -> None:
         ap_debug(item_name)
-        if item_name == Item.brokenTrap:
+        if item_name == Item.narratorTrap:
+            force_player_auto_advance()
+        elif item_name == Item.brokenTrap:
             broken_start_sobbing()
         elif item_name == Item.contrarianTrap:
             store.contrarian_choices_remaining += 3
@@ -576,3 +595,18 @@ init -10 python:
                     if complete_name == construct_name:
                         store._deathlink_event.set()
                         return
+    
+    def force_player_auto_advance():
+        _narrator_saved_afm_enable = preferences.afm_enable
+        preferences.afm_enable = True
+        store.force_auto_advance = True
+        config.allow_skipping = False
+
+        store.narrator_skip_block_until = time.monotonic() + 180.0
+        renpy.invoke_in_thread(_restore_narrator_settings, _narrator_saved_afm_enable)
+
+    def _restore_narrator_settings(_narrator_saved_afm_enable):
+        time.sleep(180.0)
+        preferences.afm_enable = _narrator_saved_afm_enable
+        store.force_auto_advance = False
+        config.allow_skipping = True
