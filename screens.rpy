@@ -19,6 +19,10 @@ style ap_console_input:
     xalign 0.0
     text_align 0.0
 
+screen black_overlay():
+    zorder -1
+    add Solid("#000")
+
 screen ap_console():
     modal True
 

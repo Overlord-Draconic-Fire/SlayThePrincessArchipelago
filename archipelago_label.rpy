@@ -34,7 +34,15 @@ label no_chose_left:
     return
 
 label deathlink:
+    $ config.allow_skipping = False
     ap "Another soul has fallen. Fate demands that you do the same."
+    show screen black_overlay
+    with dissolve
+    $ other_skip_block_until = time.monotonic() + 5.0
+    play voice3 "audio/voices/ch2/tower/_cont/princess/p40.flac"
+    p "Everything goes dark, and you die."
+    $ config.allow_skipping = True
+    hide screen black_overlay
     $ renpy.full_restart()
 
 image beast swallow screamer:
@@ -81,19 +89,46 @@ screen block_interaction():
         background None
         action NullAction()
 
+screen paranoid_text(message):
+    zorder 100
+
+    window:
+        id "window"
+        style "say_window"
+
+        if paranoid.name is not None:
+            window:
+                id "namebox"
+                style "namebox"
+
+                text paranoid.name:
+                    id "who"
+                    style "say_label"
+                    color "#ffffff"
+                    outlines [(3, "#000000")]
+
+        text (message + "{image=ctc_blink}"):
+            id "what"
+            style "voice_style"
+            color "#ffffff"
+            outlines [(3, "#000000")]
+
 label trap_paranoid:
     $ config.allow_skipping = False
     show screen block_interaction
 
     play voice3 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_slow.flac"
+    show screen paranoid_text("Heart... Lungs... Liver... Nerves...")
     show nightmare 2 1 onlayer front at Position(ypos=1125)
     $ renpy.pause(10.4, hard=True, modal=False)
 
     play voice3 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_1.flac"
+    show screen paranoid_text("Heart. Lungs. Liver. Nerves.")
     show nightmare 2 2 onlayer front at Position(ypos=1125)
     $ renpy.pause(7.0, hard=True, modal=False)
 
     play voice3 "audio/voices/ch2/nightmare/_encounter/paranoid/nm_loop_mucho.flac"
+    show screen paranoid_text("HEART. LUNGS. LIVER. NERVES.")
     show nightmare 2 3 onlayer front at Position(ypos=1125)
     $ renpy.pause(8.8, hard=True, modal=False)
 
@@ -104,11 +139,28 @@ label trap_paranoid:
 
 label trap_hero:
     $ config.allow_skipping = False
+    $ other_skip_block_until = time.monotonic() + 5.0
     play music "audio/looping/party.ogg" loop
     show end good onlayer front at Position(ypos=1125)
     show text _("{color=000000}Good Ending! =:) YOU DID IT!!! you saved EVERYONE!{/color}") onlayer front at Position(ypos=950)
     play voice3 "audio/voices/ch2/prisoner/_basement/narrator/112.flac"
-    $ hero_skip_block_until = time.monotonic() + 5.0
     n "That's great! Congratulations. You've earned it.\n"
+    $ config.allow_skipping = True
+    return
+
+label trap_cheated:
+    $ ap_notify(f"DeathLink: Received from Cheated", "ap")
+    $ ap_debug("DeathLink applied")
+    $ config.allow_skipping = False
+    ap "Another soul has fallen. Fate demands that you do the same."
+    show screen black_overlay
+    with dissolve
+    $ other_skip_block_until = time.monotonic() + 5.0
+    play voice3 "audio/voices/ch2/tower/_cont/princess/p40.flac"
+    p "Everything goes dark, and you die."
+    $ other_skip_block_until = time.monotonic() + 2.0
+    hide screen black_overlay
+    play voice3 "audio/voices/ch3/razor/nexus/princess/28.flac"
+    spmid "Gotcha!"
     $ config.allow_skipping = True
     return

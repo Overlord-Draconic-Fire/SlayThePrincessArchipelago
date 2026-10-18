@@ -9,7 +9,7 @@ default last_region_failed_requirement = None
 default ap_console_command = ""
 
 default narrator_skip_block_until = 0
-default hero_skip_block_until = 0
+default other_skip_block_until = 0
 default force_auto_advance = False
 default contrarian_choices_remaining = 0
 default trap_queue = []
@@ -96,6 +96,7 @@ init -10 python:
         return False
 
     _trap_labels = {
+        Item.cheatedTrap: "trap_cheated",
         Item.heroTrap: "trap_hero",
         Item.huntedTrap: "trap_hunted",
         Item.paranoidTrap: "trap_paranoid",
@@ -171,7 +172,7 @@ init -10 python:
         if current_time < store.narrator_skip_block_until:
             return False
 
-        if current_time < store.hero_skip_block_until:
+        if current_time < store.other_skip_block_until:
             return False
 
         return True
@@ -498,7 +499,8 @@ init -10 python:
             traceback.print_exc()
 
     def ap_handle_trap(item_name: str) -> None:
-        ap_debug(item_name)
+        if item_name not in [Item.cheatedTrap]:
+            ap_debug(item_name)
         if item_name == Item.narratorTrap:
             force_player_auto_advance()
         elif item_name == Item.brokenTrap:
