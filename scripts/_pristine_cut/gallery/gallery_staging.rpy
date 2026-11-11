@@ -244,7 +244,7 @@ init -1 python:
     routesParent.append(gallery_stranger)
 
     gallery_prisoner = GalleryParent(17, "prisoner", _("The Prisoner"), _("The Prisoner — Doubt breaks one shackle while forcing another."), _("Free an abrasive prisoner."))
-    gallery_prisoner.voices = [Item.cold]
+    gallery_prisoner.voices = [Item.skeptic]
     routesParent.append(gallery_prisoner)
 
     gallery_damsel = GalleryParent(20, "damsel", _("The Damsel"), _("The Damsel — Unquestioning commitment to the other."), _("Free a gentle captive."))
