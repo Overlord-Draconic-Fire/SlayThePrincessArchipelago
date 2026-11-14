@@ -1,11 +1,22 @@
 label chapter_requirements_failed:
     $ send_deathlink("[player_name] does not have the necessary items", False)
-    $ ap_debug(f"{store.last_region_checked}: missing {store.last_region_failed_requirement}")
-    ap "The time for this meeting has not yet come. Return when fate allows your paths to cross."
+    ap "This path remains beyond your reach. Something is still missing from the fate that awaits you." #mettre à la fin et dire un truc "celle et ceux (celui) qui ne sont pas encore présent ?"
+
+    python:
+        for item in last_region_failed_requirement:
+            phrase = store.missing_item_descriptions.get(item)
+            if phrase:
+                renpy.say(ap, phrase)
+
+    if len(last_region_failed_requirement) == 1:
+        ap "Without it, this path shall remain closed."
+    else:
+        ap "Without them, this path shall remain closed."
+
     menu:
         ap "Your story cannot continue from here."
 
-        "{i}• [[Return to the main menu.]]{/i}":
+        "{i}• [[Return to the main menu.]{/i}":
             $ renpy.full_restart()
     return
 
@@ -28,7 +39,7 @@ label no_chose_left:
         "{i}• [[Return when fate allows it.]{/i}" if False:
             pass
 
-        "{i}• [[Return to the main menu.]]{/i}":
+        "{i}• [[Return to the main menu.]{/i}":
             $ config.menu_include_disabled = False
             $ renpy.full_restart()
     return

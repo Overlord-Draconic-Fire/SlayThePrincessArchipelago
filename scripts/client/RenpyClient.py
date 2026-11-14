@@ -47,21 +47,28 @@ class RenpyContext(CommonContext):
             return 0
         return sum(1 for net_item in self.items_received if net_item.item == item_id)
 
-    def can_access_region(self, region_name: str) -> bool:
+    def can_access_region(self, region_name: str, send_list: bool = False) -> bool | list:
         from REGION_REQUIREMENTS import REGION_REQUIREMENTS as RR
         from TrackerSystem import REGION_TO_ENTRANCES as RE, get_bladeless_name, get_blade_name_for_region
 
         # Check if we already know the region_name
         region_access = set(Utils.persistent_load().get(self.slot_key, {}).get("region_access", []))
         if region_name in region_access:
+            if send_list:
+                return []
             return True
 
         # Check REGION_REQUIREMENTS to know all necessary items
         requirements = RR.get(region_name, None)
         if requirements is not None:
-            if self.check_requirements(requirements) and self.can_pass_entrance(region_name):
+            liste = self.check_requirements(requirements)
+            if liste == []:
                 self.inform_access_region(region_name)
+                if send_list:
+                    return liste
                 return True
+            if send_list:
+                return liste
             return False
         
         # Not in REGION_REQUIREMENTS, go check REGION_TO_ENTRANCES because it's a main chap 3 region
@@ -81,7 +88,8 @@ class RenpyContext(CommonContext):
         self._notify(f"Region not found: {region_name}", "error")
         return False
 
-    def check_requirements(self, requirements: list) -> bool:
+    def check_requirements(self, requirements: list) -> list:
+        liste = []
         for required_item in requirements:
             if "Princess -" in required_item and self.get_chapter_access() in [0, 2]:
                 continue
@@ -91,9 +99,8 @@ class RenpyContext(CommonContext):
                 continue
 
             if not self.has_item(required_item):
-                renpy.store.last_region_failed_requirement = required_item
-                return False
-        return True
+                liste.append(required_item)
+        return liste
 
     def can_pass_entrance(self, region_name: str):
         from TrackerSystem import RANDO_ENTRANCE, ENTRANCE_REQUIREMENT, get_bladeless_name
@@ -256,7 +263,7 @@ class RenpyContext(CommonContext):
             if item_callback is not None:
                 item_callback(item_name)
 
-            renpy.store.galleryInitializer.refresh_all_location_access()
+            renpy.store.galleryInitializer.refresh_all_location_access() #debug!!! le faire que si item utile (lié à une entrée dans un chapitre) !!!
         except Exception:
             logger.exception("item_received callback failed")
 

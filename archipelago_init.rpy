@@ -4,8 +4,8 @@ if True:
     define config.console = True
     define config.rollback_enabled = True
 
-default last_region_checked = None
-default last_region_failed_requirement = None
+default last_region_checked = ""
+default last_region_failed_requirement = []
 default ap_console_command = ""
 
 default narrator_skip_block_until = 0
@@ -46,6 +46,49 @@ default opportunist_stairs = [
     ('bg', 'happy', 'stairs'),
     ('bg', 'stranger', 'stairs', 'end')
 ]
+#debug!!! attention: il manque les cas invitations !!!
+default missing_item_descriptions = {
+    # Princesses
+    Item.adversary: "A worthy opponent awaits, ready to meet the {b}Adversary{/b} blow for blow.",
+    Item.tower: "Far above the ground, the {b}Tower{/b} watches over those who dare to defy her.",
+    Item.spectre: "The bloodshed left behind a {b}Spectre{/b}, still bound to a world she should have left.",
+    Item.nightmare: "Buried deep within the mind, a {b}Nightmare{/b} waits for its prison to open.",
+    Item.razor: "Hidden beneath a harmless appearance lies a {b}Razor{/b}, sharp enough to cut through every certainty.",
+    Item.beast: "Trapped like a {b}Beast{/b}, she learned to bare her teeth at anything that came near.",
+    Item.witch: "Behind every seemingly generous gesture, the {b}Witch{/b} conceals another betrayal.",
+    Item.stranger: "Beyond the familiar lies a {b}Stranger{/b}, whose very existence defies what you thought you knew.",
+    Item.prisoner: "Bound in chains and stripped of freedom, the {b}Prisoner{/b} waits for someone to loosen her shackles.",
+    Item.damsel: "Behind the locked door, the {b}Damsel{/b} waits for someone to come and save her.",
+
+    Item.needle: "One wrong move against the {b}Needle{/b} could turn a narrow escape into a fatal mistake.",
+    Item.fury: "Every wound left unanswered feeds the {b}Fury{/b}, until punishment becomes the only thing that remains.",
+    Item.apotheosis: "Beyond mortal limits, the {b}Apotheosis{/b} awaits those who dare reach for godhood.",
+    Item.dragon: "Bound together by an inescapable fate, the {b}Dragon{/b} and Princess face a world that would tear them apart.",
+    Item.wraith: "Death should have ended her story, yet the {b}Wraith{/b} returned to haunt those who left her behind.",
+    Item.clarity: "When every illusion finally falls away, the {b}Clarity{/b} reveals what was hidden beneath the lies.",
+    Item.den: "Deep within the {b}Den{/b}, the hunted may discover that the hunter is no longer the only predator.",
+    Item.wild: "Within the {b}Wild{/b}, the boundaries between two beings begin to dissolve.",
+    Item.thorn: "Beneath every {b}Thorn{/b}, a fragile tenderness waits, guarded by the pain that came before.",
+    Item.cage: "Locked inside the {b}Cage{/b}, every attempt at freedom threatens to tighten the bars.",
+    Item.grey: "As the world loses its meaning, the {b}Grey{/b} consumes what remains.",
+    Item.happily: "Behind the promise of {b}Happily Ever After{/b}, something waits to reveal the cost of a perfect ending.",
+    Item.goddess: "At the end of countless endings, the {b}Shifting Mound{/b} gathers every possibility into herself.",
+
+    # Voices
+    Item.stubborn: "Refusing to yield even when defeat seems certain, the {b}Stubborn{/b} would rather break than surrender.",
+    Item.broken: "Crushed beneath the weight of every failure, the {b}Broken{/b} struggles to find a reason to keep going.",
+    Item.cold: "Unmoved by pain or fear, the {b}Cold{/b} watches as the world falls apart.",
+    Item.paranoid: "Hearing danger in every silence, the {b}Paranoid{/b} trusts nothing that cannot be proven safe.",
+    Item.cheated: "Having seen the rules twisted against him, the {b}Cheated{/b} knows that the game was never fair.",
+    Item.hunted: "With death close behind and nowhere left to hide, the {b}Hunted{/b} runs for one more chance to survive.",
+    Item.opportunist: "Always searching for an advantage, the {b}Opportunist{/b} turns even another's misfortune into an opportunity.",
+    Item.contrarian: "When every road points in the same direction, the {b}Contrarian{/b} searches for the one path nobody would take.",
+    Item.skeptic: "Faced with truths that refuse to hold together, the {b}Skeptic{/b} questions everything that stands before him.",
+    Item.smitten: "Blinded by a devotion that knows no limits, the {b}Smitten{/b} would sacrifice everything for the one he loves.",
+
+    # Other
+    Item.invitation: "A mysterious {b}Invitation{/b} awaits, promising a chance to meet the one who holds the key to your fate."
+}
 
 init -10 python:
     import os
@@ -384,16 +427,16 @@ init -10 python:
         Check whether the player has at least x of the specified item.
         Accepts an item value like Item.heart and returns True if the player has at least x of that item.
         """
-        store.last_region_checked = None
+        store.last_region_checked = ""
         if item_value == Item.invitation:
             store.last_region_checked = Region.space_between
 
-        store.last_region_failed_requirement = None
+        store.last_region_failed_requirement = []
 
         count = archipelago.count_item(item_value)
         ap_debug(f"Player has {count} of {item_value} (needs {x})")
         if count < x:
-            store.last_region_failed_requirement = f"{x - count} {item_value}"
+            store.last_region_failed_requirement = [item_value]
         return count >= x
 
     def hasRegionRequirements(region_value : str) -> bool: #DEBUG TOUT REMPLACER PAR archipelago.can_access_region !
@@ -403,7 +446,8 @@ init -10 python:
         """
         try:
             store.last_region_checked = region_value
-            return archipelago.can_access_region(region_value)
+            store.last_region_failed_requirement = archipelago.can_access_region(region_value, True)
+            return store.last_region_failed_requirement == []
         except Exception as e:
             ap_error(f"Error in hasRegionRequirements({region_value}): {e}")
             return False
