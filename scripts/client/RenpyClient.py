@@ -32,12 +32,20 @@ class RenpyContext(CommonContext):
         return any(net_item.item == item_id for net_item in self.items_received)
 
     def has_location(self, location_name: str) -> bool:
-            """Return True if the player has sent this location to the server."""
-            location_lookup: typing.Mapping[int, str] = self.location_names[self.game]
-            location_id: int | None = next((location_id for location_id, resolved_name in location_lookup.items() if resolved_name == location_name), None)
-            if location_id is None:
-                return False
-            return location_id in self.checked_locations
+        """Return True if the player has sent this location to the server."""
+        location_lookup: typing.Mapping[int, str] = self.location_names[self.game]
+        location_id: int | None = next((location_id for location_id, resolved_name in location_lookup.items() if resolved_name == location_name), None)
+        if location_id is None:
+            return False
+        return location_id in self.checked_locations
+
+    def is_randomized_location(self, location_name: str) -> bool:
+        """Return True if this location is randomized (Gallery)."""
+        location_lookup: typing.Mapping[int, str] = self.location_names[self.game]
+        location_id: int | None = next((location_id for location_id, resolved_name in location_lookup.items() if resolved_name == locatio   n_name), None)
+        if location_id is None:
+            return False
+        return location_id in (self.checked_locations | self.missing_locations)
 
     def count_item(self, item_name: str) -> int:
         """Count how many instances of an item name the player owns."""
@@ -158,9 +166,13 @@ class RenpyContext(CommonContext):
 
         import asyncio
         try:
+            was_missing = location_id in self.missing_locations
             asyncio.run_coroutine_threadsafe(self.check_locations([location_id]), loop)
-            self._notify(f"Location sent: '{location_name}' ({location_id})", "debug")
-            return True
+            if was_missing:
+                self._notify(f"Location sent: '{location_name}' ({location_id})", "debug")
+            else:
+                self._notify(f"Location not randomized: '{location_name}' ({location_id})", "debug")
+            return was_missing
         except Exception:
             logger.exception("send_location failed")
             self._notify(f"Error while sending location '{location_name}'", "error")

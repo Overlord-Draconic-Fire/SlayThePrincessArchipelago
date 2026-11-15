@@ -346,31 +346,31 @@ init -10 python:
 
         send_location(location_name, group="Voice")
 
-    def send_location(location_name : str, location2 : str = None, group : str = None) -> None:
+    def send_location(location_name : str, location2 : str = None, group : str = None) -> bool:
         """Send an arbitrary location check."""
         if "Find" in location_name and not archipelago.get_chapter_rando() in [1, 3]:
-            return
+            return False
         elif "Reach" in location_name and not archipelago.get_chapter_rando() in [2, 3]:
-            return
+            return False
         elif "Heart" in location_name and archipelago.get_heart_rando() == 0:
-            return
+            return False
         elif group == "Voice" and archipelago.get_voice_rando() == 0:
-            return
+            return False
         elif group == "Blade" and archipelago.get_location_blade_rando() == 0:
-            return
+            return False
         elif group == "MirrorSB" and not archipelago.get_mirror_rando() in [1, 3]:
-            return
+            return False
         elif group == "MirrorChap" and not archipelago.get_mirror_rando() in [2, 3]:
-            return
+            return False
         elif group == "Oblivion" and not archipelago.get_oblivion_rando():
-            return
+            return False
         elif group == "Gift" and not archipelago.get_gift_rando() in [1, 3]:
-            return
+            return False
 
         if location2 != None and archipelago.get_heart_rando() == 2:
-            archipelago.send_location(location2)
+            return archipelago.send_location(location2)
         else:
-            archipelago.send_location(location_name)
+            return archipelago.send_location(location_name)
 
     def hasThisBlade(blade_value : str) -> bool:
         """

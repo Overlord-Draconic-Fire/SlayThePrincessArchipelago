@@ -237,11 +237,16 @@ screen this_gallery(galleryParent):
             $ can_location = False
             $ text_gallery = f"Gallery - {galleryParent.routeName} [{i + 1}]"
             $ has_location = archipelago.has_location(text_gallery)
+            $ is_randomized = archipelago.is_randomized_location(text_gallery)
             if not has_location:
                 $ can_location = galleryParent.get_location_access(archipelago, text_gallery)
             if text_gallery in Utils.persistent_load().get(archipelago.slot_key, {}).get("gallery", []):
                 imagebutton:
-                    idle (Transform(galleryParent.items[i].image,size=(250,150)) if has_location else (galleryParent.items[i].thumb if can_location else galleryParent.items[i].hoveredthumb))
+                    idle Transform(
+                        galleryParent.items[i].image if has_location else (galleryParent.items[i].thumb if can_location else galleryParent.items[i].hoveredthumb),
+                        size=(250, 150) if has_location else None,
+                        alpha=1.0 if is_randomized else 0.3
+                    )
                     hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
                     #hover galleryParent.items[i].hoveredthumb
                     action [Show("gallery_large", dissolve, galleryParent.items[i], galleryParent), Hide("this_gallery")]
@@ -250,7 +255,10 @@ screen this_gallery(galleryParent):
                 imagebutton:
                     #idle galleryParent.items[i].thumbLocked
                     hovered [Play("sound", "audio/one_shot/page_turn_short.flac")]
-                    idle ("gallery_big_lock" if has_location else ("gallery_locked_idle" if can_location else "gallery_locked_hover"))
+                    idle Transform(
+                        "gallery_big_lock" if has_location else ("gallery_locked_idle" if can_location else "gallery_locked_hover"),
+                        alpha=1.0 if is_randomized else 0.3
+                    )
                     #hover "gallery_locked_hover"
                     action NullAction()
                     tooltip str(galleryParent.items[i].hint)

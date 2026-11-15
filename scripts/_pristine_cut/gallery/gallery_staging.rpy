@@ -94,8 +94,8 @@ init -1 python:
             if not from_server:
                 memoriesanity_mode = archipelago.get_memoriesanity()
                 if memoriesanity_mode != 0:
-                    send_location(f"Gallery - {self.routeName} [{index}]")
-                if memoriesanity_mode == 2:
+                    existe = send_location(f"Gallery - {self.routeName} [{index}]")
+                if existe and memoriesanity_mode == 2:
                     return
             with renpy.store.gallery_lock:
                 setattr(persistent, "gallery_" + str(self.key) + "_" + str(index), True)
