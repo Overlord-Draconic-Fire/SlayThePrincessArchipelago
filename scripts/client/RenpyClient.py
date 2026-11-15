@@ -42,7 +42,7 @@ class RenpyContext(CommonContext):
     def is_randomized_location(self, location_name: str) -> bool:
         """Return True if this location is randomized (Gallery)."""
         location_lookup: typing.Mapping[int, str] = self.location_names[self.game]
-        location_id: int | None = next((location_id for location_id, resolved_name in location_lookup.items() if resolved_name == locatio   n_name), None)
+        location_id: int | None = next((location_id for location_id, resolved_name in location_lookup.items() if resolved_name == location_name), None)
         if location_id is None:
             return False
         return location_id in (self.checked_locations | self.missing_locations)
